@@ -8,5 +8,5 @@ setup(name='pydgilib',
       author_email='ehwo(at)kth.se',
       license='MIT',
       packages=['pydgilib'],
-      dependency_links=['https://www.microchip.com/developmenttools/ProductDetails/ATPOWERDEBUGGER']
+      dependency_links=['https://www.microchip.com/developmenttools/ProductDetails/ATPOWERDEBUGGER'],
       zip_safe=False)

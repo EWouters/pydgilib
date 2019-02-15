@@ -1,2 +1,2 @@
-from dgilib_exceptions import *
-from dgilib import DGILib
+from pydgilib.dgilib_exceptions import *
+from pydgilib.dgilib import DGILib
