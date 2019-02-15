@@ -293,13 +293,13 @@ class DGILibInterfaceCommunication(object):
         
         :param interface_id: The ID of the interface
         :type interface_id: int
-        :return: Tuple of a list of received values and a list of timestamps
+        :return: Tuple of a list of received values and a list of ticks
         :rtype: tuple(list(int), list(int))
         :raises: :exc:`DeviceReturnError`
         """
 
         buffer = (c_ubyte * BUFFER_SIZE)()
-        timestamp = (c_ulonglong * BUFFER_SIZE)()
+        ticks = (c_ulonglong * BUFFER_SIZE)()
         length = c_uint(0)
         ovf_index = c_uint(0)
         ovf_length = c_uint(0)
@@ -308,7 +308,7 @@ class DGILibInterfaceCommunication(object):
             self.dgi_hndl,
             interface_id,
             buffer,
-            timestamp,
+            ticks,
             byref(length),
             byref(ovf_index),
             byref(ovf_length),
@@ -320,13 +320,13 @@ class DGILibInterfaceCommunication(object):
             )
         if self.verbose >= 2:
             for i in range(length.value):
-                print(f"\t{i}:\tbuffer: {buffer[i]},\ttimestamp: {timestamp[i]}")
+                print(f"\t{i}:\tbuffer: {buffer[i]},\ttick: {ticks[i]}")
         if res:
             raise DeviceReturnError(
                 f"interface_read_data: {interface_id} returned: {res}"
             )
 
-        return buffer[: length.value], timestamp[: length.value]
+        return buffer[: length.value], ticks[: length.value]
 
     def interface_write_data(self, interface_id, buffer):
         """`interface_write_data`
