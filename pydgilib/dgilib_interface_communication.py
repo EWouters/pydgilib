@@ -45,6 +45,8 @@ CALIBRATION_FAILED = 0x20 #  32
 from ctypes import *
 from time import sleep
 
+from pydgilib.dgilib_exceptions import *
+
 class DGILibInterfaceCommunication(object):
     """Python bindings for DGILib Interface Communication.
     

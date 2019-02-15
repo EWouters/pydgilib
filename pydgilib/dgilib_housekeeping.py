@@ -43,6 +43,8 @@ CALIBRATION_FAILED = 0x20 #  32
 from ctypes import *
 from time import sleep
 
+from pydgilib.dgilib_exceptions import *
+
 class DGILibHousekeeping(object):
     """Python bindings for DGILib Housekeeping.
     
@@ -237,7 +239,7 @@ class DGILibHousekeeping(object):
         if self.verbose:
             print(f"major_fw: {major_fw.value}\nminor_fw: {minor_fw.value}")
 
-        return (major_fw.value, minor_fw.value)
+        return major_fw.value, minor_fw.value
 
     def start_polling(self):
         """`start_polling`

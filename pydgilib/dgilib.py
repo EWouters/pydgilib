@@ -43,6 +43,8 @@ CALIBRATION_FAILED = 0x20 #  32
 from ctypes import *
 from time import sleep
 
+from pydgilib.dgilib_exceptions import *
+
 from pydgilib.dgilib_discovery import DGILibDiscovery
 from pydgilib.dgilib_housekeeping import DGILibHousekeeping
 from pydgilib.dgilib_interface_communication import DGILibInterfaceCommunication
@@ -64,8 +66,8 @@ class DGILib(
     :Example:
 
     >>> with DGILib() as dgilib:
-    ...     dgilib.info(True)
-    major_version: 5, minor_version: 7, build_number: 244
+    ...     dgilib.get_major_version()
+    5
     """
 
     def __init__(
