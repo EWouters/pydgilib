@@ -75,6 +75,7 @@ class DGILibHousekeeping(object):
 
     def connect(self, device_sn):
         """`connect`
+        
         Opens a connection to the specified device. This function must be called prior to any function requiring
         the connection handle.
 
@@ -109,6 +110,7 @@ class DGILibHousekeeping(object):
 
     def disconnect(self):
         """`disconnect`
+        
         Closes the specified connection.
 
         `int disconnect(uint32_t dgi_hndl)`
@@ -133,6 +135,7 @@ class DGILibHousekeeping(object):
 
     def connection_status(self):
         """`connection_status`
+        
         Verifies that the specified connection is still open.
 
         `int connection_status(uint32_t* dgi_hndl)`
@@ -155,6 +158,7 @@ class DGILibHousekeeping(object):
 
     def get_major_version(self):
         """`get_major_version`
+        
         Get the major version of the DGI library.
 
         `int get_major_version(void)`
@@ -172,6 +176,7 @@ class DGILibHousekeeping(object):
 
     def get_minor_version(self):
         """`get_minor_version`
+        
         Get the minor version of the DGI library.
 
         `int get_minor_version(void)`
@@ -189,6 +194,7 @@ class DGILibHousekeeping(object):
 
     def get_build_number(self):
         """`get_build_number`
+        
         Get the major version of the DGI library.
         
         Returns the build number of DGILib. If not supported, returns 0.
@@ -208,6 +214,7 @@ class DGILibHousekeeping(object):
 
     def get_fw_version(self):
         """`get_fw_version`
+        
         Gets the firmware version of the DGI device connected. Note that this is the version of the DGI device,
         and not the tool.
         
@@ -243,6 +250,7 @@ class DGILibHousekeeping(object):
 
     def start_polling(self):
         """`start_polling`
+        
         This function will start the polling system and start acquisition on enabled interfaces. It is possible to
         enable/disable interfaces both before and after the polling has been started. However, no data will be
         transferred until the polling is started.
@@ -268,6 +276,7 @@ class DGILibHousekeeping(object):
 
     def stop_polling(self):
         """`stop_polling`
+        
         This function will stop the polling system and stop acquisition on all interfaces.
         
         `int stop_polling(uint32_t dgi_hndl)`
@@ -291,6 +300,7 @@ class DGILibHousekeeping(object):
 
     def target_reset(self, hold_reset):
         """`target_reset`
+        
         This function is used to control the state of the reset line connected to the target, if available.
         
         `int target_reset(uint32_t dgi_hndl, bool hold_reset)`

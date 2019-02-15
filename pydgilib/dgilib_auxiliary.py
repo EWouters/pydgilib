@@ -79,6 +79,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_initialize(self):
         """`auxiliary_power_initialize`
+        
         Initializes the power parser.
 
         `int auxiliary_power_initialize(uint32_t* power_hndl_p, uint32_t dgi_hndl)`
@@ -107,6 +108,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_uninitialize(self):
         """`auxiliary_power_uninitialize`
+        
         Uninitializes the power parser.
 
         `int auxiliary_power_uninitialize(uint32_t power_hndl)`
@@ -130,6 +132,7 @@ class DGILibAuxiliary(object):
         self, channel=0, power_type=0, max_count=BUFFER_SIZE
     ):
         """`auxiliary_power_register_buffer_pointers`
+        
         Registers a set of pointers to be used for storing the calibrated power data. The buffers can then be
         locked by auxiliary_power_lock_data_for_reading, and the data directly read from the specified buffers.
         Zero-pointers can be specified to get the buffers allocated within DGILib. This requires the data to be
@@ -185,6 +188,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_unregister_buffer_pointers(self, channel=0, power_type=0):
         """`auxiliary_power_unregister_buffer_pointers`
+        
         Unregisters the pointers for the specified power channel.
 
         `int auxiliary_power_unregister_buffer_pointers(uint32_t power_hndl, int channel, int type)`
@@ -221,6 +225,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_calibration_is_valid(self):
         """`auxiliary_power_calibration_is_valid`
+        
         Checks the status of the stored calibration.
 
         Returns true if the calibration is valid, false otherwise. Unity gain and offset will be used.
@@ -247,6 +252,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_trigger_calibration(self, circuit_type=XAM):
         """`auxiliary_power_trigger_calibration`
+        
         Triggers a calibration of the specified type. This can take some time, so use `auxiliary_power_get_status`
         to check for completion.
 
@@ -277,6 +283,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_get_calibration(self, length=NUM_CALIBRATION):
         """`auxiliary_power_get_calibration`
+        
         Gets the raw calibration read from the tool.
 
         `int auxiliary_power_get_calibration(uint32_t power_hndl, uint8_t* data, size_t length)`
@@ -294,7 +301,7 @@ class DGILibAuxiliary(object):
         :param length: Number of raw calibration bytes to fetch. See the DGI documentation for number of bytes. (defaults to NUM_CALIBRATION)
         :type length: int
         :return: List of the read raw calibration data
-        :rtype: List(int)
+        :rtype: list(int)
         :raises: :exc:`DeviceReturnError`
         """
 
@@ -312,6 +319,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_get_circuit_type(self):
         """`auxiliary_power_get_circuit_type`
+        
         Gets the type of power circuit.
 
         `int auxiliary_power_get_circuit_type(uint32_t power_hndl, int* circuit)`
@@ -343,9 +351,10 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_get_status(self):
         """`auxiliary_power_get_status`
+        
         Gets the status of the power parser.
 
-        Return codes
+        Return codes:
         - `IDLE` = 0x00
         - `RUNNING` = 0x01
         - `DONE` = 0x02
@@ -383,6 +392,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_start(self, mode=0, parameter=0):
         """`auxiliary_power_start`
+        
         Starts parsing of power data. The power and power sync interfaces are enabled automatically, but note
         that it is necessary to start the polling separately. This only starts the parser that consumes data from the
         DGILib buffer.
@@ -423,6 +433,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_stop(self):
         """`auxiliary_power_stop`
+        
         Stops parsing of power data.
 
         `int auxiliary_power_stop(uint32_t power_hndl)`
@@ -444,6 +455,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_lock_data_for_reading(self):
         """`auxiliary_power_lock_data_for_reading`
+        
         Blocks the parsing thread from accessing all the buffers. This must be called before the user application
         code accesses the buffers, or a call to `auxiliary_power_copy_data` is made. Afterwards
         `auxiliary_power_free_data` must be called. Minimize the amount of time between locking and freeing to
@@ -470,6 +482,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_copy_data(self, channel=0, power_type=0, max_count=BUFFER_SIZE):
         """`auxiliary_power_copy_data`
+        
         Copies parsed power data into the specified buffer. Remember to lock the buffers first. If the count
         parameter is the same as max_count there is probably more data to be read. Do another read to get the
         remaining data.
@@ -540,6 +553,7 @@ class DGILibAuxiliary(object):
 
     def auxiliary_power_free_data(self):
         """`auxiliary_power_free_data`
+        
         Clears the power data buffers and allows the power parser to continue.
 
         `int auxiliary_power_free_data(uint32_t power_hndl)`

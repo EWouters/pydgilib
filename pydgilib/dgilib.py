@@ -101,11 +101,6 @@ class DGILib(
                 f"dgilib.dll could not be found in the specicied path: {dgilib_path}."
             )
 
-        # DGILibDiscovery.__init__(self, *args, **kwargs)
-        # DGILibHousekeeping.__init__(self, *args, **kwargs)
-        # DGILibInterfaceCommunication.__init__(self, *args, **kwargs)
-        # DGILibAuxiliary.__init__(self, *args, **kwargs)
-
         self.device_index = device_index
         self.device_sn = device_sn
         self.verbose = verbose
@@ -118,7 +113,6 @@ class DGILib(
 
         DGILibDiscovery.__enter__(self)
         DGILibHousekeeping.__enter__(self)
-        # DGILibInterfaceCommunication.__enter__(self)
         DGILibAuxiliary.__enter__(self)
 
         return self
@@ -126,15 +120,9 @@ class DGILib(
     def __exit__(self, exc_type, exc_value, traceback):
 
         DGILibAuxiliary.__exit__(self, exc_type, exc_value, traceback)
-        # DGILibInterfaceCommunication.__exit__(self, exc_type, exc_value, traceback)
         DGILibHousekeeping.__exit__(self, exc_type, exc_value, traceback)
         DGILibDiscovery.__exit__(self, exc_type, exc_value, traceback)
 
         if self.verbose:
             print("bye from DGILib")
-
-
-#     def __contains__(self, attribute_name):
-#         """Used to provide `attribute_name in object` syntax
-#         """
-#         return hasattr(self, attribute_name)
+            

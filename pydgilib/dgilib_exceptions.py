@@ -1,6 +1,7 @@
 # Custom Exceptions
 class Error(Exception):
     """Base class for exceptions in this module.
+    
     :param msg: Error message associated with the exception
     :type msg: str
     :ivar msg: Error message associated with the exception

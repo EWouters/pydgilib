@@ -207,6 +207,7 @@ deviceStatusChangedCallBack Function pointer that will be removed
 
     def is_msd_mode(self, device_sn):
         """`is_msd_mode`
+        
         EDBG devices can be set to a mass storage mode where the DGI is unavailable. In such cases the 
         device is still detected by DGILib, but it won't be possible to directly connect to it. This command is used 
         to check if the device is in such a mode.
@@ -234,6 +235,7 @@ deviceStatusChangedCallBack Function pointer that will be removed
 
     def set_mode(self, device_sn, nmbed=1):
         """`set_mode`
+        
         This function is used to temporarily set the EDBG to a specified mode.
 
         `int set_mode(char* sn, int nmbed)`

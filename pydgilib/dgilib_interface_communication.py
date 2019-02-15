@@ -59,6 +59,7 @@ class DGILibInterfaceCommunication(object):
 
     def interface_list(self):
         """`interface_list`
+        
         Queries the connected DGI device for available interfaces. Refer to the DGI documentation to resolve the
         ID.
         
@@ -93,6 +94,7 @@ class DGILibInterfaceCommunication(object):
 
     def interface_enable(self, interface_id, timestamp=True):
         """`interface_enable`
+        
         Enables the specified interface. Note that no data acquisition will begin until a session has been started.
 
         `int interface_enable(uint32_t dgi_hndl, int interface_id, bool timestamp)`
@@ -122,6 +124,7 @@ class DGILibInterfaceCommunication(object):
 
     def interface_disable(self, interface_id):
         """`interface_disable`
+        
         Disables the specified interface.
 
         `int interface_disable(uint32_t dgi_hndl, int interface_id)`
@@ -146,6 +149,7 @@ class DGILibInterfaceCommunication(object):
 
     def interface_get_configuration(self, interface_id):
         """`interface_get_configuration`
+        
         Gets the configuration associated with the specified interface. Consult the DGI documentation for details.
 
         `int interface_get_configuration(uint32_t dgi_hndl, int interface_id, unsigned int* config_id, unsigned int*
@@ -194,6 +198,7 @@ class DGILibInterfaceCommunication(object):
 
     def interface_set_configuration(self, interface_id, config_id, config_value):
         """`interface_set_configuration`
+        
         Sets the given configuration fields for the specified interface. Consult the DGI documentation for details.
 
         `int interface_set_configuration(uint32_t dgi_hndl, int interface_id, unsigned int* config_id, unsigned int*
@@ -250,6 +255,7 @@ class DGILibInterfaceCommunication(object):
 
     def interface_clear_buffer(self, interface_id):
         """`interface_clear_buffer`
+        
         Clears the data in the buffers for the specified interface.
 
         `int interface_clear_buffer(uint32_t dgi_hndl, int interface_id)`
@@ -274,6 +280,7 @@ class DGILibInterfaceCommunication(object):
 
     def interface_read_data(self, interface_id):
         """`interface_read_data`
+        
         Reads the data received on the specified interface. This should be called regularly to avoid overflows in
         the system. DGILib can buffer 10M samples.
 
@@ -332,6 +339,7 @@ class DGILibInterfaceCommunication(object):
 
     def interface_write_data(self, interface_id, buffer):
         """`interface_write_data`
+        
         Writes data to the specified interface. A maximum of 255 elements can be written each time. An error
         return code will be given if data hasn't been written yet.
 
