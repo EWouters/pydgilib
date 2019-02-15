@@ -43,11 +43,10 @@ CALIBRATION_FAILED = 0x20 #  32
 from ctypes import *
 from time import sleep
 
-from dgilib_exceptions import *
-from dgilib_discovery import DGILibDiscovery
-from dgilib_housekeeping import DGILibHousekeeping
-from dgilib_interface_communication import DGILibInterfaceCommunication
-from dgilib_auxiliary import DGILibAuxiliary
+from pydgilib.dgilib_discovery import DGILibDiscovery
+from pydgilib.dgilib_housekeeping import DGILibHousekeeping
+from pydgilib.dgilib_interface_communication import DGILibInterfaceCommunication
+from pydgilib.dgilib_auxiliary import DGILibAuxiliary
 
 
 class DGILib(
