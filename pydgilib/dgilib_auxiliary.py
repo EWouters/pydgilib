@@ -7,43 +7,11 @@ __version__ = "0.1"
 __revision__ = " $Id: dgilib_auxiliary.py 1586 2019-02-13 15:56:25Z EWouters $ "
 __docformat__ = "reStructuredText"
 
-GET_STRING_SIZE = 100
-NUM_INTERFACES = 10
-NUM_CONFIG_IDS = 255
-NUM_CALIBRATION = 255
-BUFFER_SIZE = 10000000
-MAX_PRINT = 100
-
-# Interface types
-INTERFACE_TIMESTAMP  = 0x00 #   0 Service interface which appends timestamps to all received events on associated interfaces.
-INTERFACE_SPI        = 0x20 #  32 Communicates directly over SPI in Slave mode.
-INTERFACE_USART      = 0x21 #  33 Communicates directly over USART in Slave mode.
-INTERFACE_I2C        = 0x22 #  34 Communicates directly over I2C in Slave mode.
-INTERFACE_GPIO       = 0x30 #  48 Monitors and controls the state of GPIO pins.
-INTERFACE_POWER_DATA = 0x40 #  64 Receives data from the attached power measurement co-processors.
-INTERFACE_POWER_SYNC = 0x41 #  65 Receives sync events from the attached power measurement co-processors.
-INTERFACE_RESERVED   = 0xFF # 255 Special identifier used to indicate no interface.
-
-# Circuit types
-OLD_XAM = 0x00 #   0
-XAM     = 0x10 #  16
-PAM     = 0x11 #  17
-UNKNOWN = 0xFF # 255
-
-# Return codes
-IDLE               = 0x00 #   0
-RUNNING            = 0x01 #   1
-DONE               = 0x02 #   2
-CALIBRATING        = 0x03 #   3
-INIT_FAILED        = 0x10 #  16
-OVERFLOWED         = 0x11 #  17
-USB_DISCONNECTED   = 0x12 #  18
-CALIBRATION_FAILED = 0x20 #  32
-
 from ctypes import *
-from time import sleep
 
+from pydgilib.dgilib_config import *
 from pydgilib.dgilib_exceptions import *
+
 
 class DGILibAuxiliary(object):
     """Python bindings for DGILib Auxiliary.
@@ -67,13 +35,11 @@ class DGILibAuxiliary(object):
         """
 
         self.power_hndl = self.auxiliary_power_initialize()
-#         self.auxiliary_power_register_buffer_pointers()
 
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.auxiliary_power_uninitialize()
-#         self.auxiliary_power_unregister_buffer_pointers()
         if self.verbose:
             print("bye from Auxiliary")
 
@@ -513,8 +479,8 @@ class DGILibAuxiliary(object):
         :raises: :exc:`DeviceReturnError`
         """
 
-#         buffer = (c_float * max_count)()
-#         timestamp = (c_double * max_count)()
+        # buffer = (c_float * max_count)()
+        # timestamp = (c_double * max_count)()
         count = c_size_t()
         max_count = c_size_t(max_count)
         channel = c_int(channel)
@@ -524,9 +490,9 @@ class DGILibAuxiliary(object):
             self.power_hndl,
             self.powerBuffer,
             self.powerTimestamp,
-#             byref(self.powerCount),
-#             buffer,
-#             timestamp,
+            # byref(self.powerCount),
+            # buffer,
+            # timestamp,
             byref(count),
             max_count,
             channel,
@@ -535,12 +501,12 @@ class DGILibAuxiliary(object):
         if self.verbose:
             print(
                 f"\t{res} auxiliary_power_copy_data: {count.value} samples, power_type: {power_type.value}"
-#                 f"\t{res} auxiliary_power_copy_data: {self.powerCount.value} samples, power_type: {power_type.value}"
+                # f"\t{res} auxiliary_power_copy_data: {self.powerCount.value} samples, power_type: {power_type.value}"
             )
         if self.verbose >= 3:
             for i in range(min(count.value, MAX_PRINT)):
-#             for i in range(min(self.powerCount.value, MAX_PRINT)):
-#                 print(f"\t{i}: buffer: {buffer[i]}, timestamp: {timestamp[i]}")
+                # for i in range(min(self.powerCount.value, MAX_PRINT)):
+                #     print(f"\t{i}: buffer: {buffer[i]}, timestamp: {timestamp[i]}")
                 print(
                     f"\t{i}: buffer: {self.powerBuffer[i]}, timestamp: {self.powerTimestamp[i]}"
                 )
@@ -548,8 +514,8 @@ class DGILibAuxiliary(object):
             raise DeviceReturnError(f"auxiliary_power_copy_data returned: {res}")
 
         return self.powerBuffer[: count.value], self.powerTimestamp[: count.value]
-#         return self.powerBuffer[:self.powerCount.value], self.powerTimestamp[:self.powerCount.value]
-#         return buffer[:], timestamp[:]
+        # return self.powerBuffer[:self.powerCount.value], self.powerTimestamp[:self.powerCount.value]
+        # return buffer[:], timestamp[:]
 
     def auxiliary_power_free_data(self):
         """`auxiliary_power_free_data`
