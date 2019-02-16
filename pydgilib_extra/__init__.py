@@ -7,8 +7,8 @@ __version__ = "0.1"
 __revision__ = " $Id: __init__.py 1586 2019-02-13 15:56:25Z EWouters $ "
 __docformat__ = "reStructuredText"
 
-from pydgilib.dgilib_config import *
 from pydgilib.dgilib import DGILib
 
+from pydgilib_extra.dgilib_extra_config import *
 from pydgilib_extra.dgilib_extra_exceptions import *
 from pydgilib_extra.dgilib_extra import DGILibExtra

@@ -8,8 +8,8 @@ __revision__ = " $Id: dgilib_extra.py 1586 2019-02-13 15:56:25Z EWouters $ "
 __docformat__ = "reStructuredText"
 
 from pydgilib.dgilib import DGILib
-from pydgilib.dgilib_config import *
 
+from pydgilib_extra.dgilib_extra_config import *
 from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO
 from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 from pydgilib_extra.dgilib_logger import DGILibLogger

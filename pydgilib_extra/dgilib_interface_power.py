@@ -9,7 +9,7 @@ __docformat__ = "reStructuredText"
 
 from time import sleep
 
-from pydgilib.dgilib_config import *
+from pydgilib_extra.dgilib_extra_config import *
 from pydgilib_extra.dgilib_extra_exceptions import *
 
 
@@ -69,7 +69,7 @@ class DGILibInterfacePower(object):
     def power_get_config(self):
         """Get the power config options.
         
-        :return: Power buffers configuration list of dictionaries like [{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]
+        :return: Power buffers configuration list of dictionaries like `[{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]`
         :rtype: list(dict())
         """
 
@@ -81,7 +81,7 @@ class DGILibInterfacePower(object):
         
         Register buffers inside the library for the buffers specified in power_buffers and removes ones that are not present.
         
-        :param power_buffers: Power buffers configuration list of dictionaries like [{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]
+        :param power_buffers: Power buffers configuration list of dictionaries like `[{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]`
         :type power_buffers: list(dict())
         """
 
@@ -108,7 +108,7 @@ class DGILibInterfacePower(object):
         
         TODO: Copies parsed power data into the specified buffer. Remember to lock the buffers first. If the count parameter is the same as max_count there is probably more data to be read. Do another read to get the remaining data.
         
-        :return: Tuple of list of power samples in Ampere and list of timestamps in seconds
+        :return: TODOTODO Tuple of list of power samples in Ampere and list of timestamps in seconds
         :rtype: (list(float), list(float))
         """
 
@@ -131,7 +131,7 @@ class DGILibInterfacePower(object):
                 f"BUFFER OVERFLOW, call this function more frequently or increase the buffer size."
             )
 
-        # Create variable to the store data in
+        # Create variables to the store data in
         power_samples = []
         timestamps = []
 
@@ -141,84 +141,28 @@ class DGILibInterfacePower(object):
         # Get the data from the buffer in the library
         while True:
             self.auxiliary_power_lock_data_for_reading()
-            data = self.auxiliary_power_copy_data(
-                power_buffer["channel"], power_buffer["power_type"], *args, **kwargs
+            _power_samples, _timestamps = self.auxiliary_power_copy_data(
+                power_buffer["channel"],
+                power_buffer["power_type"],
+                *args,
+                **kwargs,
             )
-            power_samples.append(data[0])
-            timestamps.append(data[1])
-            self.auxiliary_power_free_data()  # BUG: This probably clears all channels!
+            self.auxiliary_power_free_data()  # BUG: This probably clears all channels! (channels might not be working on XAM anyway)
+            power_samples.extend(_power_samples)
+            timestamps.extend(_timestamps)
             # Repeat the loop untill there is no buffer overflow (which should always be avoided.)
             if self.auxiliary_power_get_status() != OVERFLOWED:
                 break
 
-        if self.verbose >= 4:
-            print(power_samples, timestamps)
-        return power_samples, timestamps
-
-    def power_read(self, *args, **kwargs):
-        """Read power data from all enabled buffers.
-        
-        The returned list has the same indexes as the list obtained from `power_get_config()`
-        
-        :return: List of tuples of list of power samples in Ampere and list of timestamps in seconds
-        :rtype: list[(list(float), list(float)), ...]
-        """
-
-        # Check if auxiliary_power_get_status() is in IDLE = 0x00, RUNNING = 0x01, DONE = 0x02 or OVERFLOWED = 0x11
-        # and raise DevicePowerStatusError if it is.
-        power_status = self.auxiliary_power_get_status()
-        if self.verbose:
-            print(f"power_status: {power_status}")
-        # if power_status <= DONE or power_status == OVERFLOWED:
-        if power_status not in (IDLE, RUNNING, DONE, OVERFLOWED):
-            raise DevicePowerStatusError(f"Power Status {power_status}.")
-        if power_status == OVERFLOWED:
-            raise DevicePowerStatusError(
-                f"BUFFER OVERFLOW, call `power_read()` more frequently or increase the buffer size."
-            )
-
-        # Create variable to the store data in
-        data = []
-
-        # Get the data from the buffer in the library
-        self.auxiliary_power_lock_data_for_reading()
-        for power_buffer in self.power_buffers:
-            data.append(
-                self.auxiliary_power_copy_data(
-                    power_buffer["channel"], power_buffer["power_type"], *args, **kwargs
-                )
-            )
-        self.auxiliary_power_free_data()
-
-        #         # TODO: Check implementation in case of buffer overflow.
-        #         #  Should auxiliary_power_lock_data_for_reading() be inside the loop or before?
-
-        #         # Get the data from the buffer in the library
-        #         while True:
-        #             self.auxiliary_power_lock_data_for_reading()
-        #             for power_buffer in self.power_buffers:
-        #                 data = self.auxiliary_power_copy_data(power_buffer["channel"], power_buffer["power_type"], *args, **kwargs)
-        #                 power_samples.append(data[0])
-        #                 timestamps.append(data[1])
-        #             self.auxiliary_power_free_data()
-        #             # Repeat the loop untill there is no buffer overflow (which should always be avoided.)
-        #             if self.auxiliary_power_get_status() != OVERFLOWED:
-        #                 break
-
-        if self.verbose >= 4:
-            print(data)
         if self.verbose >= 2:
-            print(f"Collected {len(data[0])} power samples")
-        return data
+            print(f"Collected {len(power_samples)} power samples")
+        if self.verbose >= 4:
+            print(timestamps, power_samples)
+            
+        return timestamps, power_samples
 
-
-#     dgilib.auxiliary_power_register_buffer_pointers()
-#     dgilib.start_polling()
-#     dgilib.auxiliary_power_start()
-#     dgilib.auxiliary_power_get_status()
-#     sleep(1)
-#     dgilib.auxiliary_power_lock_data_for_reading()
-#     dat = dgilib.auxiliary_power_copy_data()
-#     dgilib.auxiliary_power_free_data()
-#     dgilib.auxiliary_power_stop()
-#     dgilib.auxiliary_power_get_status()
+#     def power_read(self, *args, **kwargs):
+#         """Read power data from all enabled buffers.
+        
+#         The returned list has the same indexes as the list obtained from `power_get_config()`
+#         """

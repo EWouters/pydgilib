@@ -7,7 +7,7 @@ __version__ = "0.1"
 __revision__ = " $Id: dgilib_interface_gpio.py 1586 2019-02-13 15:56:25Z EWouters $ "
 __docformat__ = "reStructuredText"
 
-from pydgilib.dgilib_config import *
+from pydgilib_extra.dgilib_extra_config import *
 
 
 # TODO: make these functions faster
@@ -136,7 +136,7 @@ class DGILibInterfaceGPIO(object):
             self.interface_set_configuration(INTERFACE_GPIO, [1], [write_mode])
 
         # Enable the interface if any of the pins are set to read mode or write mode
-        if read_mode + write_mode:
+        if read_mode or write_mode:
             if not INTERFACE_GPIO in self.enabled_interfaces:
                 self.interface_enable(INTERFACE_GPIO)
                 self.enabled_interfaces.append(INTERFACE_GPIO)
@@ -151,8 +151,8 @@ class DGILibInterfaceGPIO(object):
         
         Clears the buffer and returns the values.
         
-        :return: Tuple of list of list of pin states (bool) and list of timestamps in seconds
-        :rtype: (list(list(bool)), list(float)
+        :return: Tuple of list of timestamps in seconds and list of list of pin states (bool)
+        :rtype: (list(float), list(list(bool)))
         """
 
         # Read the data from the buffer
@@ -164,7 +164,7 @@ class DGILibInterfaceGPIO(object):
         if self.verbose >= 2:
             print(f"Collected {len(pin_values)} gpio samples (4 pins per sample)")
 
-        return pin_values, timestamps
+        return timestamps, pin_values
 
     def gpio_write(self, pin_values):
         """Set the state of the GPIO pins
