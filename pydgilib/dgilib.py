@@ -7,6 +7,7 @@ __version__ = "0.1"
 __revision__ = " $Id: dgilib.py 1586 2019-02-13 15:56:25Z EWouters $ "
 __docformat__ = "reStructuredText"
 
+# from os.path import pardir, join as os_join
 from ctypes import *
 
 from pydgilib.dgilib_config import *
@@ -38,6 +39,7 @@ class DGILib(
 
     def __init__(
         self,
+#         dgilib_path=os_join(pardir, "dgilib"),
         dgilib_path="dgilib",
         device_index=None,
         device_sn=None,

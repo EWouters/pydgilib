@@ -8,9 +8,11 @@ __revision__ = " $Id: dgilib_auxiliary.py 1586 2019-02-13 15:56:25Z EWouters $ "
 __docformat__ = "reStructuredText"
 
 from ctypes import *
+# from ctypes import byref, c_uint, c_int, c_float, c_double, c_size_t, c_ubyte
 
 from pydgilib.dgilib_config import *
 from pydgilib.dgilib_exceptions import *
+# from pydgilib.dgilib_exceptions import DeviceReturnError
 
 
 class DGILibAuxiliary(object):
