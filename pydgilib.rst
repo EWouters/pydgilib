@@ -20,6 +20,14 @@ pydgilib.dgilib\_auxiliary module
     :undoc-members:
     :show-inheritance:
 
+pydgilib.dgilib\_config module
+------------------------------
+
+.. automodule:: pydgilib.dgilib_config
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pydgilib.dgilib\_discovery module
 ---------------------------------
 
