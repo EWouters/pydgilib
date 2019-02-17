@@ -164,10 +164,7 @@ class DGILibLogger(object):
 
         # Merge data into self.data if LOGGER_OBJECT is enabled
         if LOGGER_OBJECT in self.loggers:
-            self.data = mergeData(self.data, data)
-            # for interface_id in self.enabled_interfaces:
-            #     self.data[interface_id][0].extend(data[interface_id][0])
-            #     self.data[interface_id][1].extend(data[interface_id][1])
+            self.data_add(data)
         
         # return the data
         return data
@@ -204,6 +201,15 @@ class DGILibLogger(object):
         # data = mergeData(data, self.logger_stop())
 
         return self.logger_stop()
+
+    def data_add(self, data):
+        """
+        """
+
+        assert(self.data.keys() == data.keys())  # TODO create error
+        for interface_id in data.keys():
+            for col in range(len(self.data[interface_id])):
+                self.data[interface_id][col].extend(data[interface_id][col])
     
 def mergeData(data1, data2):
     """Make class for data structure? Or at least make a method to merge that mutates the list instead of doing multiple copies
