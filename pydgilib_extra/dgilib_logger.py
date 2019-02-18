@@ -46,7 +46,7 @@ class DGILibLogger(object):
         self.log_folder = kwargs.get("log_folder", curdir)
 
         # Import matplotlib.pyplot as plt if LOGGER_PLOT in self.loggers and no figure has been specified
-        if LOGGER_PLOT in self.loggers and "file_name_base" not in kwargs:
+        if LOGGER_PLOT in self.loggers:
             import matplotlib.pyplot as plt
 
         # Enable the plot logger if figure has been specified.
@@ -136,6 +136,10 @@ class DGILibLogger(object):
             #     self.data[interface_id] = [[],[]]
             # if self.power_buffers:
             #     self.data[INTERFACE_POWER] = [[],[]]
+
+        # Create axes self.axes if LOGGER_PLOT is enabled
+        if LOGGER_PLOT in self.loggers:
+            print("TODO: Create axes, or what if they were parsed?")
                 
         self.start_polling()
         self.auxiliary_power_start()
@@ -165,6 +169,10 @@ class DGILibLogger(object):
         # Merge data into self.data if LOGGER_OBJECT is enabled
         if LOGGER_OBJECT in self.loggers:
             self.data_add(data)
+
+        # Update the plot if LOGGER_PLOT is enabled
+        if LOGGER_PLOT in self.loggers:
+            print("TODO: Update plot")
         
         # return the data
         return data
@@ -210,6 +218,22 @@ class DGILibLogger(object):
         for interface_id in data.keys():
             for col in range(len(self.data[interface_id])):
                 self.data[interface_id][col].extend(data[interface_id][col])
+
+    # def power_filter_by_pin(self, pin=0, data=None):
+    #     """
+
+    #     Filters the data to when a specified pin is high
+    #     """
+
+    #     if data is None:
+    #         data = self.data
+            
+    #     for all timestamps in gpio data:
+    #         find index of closest timestamp after in power data
+
+    #     power_data = [sample if is_pin_high(sample) for sample in data[INTERFACE_POWER]]
+
+    #     return power_data
     
 def mergeData(data1, data2):
     """Make class for data structure? Or at least make a method to merge that mutates the list instead of doing multiple copies
