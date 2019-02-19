@@ -7,7 +7,7 @@ __version__ = "0.1"
 __revision__ = " $Id: dgilib.py 1586 2019-02-13 15:56:25Z EWouters $ "
 __docformat__ = "reStructuredText"
 
-# from os.path import pardir, join as os_join
+from os import path, getcwd
 from ctypes import *
 
 from pydgilib.dgilib_config import *
@@ -39,7 +39,6 @@ class DGILib(
 
     def __init__(
         self,
-#         dgilib_path=os_join(pardir, "dgilib"),
         dgilib_path="dgilib",
         device_index=None,
         device_sn=None,
@@ -66,7 +65,7 @@ class DGILib(
             self.dgilib = cdll.LoadLibrary(dgilib_path)
         except OSError as e:
             raise DLLError(
-                f"dgilib.dll could not be found in the specicied path: {dgilib_path}."
+                f"dgilib.dll could not be found in the specicied path: {dgilib_path}. Specify the path to the .dll or put it in {getcwd()}. If you don't have it you can download it from https://www.microchip.com/mplab/avr-support/data-visualizer (download DGIlib dll, unzip the files and put the dll in your folder."
             )
 
         self.device_index = device_index
