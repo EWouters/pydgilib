@@ -229,21 +229,38 @@ class DGILibLogger(object):
             for col in range(len(self.data[interface_id])):
                 self.data[interface_id][col].extend(data[interface_id][col])
 
-    # def power_filter_by_pin(self, pin=0, data=None):
-    #     """
+    def power_filter_by_pin(self, pin=0, data=None):
+        """
 
-    #     Filters the data to when a specified pin is high
-    #     """
+        Filters the data to when a specified pin is high
+        """
 
-    #     if data is None:
-    #         data = self.data
-            
-    #     for all timestamps in gpio data:
-    #         find index of closest timestamp after in power data
+        if data is None:
+            data = self.data
 
-    #     power_data = [sample if is_pin_high(sample) for sample in data[INTERFACE_POWER]]
+        power_data = data[INTERFACE_POWER]
 
-    #     return power_data
+        pin_value = False
+
+        power_index = 0
+
+        if self.verbose:
+            print(f"power_filter_by_pin filtering  {len(power_data[0])} power samples.")
+        
+        for timestamp, pin_values in zip(*data[INTERFACE_GPIO]):
+            while (power_index < len(power_data[0]) and power_data[0][power_index] < timestamp):
+                power_data[1][power_index] *= pin_value
+                power_index += 1
+
+            if pin_values[pin] != pin_value:
+                if self.verbose:
+                    print(f"\tpin changed at {timestamp}, {pin_value}")
+                pin_value = pin_values[pin]
+
+        return power_data
+
+    # def pin_duty_cycle(self, pin=0, data=None):
+    #     pass
     
 def mergeData(data1, data2):
     """Make class for data structure? Or at least make a method to merge that mutates the list instead of doing multiple copies
