@@ -12,4 +12,4 @@ from pydgilib.dgilib import DGILib
 from pydgilib_extra.dgilib_extra_config import *
 from pydgilib_extra.dgilib_extra_exceptions import *
 from pydgilib_extra.dgilib_extra import DGILibExtra
-from pydgilib_extra.dgilib_logger import calculate_average, power_filter_by_pin
+from pydgilib_extra.dgilib_logger import calculate_average, power_filter_by_pin, logger_plot_data

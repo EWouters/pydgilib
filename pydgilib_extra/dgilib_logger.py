@@ -88,11 +88,7 @@ class DGILibLogger(object):
 
         # Should be removed and updated every time update_callback is called
         if LOGGER_PLOT in self.loggers:
-            plt.plot(*self.data[INTERFACE_POWER])
-            max_data = max(self.data[INTERFACE_POWER][1])
-            for pin in range(4):
-                plt.plot(self.data[INTERFACE_GPIO][0], [d[pin]*max_data for d in self.data[INTERFACE_GPIO][1]])
-            plt.show()
+            logger_plot_data(self.data)
 
         # Stop any running logging actions ??
 #         self.logger_stop()
@@ -150,7 +146,8 @@ class DGILibLogger(object):
 
         # Create axes self.axes if LOGGER_PLOT is enabled
         if LOGGER_PLOT in self.loggers:
-            print("TODO: Create axes, or what if they were parsed?")
+            pass
+            # print("TODO: Create axes, or what if they were parsed?")
                 
         self.start_polling()
         self.auxiliary_power_start()
@@ -183,7 +180,8 @@ class DGILibLogger(object):
 
         # Update the plot if LOGGER_PLOT is enabled
         if LOGGER_PLOT in self.loggers:
-            print("TODO: Update plot")
+            pass
+            # print("TODO: Update plot")
         
         # return the data
         return data
@@ -291,20 +289,34 @@ def power_filter_by_pin(pin, data, verbose=0):
     return power_data
 
 def calculate_average(power_data, start_time=None, end_time=None):
-        """Calculate average value of the power_data using the left Riemann sum"""
+    """Calculate average value of the power_data using the left Riemann sum"""
 
-        if start_time is None:
-            start_time = power_data[0][0]
+    if start_time is None:
+        start_time = power_data[0][0]
 
-        if end_time is None:
-            end_time = power_data[0][-1]
+    if end_time is None:
+        end_time = power_data[0][-1]
 
-        last_time = start_time
+    last_time = start_time
 
-        sum = 0
+    sum = 0
 
-        for timestamp, power_value in zip(*power_data):
-            sum += power_value * (timestamp - last_time)
-            last_time = timestamp
+    for timestamp, power_value in zip(*power_data):
+        sum += power_value * (timestamp - last_time)
+        last_time = timestamp
 
-        return sum / (end_time - start_time)
+    return sum / (end_time - start_time)
+
+# Should be removed and updated every time update_callback is called
+def logger_plot_data(data):
+    plt.gcf().set_size_inches(8, 6, forward=True)
+    plt.plot(*data[INTERFACE_POWER])
+    max_data = max(data[INTERFACE_POWER][1])
+    for pin in range(4):
+        plt.plot(data[INTERFACE_GPIO][0], [d[pin]*max_data for d in data[INTERFACE_GPIO][1]])
+    plt.xlabel('Time')
+    plt.ylabel('Current')
+    plt.suptitle("Logged Data")
+    plt.title(f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4} mA, with pin 2 high: {calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA, with pin 3 high: {calculate_average(power_filter_by_pin(3, data))*1e3:.4}")
+    plt.show()
+    logger_plot_data(data)
