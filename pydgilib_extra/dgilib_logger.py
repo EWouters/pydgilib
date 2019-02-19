@@ -59,7 +59,7 @@ class DGILibLogger(object):
 
         # Set self.figure if LOGGER_PLOT enabled.
         if LOGGER_PLOT in self.loggers:
-            self.figure = kwargs.get("figure", plt.figure())
+            self.figure = kwargs.get("figure", plt.figure(figsize=(8, 6)))
 
         # Enable the object logger if data_in_obj exists and is True.
         if LOGGER_OBJECT not in self.loggers and kwargs.get("data_in_obj", False):
@@ -138,11 +138,7 @@ class DGILibLogger(object):
         # Create data structure self.data if LOGGER_OBJECT is enabled
         if LOGGER_OBJECT in self.loggers:
             for interface_id in self.enabled_interfaces + [INTERFACE_POWER] * bool(self.power_buffers):
-                self.data[interface_id] = [[],[]]
-            # for interface_id in self.enabled_interfaces:
-            #     self.data[interface_id] = [[],[]]
-            # if self.power_buffers:
-            #     self.data[INTERFACE_POWER] = [[],[]]
+                self.data[interface_id] = [[], []]
 
         # Create axes self.axes if LOGGER_PLOT is enabled
         if LOGGER_PLOT in self.loggers:
@@ -309,7 +305,7 @@ def calculate_average(power_data, start_time=None, end_time=None):
 
 # Should be removed and updated every time update_callback is called
 def logger_plot_data(data):
-    plt.gcf().set_size_inches(8, 6, forward=True)
+    # plt.gcf().set_size_inches(8, 6, forward=True)
     plt.plot(*data[INTERFACE_POWER])
     max_data = max(data[INTERFACE_POWER][1])
     for pin in range(4):
@@ -319,4 +315,3 @@ def logger_plot_data(data):
     plt.suptitle("Logged Data")
     plt.title(f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4} mA, with pin 2 high: {calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA, with pin 3 high: {calculate_average(power_filter_by_pin(3, data))*1e3:.4}")
     plt.show()
-    logger_plot_data(data)
