@@ -11,6 +11,9 @@ from time import sleep
 import csv
 from os import curdir, path
 
+# Todo, remove dependency
+import matplotlib.pyplot as plt
+
 from pydgilib_extra.dgilib_extra_config import *
 
 
@@ -82,7 +85,14 @@ class DGILibLogger(object):
         """
         """
 
-        pass
+        # Should be removed and updated every time update_callback is called
+        if LOGGER_PLOT in self.loggers:
+            plt.plot(*self.data[INTERFACE_POWER])
+            max_data = max(self.data[INTERFACE_POWER][1])
+            for pin in range(4):
+                plt.plot(self.data[INTERFACE_GPIO][0], [d[pin]*max_data for d in self.data[INTERFACE_GPIO][1]])
+            plt.show()
+
         # Stop any running logging actions ??
 #         self.logger_stop()
 
