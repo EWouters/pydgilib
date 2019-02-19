@@ -104,3 +104,6 @@ class TestPyDGILib(object):
         assert(data[INTERFACE_POWER][1] == data_obj[INTERFACE_POWER][1])
         assert(data[INTERFACE_GPIO][0] == data_obj[INTERFACE_GPIO][0])
         assert(data[INTERFACE_GPIO][1] == data_obj[INTERFACE_GPIO][1])
+
+    def test_calculate_average(self):
+        assert(calculate_average([[0,2],[500,2]]) == 2)

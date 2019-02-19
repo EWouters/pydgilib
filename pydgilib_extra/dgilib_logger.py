@@ -10,6 +10,7 @@ __docformat__ = "reStructuredText"
 from time import sleep
 import csv
 from os import curdir, path
+import copy
 
 # Todo, remove dependency
 import matplotlib.pyplot as plt
@@ -237,27 +238,16 @@ class DGILibLogger(object):
 
         if data is None:
             data = self.data
-
-        power_data = data[INTERFACE_POWER]
-
-        pin_value = False
-
-        power_index = 0
-
-        if self.verbose:
-            print(f"power_filter_by_pin filtering  {len(power_data[0])} power samples.")
         
-        for timestamp, pin_values in zip(*data[INTERFACE_GPIO]):
-            while (power_index < len(power_data[0]) and power_data[0][power_index] < timestamp):
-                power_data[1][power_index] *= pin_value
-                power_index += 1
+        return power_filter_by_pin(pin, data, self.verbose)
 
-            if pin_values[pin] != pin_value:
-                if self.verbose:
-                    print(f"\tpin changed at {timestamp}, {pin_value}")
-                pin_value = pin_values[pin]
+    def calculate_average(self, power_data=None, start_time=None, end_time=None):
+        """Calculate average value of the power_data using the left Riemann sum"""
 
-        return power_data
+        if power_data is None:
+            power_data = self.data[INTERFACE_POWER]
+
+        return calculate_average(power_data, start_time, end_time)
 
     # def pin_duty_cycle(self, pin=0, data=None):
     #     pass
@@ -271,3 +261,50 @@ def mergeData(data1, data2):
         for col in range(len(data1[interface_id])):
             data1[interface_id][col].extend(data2[interface_id][col])
     return data1
+
+
+def power_filter_by_pin(pin, data, verbose=0):
+    """
+
+    Filters the data to when a specified pin is high
+    """
+
+    power_data = copy.deepcopy(data[INTERFACE_POWER])
+
+    pin_value = False
+
+    power_index = 0
+
+    if verbose:
+        print(f"power_filter_by_pin filtering  {len(power_data[0])} power samples.")
+    
+    for timestamp, pin_values in zip(*data[INTERFACE_GPIO]):
+        while (power_index < len(power_data[0]) and power_data[0][power_index] < timestamp):
+            power_data[1][power_index] *= pin_value
+            power_index += 1
+
+        if pin_values[pin] != pin_value:
+            if verbose:
+                print(f"\tpin {pin} changed at {timestamp}, {pin_value}")
+            pin_value = pin_values[pin]
+
+    return power_data
+
+def calculate_average(power_data, start_time=None, end_time=None):
+        """Calculate average value of the power_data using the left Riemann sum"""
+
+        if start_time is None:
+            start_time = power_data[0][0]
+
+        if end_time is None:
+            end_time = power_data[0][-1]
+
+        last_time = start_time
+
+        sum = 0
+
+        for timestamp, power_value in zip(*power_data):
+            sum += power_value * (timestamp - last_time)
+            last_time = timestamp
+
+        return sum / (end_time - start_time)
