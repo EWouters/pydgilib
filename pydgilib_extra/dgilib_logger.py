@@ -16,6 +16,7 @@ import copy
 import matplotlib.pyplot as plt
 
 from pydgilib_extra.dgilib_extra_config import *
+from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
 
 
 class DGILibLogger(object):
@@ -96,6 +97,7 @@ class DGILibLogger(object):
 
         # Should be removed and updated every time update_callback is called
         if LOGGER_PLOT in self.loggers:
+            gpio_augment_edges(self.data[INTERFACE_GPIO])
             self.fig = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
             # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)
 
@@ -166,27 +168,30 @@ class DGILibLogger(object):
         if self.power_buffers:
             data[INTERFACE_POWER] = self.power_read_buffer(self.power_buffers[0])
 
-        # Write to registered loggers TODO PLOT
-        if LOGGER_CSV in self.loggers:
-            if INTERFACE_GPIO in self.enabled_interfaces:
-                # self.csv_writers[INTERFACE_GPIO].writerows(zip(*data[INTERFACE_GPIO]))
-                self.csv_writers[INTERFACE_GPIO].writerows(
-                    [
-                        (timestamps, *pin_values)
-                        for timestamps, pin_values in zip(*data[INTERFACE_GPIO])
-                    ]
-                )
-            if self.power_buffers:
-                self.csv_writers[INTERFACE_POWER].writerows(zip(*data[INTERFACE_POWER]))
+        if data[INTERFACE_GPIO] or data[INTERFACE_POWER]:
+            # Write to registered loggers TODO PLOT
+            if LOGGER_CSV in self.loggers:
+                if INTERFACE_GPIO in self.enabled_interfaces:
+                    # self.csv_writers[INTERFACE_GPIO].writerows(zip(*data[INTERFACE_GPIO]))
+                    self.csv_writers[INTERFACE_GPIO].writerows(
+                        [
+                            (timestamps, *pin_values)
+                            for timestamps, pin_values in zip(*data[INTERFACE_GPIO])
+                        ]
+                    )
+                if self.power_buffers:
+                    self.csv_writers[INTERFACE_POWER].writerows(zip(*data[INTERFACE_POWER]))
 
-        # Merge data into self.data if LOGGER_OBJECT is enabled
-        if LOGGER_OBJECT in self.loggers:
-            self.data_add(data)
+            # Merge data into self.data if LOGGER_OBJECT is enabled
+            if LOGGER_OBJECT in self.loggers:
+                self.data_add(data)
 
-        # Update the plot if LOGGER_PLOT is enabled
-        if LOGGER_PLOT in self.loggers:
-            pass
-            # print("TODO: Update plot")
+            # Update the plot if LOGGER_PLOT is enabled
+            if LOGGER_PLOT in self.loggers:
+                pass
+                # print("TODO: Update plot")
+        elif self.verbose:
+            print("update_callback: No new data")
         
         # return the data
         return data
@@ -220,7 +225,7 @@ class DGILibLogger(object):
         sleep(duration)
         # data = self.update_callback()
         # data = mergeData(data, self.update_callback())
-        # data = mergeData(data, self.logger_stop())
+        data = mergeData(data, self.logger_stop())
 
         return self.logger_stop()
 
@@ -255,6 +260,7 @@ class DGILibLogger(object):
     # def pin_duty_cycle(self, pin=0, data=None):
     #     pass
     
+
 def mergeData(data1, data2):
     """Make class for data structure? Or at least make a method to merge that mutates the list instead of doing multiple copies
     """
@@ -322,7 +328,11 @@ def logger_plot_data(data, plot_pins=True, fig=None, ax=None):
         ax = fig.add_subplot(1, 1, 1)
     # plt.gcf().set_size_inches(8, 6, forward=True)
     ax.plot(*data[INTERFACE_POWER])
-    max_data = max(data[INTERFACE_POWER][1])
+    if data[INTERFACE_POWER][1]:
+        max_data = max(*data[INTERFACE_POWER][1])
+    else:
+        print("NO DATA ???")
+        return
     if plot_pins:
         for pin in range(4):
             ax.plot(data[INTERFACE_GPIO][0], [d[pin]*max_data for d in data[INTERFACE_GPIO][1]])

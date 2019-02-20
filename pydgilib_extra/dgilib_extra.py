@@ -7,6 +7,8 @@ __version__ = "0.1"
 __revision__ = " $Id: dgilib_extra.py 1586 2019-02-13 15:56:25Z EWouters $ "
 __docformat__ = "reStructuredText"
 
+from time import sleep
+
 from pydgilib.dgilib import DGILib
 
 from pydgilib_extra.dgilib_extra_config import *
@@ -51,9 +53,8 @@ class DGILibExtra(DGILib, DGILibInterfaceGPIO, DGILibInterfacePower, DGILibLogge
     def __exit__(self, exc_type, exc_value, traceback):
 
         DGILibLogger.__exit__(self, exc_type, exc_value, traceback)
-        # DGILibInterfaceGPIO.__exit__(self, exc_type, exc_value, traceback)
-        
-        DGILibInterfacePower.__exit__(self, exc_type, exc_value, traceback)
+        DGILibInterfaceGPIO.__exit__(self, exc_type, exc_value, traceback)
+        # DGILibInterfacePower.__exit__(self, exc_type, exc_value, traceback)
 
         for interface in self.enabled_interfaces:
             self.interface_disable(interface)
@@ -88,9 +89,9 @@ class DGILibExtra(DGILib, DGILibInterfaceGPIO, DGILibInterfacePower, DGILibLogge
         """Set the device reset line for duration seconds.
         """
 
-        dgilib.target_reset(True)
+        self.target_reset(True)
         sleep(duration)
-        dgilib.target_reset(False)
+        self.target_reset(False)
 
     def get_time_factor(self):
         """Get the factor to multiply timestamps by to get seconds.

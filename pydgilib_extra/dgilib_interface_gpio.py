@@ -184,3 +184,34 @@ class DGILibInterfaceGPIO(object):
         
         if self.verbose >= 2:
             print(f"Sent gpio packet")
+
+
+
+def gpio_augment_edges(samples, switch_time=0):
+    """GPIO Augment Edges
+
+    Augments the edges of the GPIO data by inserting an extra sample of the 
+    previous pin_value at moment before a switch occurs (minus switch_time)
+
+    Switch time is measured to be around 0.3 ms.
+
+    :param samples: Tuple of samples of GPIO data.
+    :type samples: tuple(list(int), list(list(bool)))
+    :param switch_time: Switch time of GPIO pin.
+    :type samples: tuple(list(int), list(list(bool)))
+    :return: Tuple of samples of GPIO data.
+    :rtype: tuple(list(int), list(list(bool)))
+    """
+    
+    pin_states = [False] * 4
+
+    # iterate over the list and insert items at the same time:
+    i = 0
+    while i < len(samples[0]):
+        if samples[1][i] != pin_states:
+            samples[0].insert(i, samples[0][i] - switch_time)
+            samples[1].insert(i, pin_states)
+            i += 1
+            pin_states = samples[1][i]
+        i += 1
+    return samples

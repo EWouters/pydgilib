@@ -107,3 +107,17 @@ class TestPyDGILib(object):
 
     def test_calculate_average(self):
         assert(calculate_average([[0,2],[500,2]]) == 2)
+
+    def test_gpio_augment_edges(self):
+        config_dict = {
+            "dgilib_path": dgilib_path,
+            "power_buffers": [{"channel": CHANNEL_A, "power_type": POWER_CURRENT}],
+            "read_mode": [True, True, True, True],
+            "write_mode": [False, False, False, False],
+            "loggers": [LOGGER_CSV, LOGGER_OBJECT],
+            "verbose": 0,
+        }
+
+        with DGILibExtra(**config_dict) as dgilib:
+            dgilib.logger(1)
+            gpio_augment_edges(dgilib.data[INTERFACE_GPIO])
