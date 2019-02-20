@@ -54,12 +54,20 @@ class DGILibLogger(object):
             import matplotlib.pyplot as plt
 
         # Enable the plot logger if figure has been specified.
-        if LOGGER_PLOT not in self.loggers and ("figure" in kwargs):
+        if LOGGER_PLOT not in self.loggers and ("fig" in kwargs or "ax" in kwargs):
             self.loggers.append(LOGGER_PLOT)
 
         # Set self.figure if LOGGER_PLOT enabled.
         if LOGGER_PLOT in self.loggers:
-            self.figure = kwargs.get("figure", plt.figure(figsize=(8, 6)))
+            # if "fig" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra figure from being created
+            self.fig = kwargs.get("fig")
+            if self.fig is None:
+                self.fig = plt.figure(figsize=(8, 6))
+            # if "ax" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra axis from being created
+            self.ax = kwargs.get("ax")
+            if self.ax is None:
+                self.ax = self.fig.add_subplot(1, 1, 1)
+            self.plot_pins = kwargs.get("plot_pins", True)
 
         # Enable the object logger if data_in_obj exists and is True.
         if LOGGER_OBJECT not in self.loggers and kwargs.get("data_in_obj", False):
@@ -88,7 +96,8 @@ class DGILibLogger(object):
 
         # Should be removed and updated every time update_callback is called
         if LOGGER_PLOT in self.loggers:
-            logger_plot_data(self.data)
+            self.fig = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
+            # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)
 
         # Stop any running logging actions ??
 #         self.logger_stop()
@@ -304,14 +313,23 @@ def calculate_average(power_data, start_time=None, end_time=None):
     return sum / (end_time - start_time)
 
 # Should be removed and updated every time update_callback is called
-def logger_plot_data(data):
+def logger_plot_data(data, plot_pins=True, fig=None, ax=None):
+    if ax is None:
+        if fig is None:
+            fig = plt.figure(figsize=(8, 6))
+        else:
+            fig.clf()
+        ax = fig.add_subplot(1, 1, 1)
     # plt.gcf().set_size_inches(8, 6, forward=True)
-    plt.plot(*data[INTERFACE_POWER])
+    ax.plot(*data[INTERFACE_POWER])
     max_data = max(data[INTERFACE_POWER][1])
-    for pin in range(4):
-        plt.plot(data[INTERFACE_GPIO][0], [d[pin]*max_data for d in data[INTERFACE_GPIO][1]])
-    plt.xlabel('Time')
-    plt.ylabel('Current')
-    plt.suptitle("Logged Data")
-    plt.title(f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4} mA, with pin 2 high: {calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA, with pin 3 high: {calculate_average(power_filter_by_pin(3, data))*1e3:.4}")
-    plt.show()
+    if plot_pins:
+        for pin in range(4):
+            ax.plot(data[INTERFACE_GPIO][0], [d[pin]*max_data for d in data[INTERFACE_GPIO][1]])
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Current')
+    ax.set_title(f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4} mA, with pin 2 high: {calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA, with pin 3 high: {calculate_average(power_filter_by_pin(3, data))*1e3:.4}")
+    fig.suptitle("Logged Data")
+    fig.show()
+    
+    # return fig, ax
