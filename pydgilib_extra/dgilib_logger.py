@@ -97,7 +97,7 @@ class DGILibLogger(object):
 
         # Should be removed and updated every time update_callback is called
         if LOGGER_PLOT in self.loggers:
-            gpio_augment_edges(self.data[INTERFACE_GPIO])
+            # gpio_augment_edges(self.data[INTERFACE_GPIO])
             self.fig = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
             # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)
 
@@ -225,7 +225,7 @@ class DGILibLogger(object):
         sleep(duration)
         # data = self.update_callback()
         # data = mergeData(data, self.update_callback())
-        data = mergeData(data, self.logger_stop())
+        # data = mergeData(data, self.logger_stop())
 
         return self.logger_stop()
 

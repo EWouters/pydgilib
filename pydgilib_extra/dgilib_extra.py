@@ -54,7 +54,7 @@ class DGILibExtra(DGILib, DGILibInterfaceGPIO, DGILibInterfacePower, DGILibLogge
 
         DGILibLogger.__exit__(self, exc_type, exc_value, traceback)
         DGILibInterfaceGPIO.__exit__(self, exc_type, exc_value, traceback)
-        # DGILibInterfacePower.__exit__(self, exc_type, exc_value, traceback)
+        DGILibInterfacePower.__exit__(self, exc_type, exc_value, traceback)
 
         for interface in self.enabled_interfaces:
             self.interface_disable(interface)
