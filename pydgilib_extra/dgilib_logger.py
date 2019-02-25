@@ -225,7 +225,7 @@ class DGILibLogger(object):
         sleep(duration)
         # data = self.update_callback()
         # data = mergeData(data, self.update_callback())
-        data = mergeData(data, self.logger_stop())
+        # data = mergeData(data, self.logger_stop())
 
         return self.logger_stop()
 
