@@ -1,12 +1,3 @@
-"""This module provides Python bindings for DGILibExtra Logger."""
-
-__author__ = "Erik Wouters <ehwo(at)kth.se>"
-__credits__ = "Atmel Corporation. / Rev.: Atmel-42771A-DGILib_User Guide-09/2016"
-__license__ = "MIT"
-__version__ = "0.1"
-__revision__ = " $Id: dgilib_logger.py 1586 2019-02-13 15:56:25Z EWouters $ "
-__docformat__ = "reStructuredText"
-
 from time import sleep
 import csv
 
@@ -15,12 +6,14 @@ from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
 
 import matplotlib.pyplot as plt; plt.ion()
 
-class DGILibLogger(object):
+from matplotlib.widgets import Slider, Button
 
-	def __init__(self, *args, **kwargs):
+class DGILibPlot(object):
 
-		# Maybe the user wants to put the power figure along with other figures he wants
-		# if "fig" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra figure from being created
+    def __init__(self, *args, **kwargs):
+
+        # Maybe the user wants to put the power figure along with other figures he wants
+        # if "fig" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra figure from being created
         self.fig = kwargs.get("fig")
         if self.fig is None:
             self.fig = plt.figure(figsize=(8, 6))
@@ -30,6 +23,14 @@ class DGILibLogger(object):
             self.ax = self.fig.add_subplot(1, 1, 1)
             self.ax.set_xlabel('Time (s)')
             self.ax.set_ylabel('Current (A)')
+
+        # We need the Line2D object as well, to update it
+        if (len(self.ax.lines) == 0):
+            self.ln, = self.ax.plot([], [], 'r-')
+        else:
+            self.ln = self.ax.lines[0]
+            ln.set_xdata([])
+            ln.set_ydata([])
 
         # Initialize xmax, ymax of plot initially
         if "plot_xmax" not in kwargs:
@@ -49,8 +50,29 @@ class DGILibLogger(object):
         self.plot_pins = kwargs.get("plot_pins", True)
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
-        self.pins_correction_forward = kwargs.get("pins_correction_forward", True)
-        self.pins_interval_shrink = kwargs.get("pins_interval_shrink", True)
+        if "pins_correction_forward" not in kwargs:
+            self.pins_correction_forward = 0.00075
+        else:
+            self.pins_correction_forward = kwargs.get("pins_correction_forward", True)
+
+        if "pins_interval_shrink" not in kwargs:
+            self.pins_interval_shrink = 0.0010
+        else:
+            self.pins_interval_shrink = kwargs.get("pins_interval_shrink", True)
+
+        if "plot_interactivity_pause" not in kwargs:
+            self.plot_interactivity_pause = 0.5
+        else:
+            self.plot_interactivity_pause = kwargs.get("plot_interactivity_pause", True)
+
+        # Hardwiring these values to 0
+        self.plot_xmin = 0
+        self.plot_ymin = 0
+
+        # We absolutely need these values from the user (or from the superior class), hence no default values
+        # TODO: Are they really needed though?
+        self.division = kwargs.get("division", True)
+        self.duration = kwargs.get("duration", True)
 
         # We'll have some sliders to zoom in and out of the plot, as well as a cursor to move around when zoomed in
         # Leave space for sliders at the bottom
@@ -58,10 +80,109 @@ class DGILibLogger(object):
         # Show grid
         plt.grid()
 
-    
+        # Slider color
+        self.axcolor = 'lightgoldenrodyellow'
+        # Title format
+        # Should use this https://matplotlib.org/gallery/recipes/placing_text_boxes.html
+        self.title_avg = "Total avg curr: %1"
+        self.title_vis = "Visible avg curr: %1"
+        self.title_pin = "Avg curr in %1: %2" # "calculate_average(data[INTERFACE_POWER])*1e3:.4} mA"
+        self.title_time = "Time spent in %1: %2"
+        self.ax.set_title("Waiting for data...")
 
+        # Hold times for pins list, we're going to collect them
+        self.hold_times = []
+        self.hold_times_sum = 0.00
 
-def calculate_average(power_data, start_time=None, end_time=None):
+        self.colors = ["red","orange","blue","green"]
+
+        self.initialize_sliders()
+
+    def initialize_sliders(self):
+        self.axpos = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=self.axcolor)
+        self.axwidth = plt.axes([0.25, 0.15, 0.65, 0.03], facecolor=self.axcolor)
+        self.resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
+
+        self.spos = Slider(self.axpos, 'x (s)', 0, min(0, self.duration-self.plot_xmax), valinit=0, valstep=0.5)
+        self.swidth = Slider(self.axwidth, 'xmax', 0, self.duration, valinit=0, valstep=0.5)
+        
+        self.resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
+        self.resetbtn = Button(self.resetax, 'Reset', color=self.axcolor, hovercolor='0.975')
+
+        # I'm not sure how to detach these without them forgetting their parents (sliders)
+        def update(val):
+            pos = self.spos.val
+            width = self.swidth.val
+
+            if pos > (self.duration - width):
+                pos = self.duration - width
+
+            self.apos.clear()
+            self.spos.__init__(apos, 'Position', 0, self.duration - width, valinit=pos, valstep=0.5)
+            self.spos.on_changed(update)
+
+            self.axes.axis([pos, pos+width, self.xmin, self.xmax])
+
+            # TODO: Update
+            #visible_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, i, i+width) * 1000
+            #all_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, min(xdata), max(xdata)) * 1000
+
+            #self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
+
+            fig.canvas.draw_idle()
+
+        self.spos.on_changed(update)
+        self.swidth.on_changed(update)
+
+        def reset(event):
+            self.swidth.reset()
+            self.spos.__init__(self.apos, 'Position', 0, self.duration - self.xmax, valinit=0, valstep=0.5)
+            self.spos.on_changed(update)
+            self.spos.reset()
+
+            # TODO: Update parameters
+            #visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
+            #all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
+
+            #self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
+            
+        self.resetbtn.on_clicked(reset)
+
+    def update_plot(self, data):
+        if not plt.fignum_exists(fig.number): 
+            plt.show()
+        else:
+            plt.draw()
+            plt.pause(self.plot_interactivity_pause)
+
+        # I presume I already have this
+        # for j in range(len(data[INTERFACE_POWER][0]))[1:]:
+        #     xdata.append(i + data[INTERFACE_POWER][0][j])
+        #     ydata.append(data[INTERFACE_POWER][1][j])
+
+        # for pin_idx in range(len(self.plot_pins):
+
+        #     if self.plot_pins[pin_idx] == True:
+            
+        #         for hold_times in identify_hold_times(data, self.plot_pins[pin_idx], pin_idx, correction_forward = self.pins_correction_forward, shrink = self.pins_interval_shrink):
+            
+        #             axes.axvspan(hold_times[0], hold_times[1], color=self.pins_colors[pin_idx], alpha=0.5)
+
+        #             self.hold_times.append((hold_times[0], hold_times[1]))
+        #             self.hold_times_sum += hold_times[1] - hold_times[0]
+
+        self.ln.set_xdata(xdata)
+        self.ln.set_ydata(ydata)
+
+        # if spos.val == i - width:
+        #     axes.axis([i,i+width,plot_min,plot_max])
+        #     spos.set_val(i)
+
+        # visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
+        # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
+        plt.pause(PAUSE_DURATION)
+
+def calculate_average_leftpoint_single_interval(power_data, start_time=None, end_time=None):
     """Calculate average value of the power_data using the left Riemann sum"""
 
     if start_time is None:
@@ -79,58 +200,6 @@ def calculate_average(power_data, start_time=None, end_time=None):
         last_time = timestamp
 
     return sum / (end_time - start_time)
-
-global_ln = None
-
-# Should be removed and updated every time update_callback is called
-def logger_plot_data(data, plot_pins="hold", fig=None, ax=None, listen_to = [False,False,True,False], listen_for = [False,False,False,False], pins_correction_forward=0.00, pins_interval_shrink=0.00):
-    global global_ln
-
-    if ax is None:
-        if fig is None:
-            fig = plt.figure(figsize=(8, 6))
-        else:
-            fig.clf()
-        ax = fig.add_subplot(1, 1, 1)
-    # plt.gcf().set_size_inches(8, 6, forward=True)
-
-    ln = None
-    if (len(ax.lines) == 0):
-        ln, = ax.plot(*data[INTERFACE_POWER], 'r-')
-        global_ln = ln
-    else:
-        ln = ax.lines[0]
-        ln.set_xdata(data[INTERFACE_POWER][0])
-        ln.set_ydata(data[INTERFACE_POWER][1])
-
-    if data[INTERFACE_POWER][1]:
-        max_data = max(*data[INTERFACE_POWER][1])
-    else:
-        ax.set_title("Waiting for data...")
-        return
-
-    # Plotting the pins as 
-    if plot_pins == "hold":
-        colors = ["black", "brown", "blue", "green"]
-        for pin in range(4):
-            if not listen_for[pin]: continue
-
-            for hold_times in identify_hold_times(data, listen_to[pin], pin, correction_forward = pins_correction_forward, shrink = pins_interval_shrink):
-                axes.axvspan(i+hold_times[0], i+hold_times[1], color=colors[pin], alpha=0.5)
-
-                all_hold_times.append((i+hold_times[0], i+hold_times[1]))
-                all_hold_times_sum += hold_times[1] - hold_times[0]
-
-    ax.set_title(f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4} mA, \nwith pin 2 high: {calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA,\n with pin 3 high: {calculate_average(power_filter_by_pin(3, data))*1e3:.4} mA")
-    #fig.suptitle("Logged Data")
-
-    if not plt.fignum_exists(fig.number):
-        plt.show()
-    else:
-        plt.draw()
-        plt.pause(0.5)
-    
-    # return fig, ax
 
 def identify_hold_times(whole_data, true_false, pin, correction_forward = 0.00, shrink = 0.00):
     data = whole_data[INTERFACE_GPIO]

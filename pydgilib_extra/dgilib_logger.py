@@ -14,6 +14,7 @@ import copy
 
 from pydgilib_extra.dgilib_extra_config import *
 from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
+from pydgilib_extra.dgilib_plot import *
 
 import matplotlib.pyplot as plt; plt.ion()
 
@@ -47,14 +48,6 @@ class DGILibLogger(object):
         # log_folder - where log files will be saved
         self.file_name_base = kwargs.get("file_name_base", "log")
         self.log_folder = kwargs.get("log_folder", curdir)
-
-        # Import matplotlib.pyplot as plt if LOGGER_PLOT in self.loggers and no figure has been specified
-        if LOGGER_PLOT in self.loggers:
-            # import matplotlib.pyplot as plt
-            # Matplotlib interactivity on: So the plot itself does not freeze the terminal and program until it gets quit
-            # plt.ion() 
-
-            # TODO: Initialize plot here
             
         # Plot wants to use self.data later and there's no self.data without LOGGER_OBJECT
         if LOGGER_OBJECT not in self.loggers and (LOGGER_PLOT in self.loggers):
@@ -69,6 +62,14 @@ class DGILibLogger(object):
             self.loggers.append(LOGGER_OBJECT)
         if LOGGER_OBJECT in self.loggers:
             self.data = {}
+
+        # Import matplotlib.pyplot as plt if LOGGER_PLOT in self.loggers and no figure has been specified
+        if LOGGER_PLOT in self.loggers:
+            # import matplotlib.pyplot as plt
+            # Matplotlib interactivity on: So the plot itself does not freeze the terminal and program until it gets quit
+            # plt.ion() 
+
+            self.plotobj = DGILibPlot(**kwargs)
 
 #         update_callback?
 #         output = csv.writer(open('export_log.csv', 'w'))
