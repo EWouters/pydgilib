@@ -11,7 +11,6 @@ from matplotlib.widgets import Slider, Button
 class DGILibPlot(object):
 
     def __init__(self, *args, **kwargs):
-
         # Maybe the user wants to put the power figure along with other figures he wants
         # if "fig" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra figure from being created
         self.fig = kwargs.get("fig")
@@ -29,42 +28,39 @@ class DGILibPlot(object):
             self.ln, = self.ax.plot([], [], 'r-')
         else:
             self.ln = self.ax.lines[0]
-            ln.set_xdata([])
-            ln.set_ydata([])
+            self.ln.set_xdata([])
+            self.ln.set_ydata([])
 
         # Initialize xmax, ymax of plot initially
-        if "plot_xmax" not in kwargs:
+        self.plot_xmax = kwargs.get("plot_xmax", True)
+        if "plot_xmax" is None:
             self.plot_xmax = -1 # Auto TODO: To be implemented
             self.ax.set_xlim(0, 5)
         else:
             self.plot_xmax = kwargs.get("plot_xmax", True)
-            self.ax.set_xlim(0, self.plot_xmax)
 
-        if "plot_ymax" not in kwargs:
+        self.plot_ymax = kwargs.get("plot_ymax", True)
+        if "plot_ymax" is None:
             self.plot_ymax = -1 # Auto TODO: To be implemented
             self.ax.set_ylim(0, 0.035)
         else:
-            self.plot_ymax = kwargs.get("plot_ymax", True)
             self.ax.set_ylim(0, self.plot_ymax)
 
         self.plot_pins = kwargs.get("plot_pins", True)
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
-        if "pins_correction_forward" not in kwargs:
+        self.pins_correction_forward = kwargs.get("pins_correction_forward", True)
+        if "pins_correction_forward" is None:
             self.pins_correction_forward = 0.00075
-        else:
-            self.pins_correction_forward = kwargs.get("pins_correction_forward", True)
+            
+        self.pins_interval_shrink = kwargs.get("pins_interval_shrink", True)
+        if "pins_interval_shrink" is None:
+            self.pins_interval_shrink = 0.0010            
 
-        if "pins_interval_shrink" not in kwargs:
-            self.pins_interval_shrink = 0.0010
-        else:
-            self.pins_interval_shrink = kwargs.get("pins_interval_shrink", True)
-
-        if "plot_interactivity_pause" not in kwargs:
+        self.plot_interactivity_pause = kwargs.get("plot_interactivity_pause", True)
+        if "plot_interactivity_pause" is None:
             self.plot_interactivity_pause = 0.5
-        else:
-            self.plot_interactivity_pause = kwargs.get("plot_interactivity_pause", True)
-
+        
         # Hardwiring these values to 0
         self.plot_xmin = 0
         self.plot_ymin = 0
@@ -99,7 +95,7 @@ class DGILibPlot(object):
 
         self.colors = ["red","orange","blue","green"]
 
-        self.initialize_sliders()
+        #self.initialize_sliders()
 
     def initialize_sliders(self):
         self.axpos = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=self.axcolor)
@@ -132,7 +128,7 @@ class DGILibPlot(object):
 
             #self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
 
-            fig.canvas.draw_idle()
+            self.fig.canvas.draw_idle()
 
         self.spos.on_changed(update)
         self.swidth.on_changed(update)
@@ -152,12 +148,21 @@ class DGILibPlot(object):
         self.resetbtn.on_clicked(reset)
 
     def update_plot(self, data):
-        print("Hello plot!")
-        if not plt.fignum_exists(self.fig.number): 
-            plt.show()
-        else:
-            plt.draw()
-            plt.pause(self.plot_interactivity_pause)
+        print ("Data: " + str(data))
+
+        for key in data:
+            if len(data[key][0]) == 0:
+                print ("No data")
+                return
+
+        if INTERFACE_POWER not in data: return
+        if INTERFACE_GPIO not in data: return
+
+        # if not plt.fignum_exists(self.fig.number): 
+        #     plt.show()
+        # else:
+        # plt.draw()
+        plt.pause(self.plot_interactivity_pause)
 
         # I presume I already have this
         # for j in range(len(data[INTERFACE_POWER][0]))[1:]:

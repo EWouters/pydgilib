@@ -22,15 +22,15 @@ from pydgilib_extra.dgilib_plot import *
 
 class DGILibLogger(object):
     """Python bindings for DGILib Logger.
-    
-        interfaces
-            - GPIO mode
-            - Power mode
+
+    Interfaces:
+        - GPIO mode
+        - Power mode
     """
 
     def __init__(self, *args, **kwargs):
         """
-        
+
         All kwargs will also be passed to 
         """
 
@@ -42,7 +42,7 @@ class DGILibLogger(object):
             "file_name_base" in kwargs or "log_folder" in kwargs
         ):
             self.loggers.append(LOGGER_CSV)
-        
+
         if LOGGER_CSV in self.loggers:
             self.file_handles = {}
             self.csv_writers = {}
@@ -60,16 +60,17 @@ class DGILibLogger(object):
             self.loggers.append(LOGGER_PLOT)
 
         # Set self.figure if LOGGER_PLOT enabled.
-        if LOGGER_PLOT in self.loggers:
-            # if "fig" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra figure from being created
-            self.fig = kwargs.get("fig")
-            if self.fig is None:
-                self.fig = plt.figure(figsize=(8, 6))
-            # if "ax" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra axis from being created
-            self.ax = kwargs.get("ax")
-            if self.ax is None:
-                self.ax = self.fig.add_subplot(1, 1, 1)
-            self.plot_pins = kwargs.get("plot_pins", True)
+        # if LOGGER_PLOT in self.loggers:
+        #     # if "fig" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra figure from being created
+        #     self.fig = kwargs.get("fig")
+        #     if self.fig is None:
+        #         self.fig = plt.figure(figsize=(8, 6))
+        #     # if "ax" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra axis from being created
+        #     self.ax = kwargs.get("ax")
+        #     if self.ax is None:
+        #         self.ax = self.fig.add_subplot(1, 1, 1)
+        #     self.plot_pins = kwargs.get("plot_pins", True)
+            plt.close()
 
         # Enable the object logger if data_in_obj exists and is True.
         if LOGGER_OBJECT not in self.loggers and kwargs.get("data_in_obj", False):
@@ -77,12 +78,10 @@ class DGILibLogger(object):
         if LOGGER_OBJECT in self.loggers:
             self.data = {}
 
-        # Import matplotlib.pyplot as plt if LOGGER_PLOT in self.loggers and no figure has been specified
         if LOGGER_PLOT in self.loggers:
             self.plotobj = DGILibPlot(kwargs)
 
-#         update_callback?
-#         output = csv.writer(open('export_log.csv', 'w'))
+        self.augment_gpio = kwargs.get("augment_gpio", False)
 
     def __enter__(self):
         """
@@ -102,8 +101,9 @@ class DGILibLogger(object):
 
         # Should be removed and updated every time update_callback is called
         if LOGGER_PLOT in self.loggers:
-            gpio_augment_edges(self.data[INTERFACE_GPIO])
-            #self.fig = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
+            if self.augment_gpio:
+                gpio_augment_edges(self.data[INTERFACE_GPIO], 0, self.data[INTERFACE_POWER][0][-1])
+            #self.fig, self.ax = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
             # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)
 
         # Stop any running logging actions ??
@@ -153,7 +153,7 @@ class DGILibLogger(object):
 
         # Create data structure self.data if LOGGER_OBJECT is enabled
         if LOGGER_OBJECT in self.loggers:
-            for interface_id in self.enabled_interfaces + [INTERFACE_POWER] * bool(self.power_buffers):
+            for interface_id in self.enabled_interfaces:
                 self.data[interface_id] = [[], []]
 
         # Create axes self.axes if LOGGER_PLOT is enabled
@@ -170,13 +170,10 @@ class DGILibLogger(object):
         data = {}
         if INTERFACE_GPIO in self.enabled_interfaces:
             data[INTERFACE_GPIO] = self.gpio_read()
-        if self.power_buffers:
-            data[INTERFACE_POWER] = self.power_read_buffer(self.power_buffers[0])
-
-        if data[INTERFACE_GPIO] or data[INTERFACE_POWER]:
-            # Write to registered loggers TODO PLOT
-            if LOGGER_CSV in self.loggers:
-                if INTERFACE_GPIO in self.enabled_interfaces:
+            # Check if any data has arrived
+            if data[INTERFACE_GPIO]:
+                # Write to registered loggers
+                if LOGGER_CSV in self.loggers:
                     # self.csv_writers[INTERFACE_GPIO].writerows(zip(*data[INTERFACE_GPIO]))
                     self.csv_writers[INTERFACE_GPIO].writerows(
                         [
@@ -184,19 +181,31 @@ class DGILibLogger(object):
                             for timestamps, pin_values in zip(*data[INTERFACE_GPIO])
                         ]
                     )
-                if self.power_buffers:
+                # Merge data into self.data if LOGGER_OBJECT is enabled
+                if LOGGER_OBJECT in self.loggers:
+                    for col in range(len(self.data[INTERFACE_GPIO])):
+                        self.data[INTERFACE_GPIO][col].extend(data[INTERFACE_GPIO][col])
+                # Update the plot if LOGGER_PLOT is enabled
+                # if LOGGER_PLOT in self.loggers:
+                #     pass
+                    # print("TODO: Update plot")
+
+        if INTERFACE_POWER in self.enabled_interfaces:
+            data[INTERFACE_POWER] = self.power_read_buffer(self.power_buffers[0])
+            # Check if any data has arrived
+            if data[INTERFACE_POWER]:
+                # Write to registered loggers
+                if LOGGER_CSV in self.loggers:
                     self.csv_writers[INTERFACE_POWER].writerows(zip(*data[INTERFACE_POWER]))
-
-            # Merge data into self.data if LOGGER_OBJECT is enabled
-            if LOGGER_OBJECT in self.loggers:
-                self.data_add(data)
-
-            # Update the plot if LOGGER_PLOT is enabled
-            if LOGGER_PLOT in self.loggers:
-                self.plotobj.update_plot(self.data)
+                # Merge data into self.data if LOGGER_OBJECT is enabled
+                if LOGGER_OBJECT in self.loggers:
+                    for col in range(len(self.data[INTERFACE_POWER])):
+                        self.data[INTERFACE_POWER][col].extend(data[INTERFACE_POWER][col])
+                # Update the plot if LOGGER_PLOT is enabled
+        
+        if LOGGER_PLOT in self.loggers:
+            pass #self.plotobj.update_plot(self.data)
                 # print("TODO: Update plot")
-        elif self.verbose:
-            print("update_callback: No new data")
         
         # return the data
         return data
@@ -228,9 +237,6 @@ class DGILibLogger(object):
 
         self.logger_start()
         sleep(duration)
-        # data = self.update_callback()
-        # data = mergeData(data, self.update_callback())
-        # data = mergeData(data, self.logger_stop())
 
         return self.logger_stop()
 
@@ -264,7 +270,7 @@ class DGILibLogger(object):
 
     # def pin_duty_cycle(self, pin=0, data=None):
     #     pass
-    
+
 
 def mergeData(data1, data2):
     """Make class for data structure? Or at least make a method to merge that mutates the list instead of doing multiple copies
@@ -291,7 +297,7 @@ def power_filter_by_pin(pin, data, verbose=0):
 
     if verbose:
         print(f"power_filter_by_pin filtering  {len(power_data[0])} power samples.")
-    
+
     for timestamp, pin_values in zip(*data[INTERFACE_GPIO]):
         while (power_index < len(power_data[0]) and power_data[0][power_index] < timestamp):
             power_data[1][power_index] *= pin_value
@@ -304,8 +310,9 @@ def power_filter_by_pin(pin, data, verbose=0):
 
     return power_data
 
+
 def calculate_average(power_data, start_time=None, end_time=None):
-    """Calculate average value of the power_data using the left Riemann sum"""
+    """Calculate average value of the power_data using the left Riemann sum."""
 
     if start_time is None:
         start_time = power_data[0][0]
@@ -323,8 +330,37 @@ def calculate_average(power_data, start_time=None, end_time=None):
 
     return sum / (end_time - start_time)
 
+
+def calculate_average_by_pin(data, pin=0, start_time=None, end_time=None):
+    """Calculate average value of the data while pin is high, using the left Riemann sum."""
+
+    if start_time is None:
+        start_time = data[INTERFACE_POWER][0][0]
+    if end_time is None:
+        end_time = data[INTERFACE_POWER][0][-1]
+
+    last_time = start_time
+
+    power_sum = 0
+    time_sum = 0
+
+    power_index = 0
+
+    for timestamp, pin_values in zip(*data[INTERFACE_GPIO]):
+        while (pin_values[pin] and power_index < len(data[INTERFACE_POWER][0]) and data[INTERFACE_POWER][0][power_index] <= timestamp):
+            if (data[INTERFACE_POWER][0][power_index] >= start_time and data[INTERFACE_POWER][0][power_index] <= end_time):
+                power_sum += data[INTERFACE_POWER][1][power_index] * (data[INTERFACE_POWER][0][power_index] - last_time)
+                time_sum += (data[INTERFACE_POWER][0][power_index] - last_time)
+            last_time = data[INTERFACE_POWER][0][power_index]
+            power_index += 1
+
+    if time_sum == 0:
+        return 0
+    return power_sum / time_sum
+
+
 # Should be removed and updated every time update_callback is called
-def logger_plot_data(data, plot_pins=True, fig=None, ax=None):
+def logger_plot_data(data, plot_pins=[True]*4, fig=None, ax=None):
     if ax is None:
         if fig is None:
             fig = plt.figure(figsize=(8, 6))
@@ -338,13 +374,66 @@ def logger_plot_data(data, plot_pins=True, fig=None, ax=None):
     else:
         print("NO DATA ???")
         return
-    if plot_pins:
-        for pin in range(4):
+    for pin, plot_pin in enumerate(plot_pins):
+        if plot_pin:
             ax.plot(data[INTERFACE_GPIO][0], [d[pin]*max_data for d in data[INTERFACE_GPIO][1]])
-    ax.set_xlabel('Time')
-    ax.set_ylabel('Current')
-    ax.set_title(f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4} mA, with pin 2 high: {calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA, with pin 3 high: {calculate_average(power_filter_by_pin(3, data))*1e3:.4}")
+    ax.set_xlabel('Time [s]')
+    ax.set_ylabel('Current [A]')
+    # ax.set_title(f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4} mA, with pin 2 high: {calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA, with pin 3 high: {calculate_average(power_filter_by_pin(3, data))*1e3:.4}")
+    ax.set_title(f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4} mA, with pin 2 high: {calculate_average_by_pin(data, 2)*1e3:.4} mA, with pin 3 high: {calculate_average_by_pin(data, 3)*1e3:.4}")
     fig.suptitle("Logged Data")
     fig.show()
     
-    # return fig, ax
+    return fig, ax
+
+def power_and_time_per_pulse(data, pin, verbose=0, power_factor=1e3):
+    """Calculate power and time per pulse.
+    
+    Takes the data and a pin and returns a list of power and time sums for each pulse of the specified pin.
+    It stops when all pins are high.
+    
+    :param data: Data structure holding the samples.
+    :type data: dict(256:list(list(float), list(float)), 48:list(list(float), list(list(bool))))
+    :param pin: Number of the pin to be used.
+    :type pin: int
+    :return: List of list of power and time sums.
+    :rtype: tuple(list(float), list(float))
+    """
+    pin_value = False
+
+    charges = []
+    times = []
+
+    power_index = 0
+    power_sum = 0
+    time_sum = 0
+
+    start_time = 0
+    end_time = 0
+    last_time = 0
+
+    for timestamp, pin_values in zip(*data[INTERFACE_GPIO]):
+        if all(pin_values):
+            if verbose:
+                print(f"power_and_time_per_pulse done, charges: {len(currents)}, times: {len(times)}")
+            break
+        if not pin_value and pin_values[pin]:
+            pin_value = True
+            start_time = timestamp
+            last_time = timestamp
+        if pin_value and not pin_values[pin]:
+            pin_value = False
+            end_time = timestamp
+            while (power_index < len(data[INTERFACE_POWER][0]) and data[INTERFACE_POWER][0][power_index] <= end_time):
+                if (data[INTERFACE_POWER][0][power_index] >= start_time):
+                    power_sum += data[INTERFACE_POWER][1][power_index] * (data[INTERFACE_POWER][0][power_index] - last_time)
+                    time_sum += (data[INTERFACE_POWER][0][power_index] - last_time)
+                last_time = data[INTERFACE_POWER][0][power_index]
+                power_index += 1
+
+            charges.append(power_sum*power_factor)
+            times.append(time_sum)
+            power_sum = 0
+            time_sum = 0
+                
+    return charges, times
