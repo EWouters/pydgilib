@@ -76,9 +76,12 @@ class DGILibPlot(object):
 
         # We'll have some sliders to zoom in and out of the plot, as well as a cursor to move around when zoomed in
         # Leave space for sliders at the bottom
-        plt.subplots_adjust(bottom=0.25)
+        plt.subplots_adjust(bottom=0.3)
         # Show grid
         plt.grid()
+
+        # Hardwiring the necessary pause for plot to refresh and be interactable
+        self.plot_pause = 0.5
 
         # Slider color
         self.axcolor = 'lightgoldenrodyellow'
@@ -117,7 +120,7 @@ class DGILibPlot(object):
             if pos > (self.duration - width):
                 pos = self.duration - width
 
-            self.apos.clear()
+            self.axpos.clear()
             self.spos.__init__(apos, 'Position', 0, self.duration - width, valinit=pos, valstep=0.5)
             self.spos.on_changed(update)
 
@@ -149,7 +152,8 @@ class DGILibPlot(object):
         self.resetbtn.on_clicked(reset)
 
     def update_plot(self, data):
-        if not plt.fignum_exists(fig.number): 
+        print("Hello plot!")
+        if not plt.fignum_exists(self.fig.number): 
             plt.show()
         else:
             plt.draw()
@@ -171,8 +175,8 @@ class DGILibPlot(object):
         #             self.hold_times.append((hold_times[0], hold_times[1]))
         #             self.hold_times_sum += hold_times[1] - hold_times[0]
 
-        self.ln.set_xdata(xdata)
-        self.ln.set_ydata(ydata)
+        self.ln.set_xdata(data[INTERFACE_POWER][0])
+        self.ln.set_ydata(data[INTERFACE_POWER][1])
 
         # if spos.val == i - width:
         #     axes.axis([i,i+width,plot_min,plot_max])
@@ -180,7 +184,7 @@ class DGILibPlot(object):
 
         # visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
         # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
-        plt.pause(PAUSE_DURATION)
+        plt.pause(self.plot_pause)
 
 def calculate_average_leftpoint_single_interval(power_data, start_time=None, end_time=None):
     """Calculate average value of the power_data using the left Riemann sum"""

@@ -12,11 +12,13 @@ import csv
 from os import curdir, path
 import copy
 
+# Todo, remove dependency
+import matplotlib.pyplot as plt
+
 from pydgilib_extra.dgilib_extra_config import *
 from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
 from pydgilib_extra.dgilib_plot import *
 
-import matplotlib.pyplot as plt; plt.ion()
 
 class DGILibLogger(object):
     """Python bindings for DGILib Logger.
@@ -40,6 +42,7 @@ class DGILibLogger(object):
             "file_name_base" in kwargs or "log_folder" in kwargs
         ):
             self.loggers.append(LOGGER_CSV)
+        
         if LOGGER_CSV in self.loggers:
             self.file_handles = {}
             self.csv_writers = {}
@@ -48,14 +51,25 @@ class DGILibLogger(object):
         # log_folder - where log files will be saved
         self.file_name_base = kwargs.get("file_name_base", "log")
         self.log_folder = kwargs.get("log_folder", curdir)
-            
-        # Plot wants to use self.data later and there's no self.data without LOGGER_OBJECT
-        if LOGGER_OBJECT not in self.loggers and (LOGGER_PLOT in self.loggers):
+
+        if LOGGER_PLOT in self.loggers and not (LOGGER_OBJECT in self.loggers):
             self.loggers.append(LOGGER_OBJECT)
 
         # Enable the plot logger if figure has been specified.
         if LOGGER_PLOT not in self.loggers and ("fig" in kwargs or "ax" in kwargs):
             self.loggers.append(LOGGER_PLOT)
+
+        # Set self.figure if LOGGER_PLOT enabled.
+        if LOGGER_PLOT in self.loggers:
+            # if "fig" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra figure from being created
+            self.fig = kwargs.get("fig")
+            if self.fig is None:
+                self.fig = plt.figure(figsize=(8, 6))
+            # if "ax" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra axis from being created
+            self.ax = kwargs.get("ax")
+            if self.ax is None:
+                self.ax = self.fig.add_subplot(1, 1, 1)
+            self.plot_pins = kwargs.get("plot_pins", True)
 
         # Enable the object logger if data_in_obj exists and is True.
         if LOGGER_OBJECT not in self.loggers and kwargs.get("data_in_obj", False):
@@ -65,11 +79,7 @@ class DGILibLogger(object):
 
         # Import matplotlib.pyplot as plt if LOGGER_PLOT in self.loggers and no figure has been specified
         if LOGGER_PLOT in self.loggers:
-            # import matplotlib.pyplot as plt
-            # Matplotlib interactivity on: So the plot itself does not freeze the terminal and program until it gets quit
-            # plt.ion() 
-
-            self.plotobj = DGILibPlot(**kwargs)
+            self.plotobj = DGILibPlot(kwargs)
 
 #         update_callback?
 #         output = csv.writer(open('export_log.csv', 'w'))
@@ -92,14 +102,15 @@ class DGILibLogger(object):
 
         # Should be removed and updated every time update_callback is called
         if LOGGER_PLOT in self.loggers:
-            #gpio_augment_edges(self.data[INTERFACE_GPIO])
-            self.fig = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
+            gpio_augment_edges(self.data[INTERFACE_GPIO])
+            #self.fig = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
             # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)
 
         # Stop any running logging actions ??
-        self.logger_stop()
+#         self.logger_stop()
 
     def logger_start(self):
+
         if LOGGER_CSV in self.loggers:
             for interface_id in self.enabled_interfaces:
                 # Open file handle
@@ -147,13 +158,14 @@ class DGILibLogger(object):
 
         # Create axes self.axes if LOGGER_PLOT is enabled
         if LOGGER_PLOT in self.loggers:
-            logger_plot_data(self.data, plot_pins="hold", fig=self.fig, ax=self.ax)
+            self.plotobj.update_plot(self.data)
             # print("TODO: Create axes, or what if they were parsed?")
-        
+                
         self.start_polling()
         self.auxiliary_power_start()
 
-    def update_callback(self, iteration = 0):
+    def update_callback(self):
+
         # Get data
         data = {}
         if INTERFACE_GPIO in self.enabled_interfaces:
@@ -176,12 +188,12 @@ class DGILibLogger(object):
                     self.csv_writers[INTERFACE_POWER].writerows(zip(*data[INTERFACE_POWER]))
 
             # Merge data into self.data if LOGGER_OBJECT is enabled
-            # if LOGGER_OBJECT in self.loggers:
-            #     self.data_add(shift_data(data, iteration))
+            if LOGGER_OBJECT in self.loggers:
+                self.data_add(data)
 
             # Update the plot if LOGGER_PLOT is enabled
             if LOGGER_PLOT in self.loggers:
-                logger_plot_data(self.data, plot_pins="hold", fig=self.fig, ax=self.ax)
+                self.plotobj.update_plot(self.data)
                 # print("TODO: Update plot")
         elif self.verbose:
             print("update_callback: No new data")
@@ -207,40 +219,29 @@ class DGILibLogger(object):
 
         return data
 
-    def logger(self, duration=60, division = 10):
+    def logger(self, duration=10):
         """logger
         
         TODO: call update_callback at specified intervals to avoid buffer overflows (figure out the formula based on the samplerate and buffersize)
-              ... put the calculated value based on formula as default initial value for 'division' parameter
+        
         """
 
         self.logger_start()
+        sleep(duration)
+        # data = self.update_callback()
+        # data = mergeData(data, self.update_callback())
+        # data = mergeData(data, self.logger_stop())
 
-        # What if division < duration?
-        pause_with = min(division, duration)
+        return self.logger_stop()
 
-        iteration = 0.0
-        while iteration < duration:
-            plt.pause(pause_with)
-            self.data = merge_data(self.data, shift_data(self.update_callback(), iteration))
-            iteration += pause_with
-        #self.data = merge_data(self.data, self.logger_stop())
+    def data_add(self, data):
+        """
+        """
 
-        print("Stopping")
-        self.logger_stop()
-
-        return self.data
-
-    # This is the same as merge_data
-
-    # def data_add(self, data):
-    #     """
-    #     """
-
-    #     assert(self.data.keys() == data.keys())  # TODO create error
-    #     for interface_id in data.keys():
-    #         for col in range(len(self.data[interface_id])):
-    #             self.data[interface_id][col].extend(data[interface_id][col])
+        assert(self.data.keys() == data.keys())  # TODO create error
+        for interface_id in data.keys():
+            for col in range(len(self.data[interface_id])):
+                self.data[interface_id][col].extend(data[interface_id][col])
 
     def power_filter_by_pin(self, pin=0, data=None):
         """
@@ -265,7 +266,7 @@ class DGILibLogger(object):
     #     pass
     
 
-def merge_data(data1, data2):
+def mergeData(data1, data2):
     """Make class for data structure? Or at least make a method to merge that mutates the list instead of doing multiple copies
     """
     
@@ -322,12 +323,8 @@ def calculate_average(power_data, start_time=None, end_time=None):
 
     return sum / (end_time - start_time)
 
-global_ln = None
-
 # Should be removed and updated every time update_callback is called
-def logger_plot_data(data, plot_pins="hold", fig=None, ax=None, listen_to = [False,False,True,False], listen_for = [False,False,False,False], pins_correction_forward=0.00, pins_interval_shrink=0.00):
-    global global_ln
-
+def logger_plot_data(data, plot_pins=True, fig=None, ax=None):
     if ax is None:
         if fig is None:
             fig = plt.figure(figsize=(8, 6))
@@ -335,145 +332,19 @@ def logger_plot_data(data, plot_pins="hold", fig=None, ax=None, listen_to = [Fal
             fig.clf()
         ax = fig.add_subplot(1, 1, 1)
     # plt.gcf().set_size_inches(8, 6, forward=True)
-
-    ln = None
-    if (len(ax.lines) == 0):
-        ln, = ax.plot(*data[INTERFACE_POWER], 'r-')
-        global_ln = ln
-    else:
-        ln = ax.lines[0]
-        ln.set_xdata(data[INTERFACE_POWER][0])
-        ln.set_ydata(data[INTERFACE_POWER][1])
-
+    ax.plot(*data[INTERFACE_POWER])
     if data[INTERFACE_POWER][1]:
         max_data = max(*data[INTERFACE_POWER][1])
     else:
-        ax.set_title("Waiting for data...")
+        print("NO DATA ???")
         return
-
-    # Plotting the pins as 
-    if plot_pins == "hold":
-        colors = ["black", "brown", "blue", "green"]
+    if plot_pins:
         for pin in range(4):
-            if not listen_for[pin]: continue
-
-            for hold_times in identify_hold_times(data, listen_to[pin], pin, correction_forward = pins_correction_forward, shrink = pins_interval_shrink):
-                axes.axvspan(i+hold_times[0], i+hold_times[1], color=colors[pin], alpha=0.5)
-
-                all_hold_times.append((i+hold_times[0], i+hold_times[1]))
-                all_hold_times_sum += hold_times[1] - hold_times[0]
-
-    ax.set_title(f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4} mA, \nwith pin 2 high: {calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA,\n with pin 3 high: {calculate_average(power_filter_by_pin(3, data))*1e3:.4} mA")
-    #fig.suptitle("Logged Data")
-
-    if not plt.fignum_exists(fig.number):
-        plt.show()
-    else:
-        plt.draw()
-        plt.pause(0.5)
+            ax.plot(data[INTERFACE_GPIO][0], [d[pin]*max_data for d in data[INTERFACE_GPIO][1]])
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Current')
+    ax.set_title(f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4} mA, with pin 2 high: {calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA, with pin 3 high: {calculate_average(power_filter_by_pin(3, data))*1e3:.4}")
+    fig.suptitle("Logged Data")
+    fig.show()
     
     # return fig, ax
-
-def identify_hold_times(whole_data, true_false, pin, correction_forward = 0.00, shrink = 0.00):
-    data = whole_data[INTERFACE_GPIO]
-    hold_times = []
-    start = data[0][0]
-    end = data[0][0]
-    in_hold = true_false
-    not_in_hold = not true_false
-    search = not true_false
-
-    interval_sizes = []
-
-    for i in range(len(data[0])):
-        if search == not_in_hold: # Searching for start of hold time 
-            if data[1][i][pin] == search:
-                start = data[0][i]
-            else:
-                end = data[0][i]
-                search = not search
-
-        if search == in_hold: # Searching for end of hold time
-            if data[1][i][pin] == search:
-                end = data[0][i]
-            else:
-                search = not search
-                to_add = (start+correction_forward+shrink,end+correction_forward-shrink)
-                if ((to_add[0] != to_add[1]) and (to_add[0] < to_add[1])):
-                    hold_times.append(to_add)
-                    interval_sizes.append(to_add[1] - to_add[0])
-                start = data[0][i]
-
-    should_add_last_interval = True
-    for ht in hold_times:
-        if (ht[0] == start): should_add_last_interval = False
-
-    if should_add_last_interval:
-
-        invented_end_time = whole_data[INTERFACE_POWER][0][-1]+correction_forward-shrink
-
-        # This function ASSUMES that the intervals are about the same in size.
-        # ... If the last interval that should be highlighted on the graph is
-        # ... abnormally higher than the maximum of the ones that already happened 
-        # ... correctly then cancel highlighting with the help of 'invented_end_time' 
-        # ... and highlight using the minimum from the 'interval_sizes' list, to get
-        # ... an average that is most likely unaffected by stuff happening at the end
-        # ... of the interval, which the power interface from the board failed to
-        # ... communicate to us.
-        if ((invented_end_time - start) > max(interval_sizes)):
-            invented_end_time = start + min(interval_sizes)
-
-        to_add = (start+correction_forward+shrink,invented_end_time)
-
-        if ((to_add[0] != to_add[1]) and (to_add[0] < to_add[1])):
-            hold_times.append(to_add)
-
-    return hold_times
-
-def calculate_average_midpoint_single_interval(power_data, start_time = None, end_time = None):
-    # Calculate average value using midpoint Riemann sum
-    sum = 0
- 
-    actual_start_time = -1
-    actual_end_time = -1
- 
-    for i in range(len(power_data[0]) - 1)[1:]:
-        first_current_value = power_data[1][i]
-        second_current_value = power_data[1][i+1]
-        timestamp = power_data[0][i+1]
-        last_time = power_data[0][i]
- 
-        if ((last_time >= start_time) and (last_time < end_time)):
-            sum += ((first_current_value + second_current_value)/2) * (timestamp - last_time)
- 
-            # We have to select the actual start time and the actual 
-            if (actual_start_time == -1): actual_start_time = power_data[0][i]
- 
-        if (timestamp >= end_time):
-            actual_end_time = power_data[0][i-1]
-            break
- 
-    return sum / (actual_end_time - actual_start_time)   
-
-def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_time = None, end_time = None):
-    # Calculate average value using midpoint Riemann sum
-    sum = 0
-    to_divide = 0
-
-    for intv in intervals:
-        if ((intv[0] >= start_time) and (intv[0] <= end_time) and (intv[1] >= start_time) and (intv[1] <= end_time)):
-            sum += calculate_average_midpoint_single_interval(power_data, intv[0], intv[1])
-            to_divide += 1
-
-    return sum / to_divide
-
-def shift_data(data, shift_by):
-    new_data = copy.deepcopy(data)
-
-    for i in range(len(data[INTERFACE_POWER][0])):
-        new_data[INTERFACE_POWER][0][i] = shift_by + data[INTERFACE_POWER][0][i]
-
-    for i in range(len(data[INTERFACE_GPIO][0])):
-        new_data[INTERFACE_GPIO][0][i] = shift_by + data[INTERFACE_GPIO][0][i]
-
-    return new_data
