@@ -8,6 +8,7 @@ __revision__ = " $Id: dgilib_interface_gpio.py 1586 2019-02-13 15:56:25Z EWouter
 __docformat__ = "reStructuredText"
 
 from pydgilib_extra.dgilib_extra_config import *
+from pydgilib_extra.dgilib_extra_exceptions import *
 
 
 # TODO: make these functions faster
@@ -30,11 +31,11 @@ class DGILibInterfaceGPIO(object):
     through the configuration interface. This interface can only be used in Timestamp mode. Input lines are
     monitored and will trigger an entry to be added to the timestamp buffer on each change. Output lines can
     be controlled through the send data command.
-    
+
     ## Parsing
     Each received data byte corresponds to an input pattern on the GPIO pins. If a bit is 1 it means that the
     corresponding GPIO pin is high, a 0 means a low level.
-    
+
     ## Configuration
     The GPIO configuration controls the direction of the pins.
     Field ID Description
@@ -42,7 +43,6 @@ class DGILibInterfaceGPIO(object):
     Output pins 1 Setting a bit to 1 means the pin is set to output and can be controlled by the send
     command.
     """
-
     def __init__(self, *args, **kwargs):
         """
         :Example:
@@ -51,7 +51,6 @@ class DGILibInterfaceGPIO(object):
         ...     dgilib.get_major_version()
         5
         """
-
         # Argument parsing
         self.read_mode = kwargs.get("read_mode", [False] * 4)
         self.write_mode = kwargs.get("write_mode", [False] * 4)
@@ -62,7 +61,6 @@ class DGILibInterfaceGPIO(object):
     def __enter__(self):
         """
         """
-        
         self.gpio_set_config(read_mode=self.read_mode, write_mode=self.write_mode)
 
         return self
@@ -87,7 +85,6 @@ class DGILibInterfaceGPIO(object):
             - List of write modes, Setting a pin to True means the pin is set to output and can be controlled by the send command.
         :rtype: (list(bool), list(bool))
         """
-
         # Get the configuration
         config_id, config_value = self.interface_get_configuration(INTERFACE_GPIO)
 
@@ -120,7 +117,6 @@ class DGILibInterfaceGPIO(object):
         :param write_mode: List of modes, Setting a pin to True means the pin is set to output and can be controlled by the send command.
         :type write_mode: list(bool)
         """
-        
         # Argument parsing
         self.read_mode = kwargs.get("read_mode", self.read_mode)
         self.write_mode = kwargs.get("write_mode", self.write_mode)
@@ -154,7 +150,6 @@ class DGILibInterfaceGPIO(object):
         :return: Tuple of list of timestamps in seconds and list of list of pin states (bool)
         :rtype: (list(float), list(list(bool)))
         """
-
         # Read the data from the buffer
         pin_values, ticks = self.interface_read_data(INTERFACE_GPIO)
 
@@ -167,7 +162,7 @@ class DGILibInterfaceGPIO(object):
         return timestamps, pin_values
 
     def gpio_write(self, pin_values):
-        """Set the state of the GPIO pins
+        """Set the state of the GPIO pins.
         
         Make sure to set the pin to write mode first. Possibly also needs to be configured properly on the board
         
@@ -176,7 +171,6 @@ class DGILibInterfaceGPIO(object):
         :param pin_values: List of pin values. Has to include all four pins ? TODO: TEST
         :type pin_values: list(bool)
         """
-
         # Convert list of bool to int
         pin_values = bool2int(pin_values)
 
@@ -186,23 +180,27 @@ class DGILibInterfaceGPIO(object):
             print(f"Sent gpio packet")
 
 
+def gpio_augment_edges(samples, switch_time=0, extend_to=None):
+    """GPIO Augment Edges.
 
-def gpio_augment_edges(samples, switch_time=0):
-    """GPIO Augment Edges
-
-    Augments the edges of the GPIO data by inserting an extra sample of the 
+    Augments the edges of the GPIO data by inserting an extra sample of the
     previous pin_value at moment before a switch occurs (minus switch_time)
 
     Switch time is measured to be around 0.3 ms.
+
+    Can insert the last datapoint again at the time specified (has to be after
+    last sample).
 
     :param samples: Tuple of samples of GPIO data.
     :type samples: tuple(list(int), list(list(bool)))
     :param switch_time: Switch time of GPIO pin.
     :type samples: tuple(list(int), list(list(bool)))
+    :param extend_to: Inserts the last datapoint again at the time specified
+        (has to be after last sample).
+    :type extend_to: float
     :return: Tuple of samples of GPIO data.
     :rtype: tuple(list(int), list(list(bool)))
     """
-    
     pin_states = [False] * 4
 
     # iterate over the list and insert items at the same time:
@@ -214,4 +212,11 @@ def gpio_augment_edges(samples, switch_time=0):
             i += 1
             pin_states = samples[1][i]
         i += 1
+
+    if extend_to is not None:
+        if extend_to < samples[0][-1]:
+            pass #raise GPIOAugmentationError(f"Time to extend to ({extend_to}) has to be after last sample ({samples[0][-1]}).")
+        else:
+            samples[0].append(extend_to)
+            samples[1].append(pin_states)
     return samples
