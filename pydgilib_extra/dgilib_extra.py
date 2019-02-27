@@ -46,8 +46,6 @@ class DGILibExtra(DGILib, DGILibInterfaceGPIO, DGILibInterfacePower, DGILibLogge
         DGILibInterfaceGPIO.__enter__(self)
         DGILibInterfacePower.__enter__(self)
 
-        DGILibLogger.__enter__(self)
-
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
