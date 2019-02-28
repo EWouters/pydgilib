@@ -103,6 +103,7 @@ class DGILibLogger(object):
         if LOGGER_PLOT in self.loggers:
             if self.augment_gpio:
                 gpio_augment_edges(self.data[INTERFACE_GPIO], 0, self.data[INTERFACE_POWER][0][-1])
+            self.plotobj.update_plot(self.data)
             #self.fig, self.ax = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
             # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)
 
@@ -191,6 +192,7 @@ class DGILibLogger(object):
                     # print("TODO: Update plot")
 
         if INTERFACE_POWER in self.enabled_interfaces:
+            print("Hi!")
             data[INTERFACE_POWER] = self.power_read_buffer(self.power_buffers[0])
             # Check if any data has arrived
             if data[INTERFACE_POWER]:
@@ -202,9 +204,9 @@ class DGILibLogger(object):
                     for col in range(len(self.data[INTERFACE_POWER])):
                         self.data[INTERFACE_POWER][col].extend(data[INTERFACE_POWER][col])
                 # Update the plot if LOGGER_PLOT is enabled
-        
+
         if LOGGER_PLOT in self.loggers:
-            pass #self.plotobj.update_plot(self.data)
+            self.plotobj.update_plot(self.data)
                 # print("TODO: Update plot")
         
         # return the data

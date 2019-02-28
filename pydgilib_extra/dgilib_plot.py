@@ -128,7 +128,7 @@ class DGILibPlot(object):
 
             #self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
 
-            self.fig.canvas.draw_idle()
+            #self.fig.canvas.draw_idle()
 
         self.spos.on_changed(update)
         self.swidth.on_changed(update)
@@ -158,11 +158,11 @@ class DGILibPlot(object):
         if INTERFACE_POWER not in data: return
         if INTERFACE_GPIO not in data: return
 
-        # if not plt.fignum_exists(self.fig.number): 
-        #     plt.show()
-        # else:
-        # plt.draw()
-        plt.pause(self.plot_interactivity_pause)
+        if not plt.fignum_exists(self.fig.number):
+            plt.show()
+        else:
+            plt.draw()
+            plt.pause(self.plot_interactivity_pause)
 
         # I presume I already have this
         # for j in range(len(data[INTERFACE_POWER][0]))[1:]:
