@@ -121,3 +121,8 @@ class TestPyDGILib(object):
         with DGILibExtra(**config_dict) as dgilib:
             dgilib.logger(1)
             gpio_augment_edges(dgilib.data[INTERFACE_GPIO])
+
+    def test_mergeData(self):
+        data = {INTERFACE_POWER: [], INTERFACE_GPIO: []}
+        data1 = {INTERFACE_POWER: [2], INTERFACE_GPIO: [3]}
+        mergeData(data, data1)
