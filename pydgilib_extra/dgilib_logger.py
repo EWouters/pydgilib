@@ -119,6 +119,8 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
 
     def logger_start(self):
 
+        print("Enabled interfaces: " + str(self.enabled_interfaces))
+
         if LOGGER_CSV in self.loggers:
             for interface_id in self.enabled_interfaces:
                 # Open file handle
