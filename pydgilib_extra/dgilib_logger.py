@@ -16,11 +16,12 @@ import copy
 import matplotlib.pyplot as plt
 
 from pydgilib_extra.dgilib_extra_config import *
-from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
+from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO, gpio_augment_edges
+from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 from pydgilib_extra.dgilib_plot import *
 
 
-class DGILibLogger(object):
+class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
     """Python bindings for DGILib Logger.
 
     Interfaces:
@@ -31,7 +32,6 @@ class DGILibLogger(object):
     def __init__(self, *args, **kwargs):
         """
 
-        All kwargs will also be passed to 
         """
 
         # Get enabled loggers
@@ -78,6 +78,10 @@ class DGILibLogger(object):
         if LOGGER_OBJECT in self.loggers:
             self.data = {}
 
+	# Initialize interfaces
+        DGILibInterfaceGPIO.__init__(self, *args, **kwargs)
+        DGILibInterfacePower.__init__(self, *args, **kwargs)
+
         if LOGGER_PLOT in self.loggers:
             self.plotobj = DGILibPlot(kwargs)
 
@@ -86,6 +90,9 @@ class DGILibLogger(object):
     def __enter__(self):
         """
         """
+
+        DGILibInterfaceGPIO.__enter__(self)
+        DGILibInterfacePower.__enter__(self)
 
 #         print(f"power_buffers at logger {self.power_buffers}")
 
@@ -107,8 +114,8 @@ class DGILibLogger(object):
             #self.fig, self.ax = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
             # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)
 
-        # Stop any running logging actions ??
-#         self.logger_stop()
+        DGILibInterfaceGPIO.__exit__(self, exc_type, exc_value, traceback)
+        DGILibInterfacePower.__exit__(self, exc_type, exc_value, traceback)
 
     def logger_start(self):
 
@@ -192,7 +199,6 @@ class DGILibLogger(object):
                     # print("TODO: Update plot")
 
         if INTERFACE_POWER in self.enabled_interfaces:
-            print("Hi!")
             data[INTERFACE_POWER] = self.power_read_buffer(self.power_buffers[0])
             # Check if any data has arrived
             if data[INTERFACE_POWER]:

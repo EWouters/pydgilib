@@ -47,6 +47,8 @@ class DGILibInterfacePower(object):
             self.auxiliary_power_register_buffer_pointers(
                 channel=power_buffer["channel"], power_type=power_buffer["power_type"]
             )
+        
+        self.power_set_config(self.power_buffers)
 
         return self
 
@@ -69,7 +71,8 @@ class DGILibInterfacePower(object):
     def power_get_config(self):
         """Get the power config options.
         
-        :return: Power buffers configuration list of dictionaries like `[{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]`
+        :return: Power buffers configuration list of dictionaries like 
+            `[{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]`
         :rtype: list(dict())
         """
 
@@ -79,13 +82,16 @@ class DGILibInterfacePower(object):
     def power_set_config(self, power_buffers):
         """Set the power config options.
         
-        Register buffers inside the library for the buffers specified in power_buffers and removes ones that are not present.
+        Register buffers inside the library for the buffers specified in 
+        power_buffers and removes ones that are not present.
         
-        :param power_buffers: Power buffers configuration list of dictionaries like `[{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]`
+        :param power_buffers: Power buffers configuration list of dictionaries 
+            like `[{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]`
         :type power_buffers: list(dict())
         """
 
-        # Disable the configurations that are not in the new config and remove them from self.power_buffers
+        # Disable the configurations that are not in the new config and remove 
+        # them from self.power_buffers
         for power_buffer in self.power_buffers:
             if power_buffer not in power_buffers:
                 self.auxiliary_power_unregister_buffer_pointers(
@@ -94,7 +100,8 @@ class DGILibInterfacePower(object):
                 )
                 self.power_buffers.remove(power_buffer)
 
-        # Enable the configurations that are in the new config and not in self.power_buffers
+        # Enable the configurations that are in the new config and not in 
+        # self.power_buffers
         for power_buffer in power_buffers:
             if power_buffer not in self.power_buffers:
                 self.auxiliary_power_register_buffer_pointers(
@@ -103,12 +110,21 @@ class DGILibInterfacePower(object):
                 )
                 self.power_buffers.append(power_buffer)
 
+        if self.power_buffers and not INTERFACE_POWER in self.enabled_interfaces:
+            self.enabled_interfaces.append(INTERFACE_POWER)
+        if not self.power_buffers and INTERFACE_POWER in self.enabled_interfaces:
+            self.enabled_interfaces.remove(INTERFACE_POWER)
+
     def power_read_buffer(self, power_buffer, *args, **kwargs):
         """Read power data of the specified buffer.
         
-        TODO: Copies parsed power data into the specified buffer. Remember to lock the buffers first. If the count parameter is the same as max_count there is probably more data to be read. Do another read to get the remaining data.
+        TODO: Copies parsed power data into the specified buffer. Remember to
+        lock the buffers first. If the count parameter is the same as
+        max_count there is probably more data to be read. Do another read to
+        get the remaining data.
         
-        :return: TODOTODO Tuple of list of power samples in Ampere and list of timestamps in seconds
+        :return: TODOTODO Tuple of list of power samples in Ampere and list of
+            timestamps in seconds
         :rtype: (list(float), list(float))
         """
 
@@ -118,7 +134,11 @@ class DGILibInterfacePower(object):
                 f"Power Buffer {power_buffer} does not exist in self.power_buffers: {self.power_buffers}."
             )
 
-        # Check if auxiliary_power_get_status() is in IDLE = 0x00, RUNNING = 0x01, DONE = 0x02 or OVERFLOWED = 0x11
+        # Check if auxiliary_power_get_status() is in 
+        #   - IDLE = 0x00, 
+        #   - RUNNING = 0x01, 
+        #   - DONE = 0x02 or 
+        #   - OVERFLOWED = 0x11
         # and raise DevicePowerStatusError if it is.
         power_status = self.auxiliary_power_get_status()
         if self.verbose:
