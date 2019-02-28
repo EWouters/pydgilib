@@ -58,6 +58,13 @@ class DGILibInterfaceGPIO(object):
             print("read_mode: ", self.read_mode)
             print("write_mode: ", self.write_mode)
 
+        self.augment_gpio = kwargs.get("augment_gpio", None)
+        self.gpio_delay_time = kwargs.get("gpio_delay_time", 0)
+        self.gpio_switch_time = kwargs.get("gpio_switch_time", 0)
+        # If augment_gpio was not specified set it to true if gpio_delay_time or gpio_switch_time were non 0.
+        if self.augment_gpio is None:
+            self.augment_gpio = self.gpio_delay_time != 0 or self.gpio_switch_time != 0
+
     def __enter__(self):
         """
         """
@@ -180,23 +187,28 @@ class DGILibInterfaceGPIO(object):
             print(f"Sent gpio packet")
 
 
-def gpio_augment_edges(samples, switch_time=0, extend_to=None):
+def gpio_augment_edges(samples, delay_time=0, switch_time=0, extend_to=None):
     """GPIO Augment Edges.
 
     Augments the edges of the GPIO data by inserting an extra sample of the
-    previous pin_value at moment before a switch occurs (minus switch_time)
+    previous pin values at moment before a switch occurs (minus switch_time). 
+    The switch time is measured to be around 0.3 ms.
 
-    Switch time is measured to be around 0.3 ms.
+    Also delays all time stamps by delay_time. The delay time seems to vary
+    a lot between different projects and should be manually specified for the
+    best accuracy.
 
     Can insert the last datapoint again at the time specified (has to be after
     last sample).
 
     :param samples: Tuple of samples of GPIO data.
     :type samples: tuple(list(int), list(list(bool)))
+    :param dalay_time: Switch time of GPIO pin.
+    :type delay_time: float
     :param switch_time: Switch time of GPIO pin.
-    :type samples: tuple(list(int), list(list(bool)))
-    :param extend_to: Inserts the last datapoint again at the time specified
-        (has to be after last sample).
+    :type switch_time: float
+    :param extend_to: Inserts the last pin values again at the time specified
+        (only used if time is after last sample).
     :type extend_to: float
     :return: Tuple of samples of GPIO data.
     :rtype: tuple(list(int), list(list(bool)))
@@ -207,16 +219,17 @@ def gpio_augment_edges(samples, switch_time=0, extend_to=None):
     i = 0
     while i < len(samples[0]):
         if samples[1][i] != pin_states:
-            samples[0].insert(i, samples[0][i] - switch_time)
-            samples[1].insert(i, pin_states)
+            samples[0].insert(i, samples[0][i] - switch_time) # This inserts a time sample at time + switch time (so moves the time stamp into the future)
+            samples[1].insert(i, pin_states) # This inserts the last datapoint again at the time the next switch actually arrived (without switch time)
             i += 1
             pin_states = samples[1][i]
         i += 1
 
+    # Delay all time stamps by delay_time
+    samples[0] = [t + delay_time for t in samples[0]]
+
     if extend_to is not None:
-        if extend_to < samples[0][-1]:
-            pass #raise GPIOAugmentationError(f"Time to extend to ({extend_to}) has to be after last sample ({samples[0][-1]}).")
-        else:
+        if extend_to >= samples[0][-1]:
             samples[0].append(extend_to)
             samples[1].append(pin_states)
     return samples

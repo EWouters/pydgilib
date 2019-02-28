@@ -12,12 +12,10 @@ from time import sleep
 from pydgilib.dgilib import DGILib
 
 from pydgilib_extra.dgilib_extra_config import *
-from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO
-from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 from pydgilib_extra.dgilib_logger import DGILibLogger
 
 
-class DGILibExtra(DGILib, DGILibInterfaceGPIO, DGILibInterfacePower, DGILibLogger):
+class DGILibExtra(DGILib, DGILibLogger):
     """Python bindings for DGILib Extra.
     """
 
@@ -26,9 +24,7 @@ class DGILibExtra(DGILib, DGILibInterfaceGPIO, DGILibInterfacePower, DGILibLogge
         """
 
         DGILib.__init__(self, *args, **kwargs)
-        
-        DGILibInterfaceGPIO.__init__(self, *args, **kwargs)
-        DGILibInterfacePower.__init__(self, *args, **kwargs)
+
         DGILibLogger.__init__(self, *args, **kwargs)
 
         self.available_interfaces = []
@@ -42,9 +38,6 @@ class DGILibExtra(DGILib, DGILibInterfaceGPIO, DGILibInterfacePower, DGILibLogge
         DGILib.__enter__(self)
 
         self.available_interfaces = self.interface_list()
-        
-        DGILibInterfaceGPIO.__enter__(self)
-        DGILibInterfacePower.__enter__(self)
 
         DGILibLogger.__enter__(self)
 
@@ -53,8 +46,6 @@ class DGILibExtra(DGILib, DGILibInterfaceGPIO, DGILibInterfacePower, DGILibLogge
     def __exit__(self, exc_type, exc_value, traceback):
 
         DGILibLogger.__exit__(self, exc_type, exc_value, traceback)
-        DGILibInterfaceGPIO.__exit__(self, exc_type, exc_value, traceback)
-        DGILibInterfacePower.__exit__(self, exc_type, exc_value, traceback)
 
         for interface in self.enabled_interfaces:
             self.interface_disable(interface)

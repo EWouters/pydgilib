@@ -16,10 +16,11 @@ import copy
 import matplotlib.pyplot as plt
 
 from pydgilib_extra.dgilib_extra_config import *
-from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
+from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO, gpio_augment_edges
+from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 
 
-class DGILibLogger(object):
+class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
     """Python bindings for DGILib Logger.
 
     Interfaces:
@@ -30,7 +31,6 @@ class DGILibLogger(object):
     def __init__(self, *args, **kwargs):
         """
 
-        All kwargs will also be passed to 
         """
 
         # Get enabled loggers
@@ -76,17 +76,16 @@ class DGILibLogger(object):
         if LOGGER_OBJECT in self.loggers:
             self.data = {}
 
-        self.augment_gpio = kwargs.get("augment_gpio", False)
+        # Initialize interfaces
+        DGILibInterfaceGPIO.__init__(self, *args, **kwargs)
+        DGILibInterfacePower.__init__(self, *args, **kwargs)
 
     def __enter__(self):
         """
         """
 
-#         print(f"power_buffers at logger {self.power_buffers}")
-
-#         if self.file_name is not None:
-#             # TODO per interface
-#             self.writer = "csv.writer"(open(file_name, 'w'))
+        DGILibInterfaceGPIO.__enter__(self)
+        DGILibInterfacePower.__enter__(self)
 
         return self
 
@@ -97,12 +96,12 @@ class DGILibLogger(object):
         # Should be removed and updated every time update_callback is called
         if LOGGER_PLOT in self.loggers:
             if self.augment_gpio:
-                gpio_augment_edges(self.data[INTERFACE_GPIO], 0, self.data[INTERFACE_POWER][0][-1])
+                gpio_augment_edges(self.data[INTERFACE_GPIO], self.gpio_delay_time, self.gpio_switch_time, self.data[INTERFACE_POWER][0][-1])
             self.fig, self.ax = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
             # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)
 
-        # Stop any running logging actions ??
-#         self.logger_stop()
+        DGILibInterfaceGPIO.__exit__(self, exc_type, exc_value, traceback)
+        DGILibInterfacePower.__exit__(self, exc_type, exc_value, traceback)
 
     def logger_start(self):
 
