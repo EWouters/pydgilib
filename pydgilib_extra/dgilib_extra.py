@@ -105,3 +105,12 @@ class DGILibExtra(DGILib, DGILibLogger):
     def keep_plot(self):
         if self.plotobj is not None:
             self.plotobj.keep_plot()
+
+    def plot_still_exists(self):
+        if self.plotobj is not None:
+            return self.plotobj.plot_still_exists()
+
+    def hold_plot(self):
+        if self.plotobj is not None:
+            while self.plot_still_exists():
+                self.keep_plot()

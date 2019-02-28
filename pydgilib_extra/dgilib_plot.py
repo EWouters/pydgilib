@@ -3,9 +3,9 @@ import csv
 
 from pydgilib_extra.dgilib_extra_config import *
 from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
+from pydgilib_extra.dgilib_logger_functions import mergeData
 
 import matplotlib.pyplot as plt; plt.ion()
-
 from matplotlib.widgets import Slider, Button
 
 class DGILibPlot(object):
@@ -32,43 +32,35 @@ class DGILibPlot(object):
             self.ln.set_ydata([])
 
         # Initialize xmax, ymax of plot initially
-        self.plot_xmax = kwargs.get("plot_xmax", True)
-        if "plot_xmax" is None:
-            self.plot_xmax = -1 # Auto TODO: To be implemented
-            self.ax.set_xlim(0, 5)
+        self.plot_xmax = kwargs.get("plot_xmax", None)
+        if self.plot_xmax is None:
+            self.plot_xauto = True
+            self.plot_xmax = 10
         else:
-            self.plot_xmax = kwargs.get("plot_xmax", True)
+            self.plot_xauto = False
 
-        self.plot_ymax = kwargs.get("plot_ymax", True)
-        if "plot_ymax" is None:
-            self.plot_ymax = -1 # Auto TODO: To be implemented
-            self.ax.set_ylim(0, 0.035)
+        self.plot_ymax = kwargs.get("plot_ymax", None)
+        if self.plot_ymax is None:
+            self.plot_yauto = True
+            self.plot_ymax = 0.0035
         else:
-            self.ax.set_ylim(0, self.plot_ymax)
+            self.plot_yauto = False
 
-        self.plot_pins = kwargs.get("plot_pins", True)
+        self.plot_pins = kwargs.get("plot_pins", [])
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
-        self.pins_correction_forward = kwargs.get("pins_correction_forward", True)
-        if "pins_correction_forward" is None:
-            self.pins_correction_forward = 0.00075
-            
-        self.pins_interval_shrink = kwargs.get("pins_interval_shrink", True)
-        if "pins_interval_shrink" is None:
-            self.pins_interval_shrink = 0.0010            
+        self.pins_correction_forward = kwargs.get("pins_correction_forward", 0.00075)
+        self.pins_interval_shrink = kwargs.get("pins_interval_shrink", 0.0010)
+        self.plot_pause = kwargs.get("plot_interactivity_pause", 0.00000001)
 
-        self.plot_interactivity_pause = kwargs.get("plot_interactivity_pause", True)
-        if "plot_interactivity_pause" is None:
-            self.plot_interactivity_pause = 0.5
-        
         # Hardwiring these values to 0
         self.plot_xmin = 0
         self.plot_ymin = 0
 
         # We absolutely need these values from the user (or from the superior class), hence no default values
         # TODO: Are they really needed though?
-        self.division = kwargs.get("division", True)
-        self.duration = kwargs.get("duration", True)
+        self.plot_xdiv = kwargs.get("plot_xdiv", min(5, self.plot_xmax))
+        # self.duration = kwargs.get("duration", max(self.plot_xmax, 5))
 
         # We'll have some sliders to zoom in and out of the plot, as well as a cursor to move around when zoomed in
         # Leave space for sliders at the bottom
@@ -76,16 +68,13 @@ class DGILibPlot(object):
         # Show grid
         plt.grid()
 
-        # Hardwiring the necessary pause for plot to refresh and be interactable
-        self.plot_pause = 0.5
-
         # Slider color
         self.axcolor = 'lightgoldenrodyellow'
         # Title format
         # Should use this https://matplotlib.org/gallery/recipes/placing_text_boxes.html
         self.title_avg = "Total avg curr: %1"
         self.title_vis = "Visible avg curr: %1"
-        self.title_pin = "Avg curr in %1: %2" # "calculate_average(data[INTERFACE_POWER])*1e3:.4} mA"
+        self.title_pin = "Avg curr in %1: %2"  # "calculate_average(data[INTERFACE_POWER])*1e3:.4} mA"
         self.title_time = "Time spent in %1: %2"
         self.ax.set_title("Waiting for data...")
 
@@ -93,76 +82,133 @@ class DGILibPlot(object):
         self.hold_times = []
         self.hold_times_sum = 0.00
 
-        self.colors = ["red","orange","blue","green"]
+        self.colors = ["red", "orange", "blue", "green"]
 
-        #self.initialize_sliders()
+        self.data = {INTERFACE_GPIO: [[],[]], INTERFACE_POWER: [[],[]]}
+
+        self.initialize_sliders()
 
     def initialize_sliders(self):
         self.axpos = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=self.axcolor)
         self.axwidth = plt.axes([0.25, 0.15, 0.65, 0.03], facecolor=self.axcolor)
         self.resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
 
-        self.spos = Slider(self.axpos, 'x (s)', 0, min(0, self.duration-self.plot_xmax), valinit=0, valstep=0.5)
-        self.swidth = Slider(self.axwidth, 'xmax', 0, self.duration, valinit=0, valstep=0.5)
-        
-        self.resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
+        self.spos = Slider(self.axpos, 'x', 0, self.plot_xmax - self.plot_xdiv, valinit=0, valstep=0.5)
+        self.swidth = Slider(self.axwidth, 'xmax', 0, self.plot_xmax, valinit=self.plot_xdiv, valstep=0.5)
         self.resetbtn = Button(self.resetax, 'Reset', color=self.axcolor, hovercolor='0.975')
 
+        self.xleftax = plt.axes([0.4, 0.025, 0.095, 0.04])  # x_pos, y_pos, width, height
+        self.xrightax = plt.axes([0.5, 0.025, 0.095, 0.04])
+        self.xmaxleftax = plt.axes([0.6, 0.025, 0.095, 0.04])
+        self.xmaxrightax = plt.axes([0.7, 0.025, 0.095, 0.04])
+        self.xleftbtn = Button(self.xleftax, '<x', color=self.axcolor, hovercolor='0.975')
+        self.xrightbtn = Button(self.xrightax, 'x>', color=self.axcolor, hovercolor='0.975')
+        self.xmaxleftbtn = Button(self.xmaxleftax, 'xmax-', color=self.axcolor, hovercolor='0.975')
+        self.xmaxrightbtn = Button(self.xmaxrightax, 'xmax+', color=self.axcolor, hovercolor='0.975')
+        self.xupbtn = Button(self.resetax, 'Reset', color=self.axcolor, hovercolor='0.975')
+        self.xdownbtn = Button(self.resetax, 'Reset', color=self.axcolor, hovercolor='0.975')
+
+        def increase_x(event):
+            if ((self.spos.val + 0.5) <= (self.plot_xmax - self.swidth.val)):
+                self.spos.set_val(self.spos.val + 0.5)
+                update_pos(self.spos.val)
+
+        def decrease_x(event):
+            if ((self.spos.val - 0.5) >= self.plot_xmin):
+                self.spos.set_val(self.spos.val - 0.5)
+                update_pos(self.spos.val)
+
+        def increase_xmax(event):
+            if ((self.swidth.val + 0.5) <= self.plot_xmax):
+                self.swidth.set_val(self.swidth.val + 0.5)
+                update_width(self.swidth.val)
+
+        def decrease_xmax(event):
+            if ((self.swidth.val - 0.5) >= self.plot_xmin):
+                self.swidth.set_val(self.swidth.val - 0.5)
+                update_width(self.swidth.val)
+
+        self.xleftbtn.on_clicked(decrease_x)
+        self.xrightbtn.on_clicked(increase_x)
+        self.xmaxleftbtn.on_clicked(decrease_xmax)
+        self.xmaxrightbtn.on_clicked(increase_xmax)
+
         # I'm not sure how to detach these without them forgetting their parents (sliders)
-        def update(val):
+        def update_pos(val):
             pos = self.spos.val
             width = self.swidth.val
 
-            if pos > (self.duration - width):
-                pos = self.duration - width
+            self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
+
+        def update_width(val):
+            pos = self.spos.val
+            width = self.swidth.val
+
+            if pos > (self.plot_xmax - width):
+                pos = self.plot_xmax - width
 
             self.axpos.clear()
-            self.spos.__init__(apos, 'Position', 0, self.duration - width, valinit=pos, valstep=0.5)
-            self.spos.on_changed(update)
+            self.spos.__init__(self.axpos, 'x', 0, self.plot_xmax - width, valinit=pos, valstep=0.5)
+            self.spos.on_changed(update_pos)
 
-            self.axes.axis([pos, pos+width, self.xmin, self.xmax])
+            self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
 
             # TODO: Update
-            #visible_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, i, i+width) * 1000
-            #all_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, min(xdata), max(xdata)) * 1000
+            # visible_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, i, i+width) * 1000
+            # all_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, min(xdata), max(xdata)) * 1000
 
-            #self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
+            # self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
 
-            #self.fig.canvas.draw_idle()
+            # self.fig.canvas.draw_idle()
 
-        self.spos.on_changed(update)
-        self.swidth.on_changed(update)
+        self.spos.on_changed(update_pos)
+        self.swidth.on_changed(update_width)
 
         def reset(event):
             self.swidth.reset()
-            self.spos.__init__(self.apos, 'Position', 0, self.duration - self.xmax, valinit=0, valstep=0.5)
-            self.spos.on_changed(update)
+
+            width = self.swidth.val
+            self.axpos.clear()
+            self.spos.__init__(self.axpos, 'x', 0, self.plot_xmax - width, valinit=0, valstep=0.5)
+            self.spos.on_changed(update_pos)
             self.spos.reset()
 
-            # TODO: Update parameters
-            #visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
-            #all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
 
-            #self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
-            
+            # TODO: Update parameters
+            # visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
+            # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
+
+            # self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
+
         self.resetbtn.on_clicked(reset)
 
-    def update_plot(self, data):
-        print ("Data: " + str(data))
+        self.spos.set_val(0)
+        self.swidth.set_val(self.plot_xmax)
 
-        for key in data:
-            if len(data[key][0]) == 0:
-                print ("No data")
-                return
-
+    def update_data(self, data):
+        if data is None: return
         if INTERFACE_POWER not in data: return
         if INTERFACE_GPIO not in data: return
+        mergeData(self.data, data)
+
+    def update_plot(self):
+        # if data is None:
+        #     data = self.data
+
+        if INTERFACE_POWER not in self.data: return
+        if INTERFACE_GPIO not in self.data: return
+        if len(self.data[INTERFACE_POWER]) == 0: return
+        if len(self.data[INTERFACE_GPIO]) == 0: return
+        if len(self.data[INTERFACE_POWER][0]) == 0: return
+        if len(self.data[INTERFACE_GPIO][0]) == 0: return
 
         if not plt.fignum_exists(self.fig.number):
             plt.show()
         else:
             plt.draw()
-            plt.pause(self.plot_interactivity_pause)
+            plt.pause(self.plot_pause)
+
+        #mergeData(self.data, data)
 
         # I presume I already have this
         # for j in range(len(data[INTERFACE_POWER][0]))[1:]:
@@ -172,24 +218,33 @@ class DGILibPlot(object):
         # for pin_idx in range(len(self.plot_pins):
 
         #     if self.plot_pins[pin_idx] == True:
-            
+
         #         for hold_times in identify_hold_times(data, self.plot_pins[pin_idx], pin_idx, correction_forward = self.pins_correction_forward, shrink = self.pins_interval_shrink):
-            
+
         #             axes.axvspan(hold_times[0], hold_times[1], color=self.pins_colors[pin_idx], alpha=0.5)
 
         #             self.hold_times.append((hold_times[0], hold_times[1]))
         #             self.hold_times_sum += hold_times[1] - hold_times[0]
 
-        self.ln.set_xdata(data[INTERFACE_POWER][0])
-        self.ln.set_ydata(data[INTERFACE_POWER][1])
+        self.ln.set_xdata(self.data[INTERFACE_POWER][0])
+        self.ln.set_ydata(self.data[INTERFACE_POWER][1])
 
-        # if spos.val == i - width:
-        #     axes.axis([i,i+width,plot_min,plot_max])
-        #     spos.set_val(i)
+        pos = self.spos.val
+        width = self.swidth.val
+
+        #print("Scaling: " + str([pos, pos + width, self.plot_ymin, self.plot_ymax]))
+        self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
 
         # visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
         # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
         plt.pause(self.plot_pause)
+
+    def plot_still_exists(self):
+        return plt.fignum_exists(self.fig.number)
+
+    def keep_plot(self):
+        plt.pause(self.plot_pause)
+
 
 def calculate_average_leftpoint_single_interval(power_data, start_time=None, end_time=None):
     """Calculate average value of the power_data using the left Riemann sum"""
@@ -210,7 +265,8 @@ def calculate_average_leftpoint_single_interval(power_data, start_time=None, end
 
     return sum / (end_time - start_time)
 
-def identify_hold_times(whole_data, true_false, pin, correction_forward = 0.00, shrink = 0.00):
+
+def identify_hold_times(whole_data, true_false, pin, correction_forward=0.00, shrink=0.00):
     data = whole_data[INTERFACE_GPIO]
     hold_times = []
     start = data[0][0]
@@ -222,19 +278,19 @@ def identify_hold_times(whole_data, true_false, pin, correction_forward = 0.00, 
     interval_sizes = []
 
     for i in range(len(data[0])):
-        if search == not_in_hold: # Searching for start of hold time 
+        if search == not_in_hold:  # Searching for start of hold time
             if data[1][i][pin] == search:
                 start = data[0][i]
             else:
                 end = data[0][i]
                 search = not search
 
-        if search == in_hold: # Searching for end of hold time
+        if search == in_hold:  # Searching for end of hold time
             if data[1][i][pin] == search:
                 end = data[0][i]
             else:
                 search = not search
-                to_add = (start+correction_forward+shrink,end+correction_forward-shrink)
+                to_add = (start + correction_forward + shrink, end + correction_forward - shrink)
                 if ((to_add[0] != to_add[1]) and (to_add[0] < to_add[1])):
                     hold_times.append(to_add)
                     interval_sizes.append(to_add[1] - to_add[0])
@@ -246,7 +302,7 @@ def identify_hold_times(whole_data, true_false, pin, correction_forward = 0.00, 
 
     if should_add_last_interval:
 
-        invented_end_time = whole_data[INTERFACE_POWER][0][-1]+correction_forward-shrink
+        invented_end_time = whole_data[INTERFACE_POWER][0][-1] + correction_forward - shrink
 
         # This function ASSUMES that the intervals are about the same in size.
         # ... If the last interval that should be highlighted on the graph is
@@ -259,39 +315,41 @@ def identify_hold_times(whole_data, true_false, pin, correction_forward = 0.00, 
         if ((invented_end_time - start) > max(interval_sizes)):
             invented_end_time = start + min(interval_sizes)
 
-        to_add = (start+correction_forward+shrink,invented_end_time)
+        to_add = (start + correction_forward + shrink, invented_end_time)
 
         if ((to_add[0] != to_add[1]) and (to_add[0] < to_add[1])):
             hold_times.append(to_add)
 
     return hold_times
 
-def calculate_average_midpoint_single_interval(power_data, start_time = None, end_time = None):
+
+def calculate_average_midpoint_single_interval(power_data, start_time=None, end_time=None):
     # Calculate average value using midpoint Riemann sum
     sum = 0
- 
+
     actual_start_time = -1
     actual_end_time = -1
- 
+
     for i in range(len(power_data[0]) - 1)[1:]:
         first_current_value = power_data[1][i]
-        second_current_value = power_data[1][i+1]
-        timestamp = power_data[0][i+1]
+        second_current_value = power_data[1][i + 1]
+        timestamp = power_data[0][i + 1]
         last_time = power_data[0][i]
- 
+
         if ((last_time >= start_time) and (last_time < end_time)):
-            sum += ((first_current_value + second_current_value)/2) * (timestamp - last_time)
- 
+            sum += ((first_current_value + second_current_value) / 2) * (timestamp - last_time)
+
             # We have to select the actual start time and the actual 
             if (actual_start_time == -1): actual_start_time = power_data[0][i]
- 
-        if (timestamp >= end_time):
-            actual_end_time = power_data[0][i-1]
-            break
- 
-    return sum / (actual_end_time - actual_start_time)   
 
-def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_time = None, end_time = None):
+        if (timestamp >= end_time):
+            actual_end_time = power_data[0][i - 1]
+            break
+
+    return sum / (actual_end_time - actual_start_time)
+
+
+def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_time=None, end_time=None):
     # Calculate average value using midpoint Riemann sum
     sum = 0
     to_divide = 0
@@ -302,6 +360,7 @@ def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_t
             to_divide += 1
 
     return sum / to_divide
+
 
 def shift_data(data, shift_by):
     new_data = copy.deepcopy(data)

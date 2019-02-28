@@ -10,11 +10,15 @@ config_dict = {
     "loggers": [LOGGER_PLOT],
     "verbose": 0,
     "plot_xmax": 10,
-    "plot_ymax": 0.01,
-    "plot_pins": [2]
+    "plot_ymax": 0.0040,
+    "plot_pins": [False, False, True, True]
 }
 
-with DGILibExtra(**config_dict) as dgilib:
-    data = dgilib.logger(1)
+# import pydgilib_extra.dgilib_logger
+# print(pydgilib_extra.dgilib_logger)
+# print(pydgilib_extra.dgilib_logger.__file__)
 
-    while True: dgilib.keep_plot()
+with DGILibExtra(**config_dict) as dgilib:
+    data = dgilib.logger(10)
+
+    dgilib.hold_plot()

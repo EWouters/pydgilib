@@ -7,7 +7,7 @@ __version__ = "0.1"
 __revision__ = " $Id: dgilib_logger.py 1586 2019-02-13 15:56:25Z EWouters $ "
 __docformat__ = "reStructuredText"
 
-from time import sleep
+from time import sleep, time
 import csv
 from os import curdir, path
 import copy
@@ -18,7 +18,8 @@ import copy
 from pydgilib_extra.dgilib_extra_config import *
 from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO, gpio_augment_edges
 from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
-from pydgilib_extra.dgilib_plot import *
+from pydgilib_extra.dgilib_plot import DGILibPlot
+#from pydgilib_extra.dgilib_plot import DGILibPlot
 
 
 class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
@@ -52,8 +53,8 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
         self.file_name_base = kwargs.get("file_name_base", "log")
         self.log_folder = kwargs.get("log_folder", curdir)
 
-        if LOGGER_PLOT in self.loggers and not (LOGGER_OBJECT in self.loggers):
-            self.loggers.append(LOGGER_OBJECT)
+        # if LOGGER_PLOT in self.loggers and not (LOGGER_OBJECT in self.loggers):
+        #     self.loggers.append(LOGGER_OBJECT)
 
         # Enable the plot logger if figure has been specified.
         if LOGGER_PLOT not in self.loggers and ("fig" in kwargs or "ax" in kwargs):
@@ -83,7 +84,7 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
         DGILibInterfacePower.__init__(self, *args, **kwargs)
 
         if LOGGER_PLOT in self.loggers:
-            self.plotobj = DGILibPlot(kwargs)
+            self.plotobj = DGILibPlot(**kwargs)
 
     def __enter__(self):
         """
@@ -102,16 +103,14 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
         if LOGGER_PLOT in self.loggers:
             if self.augment_gpio:
                 gpio_augment_edges(self.data[INTERFACE_GPIO], self.gpio_delay_time, self.gpio_switch_time, self.data[INTERFACE_POWER][0][-1])
-            self.plotobj.update_plot(self.data)
-            #self.fig, self.ax = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
+            #self.plotobj.update_plot(data)
+            # self.fig, self.ax = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
             # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)
 
         DGILibInterfaceGPIO.__exit__(self, exc_type, exc_value, traceback)
         DGILibInterfacePower.__exit__(self, exc_type, exc_value, traceback)
 
     def logger_start(self):
-
-        print("Enabled interfaces: " + str(self.enabled_interfaces))
 
         if LOGGER_CSV in self.loggers:
             for interface_id in self.enabled_interfaces:
@@ -160,7 +159,8 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
 
         # Create axes self.axes if LOGGER_PLOT is enabled
         if LOGGER_PLOT in self.loggers:
-            self.plotobj.update_plot(self.data)
+            pass
+            #self.plotobj.update_plot(self.data)
             # print("TODO: Create axes, or what if they were parsed?")
                 
         self.start_polling()
@@ -187,10 +187,9 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
                 if LOGGER_OBJECT in self.loggers:
                     for col in range(len(self.data[INTERFACE_GPIO])):
                         self.data[INTERFACE_GPIO][col].extend(data[INTERFACE_GPIO][col])
-                # Update the plot if LOGGER_PLOT is enabled
-                # if LOGGER_PLOT in self.loggers:
-                #     pass
-                    # print("TODO: Update plot")
+                if LOGGER_PLOT in self.loggers:
+                    self.plotobj.update_data(data)
+                    self.plotobj.update_plot()
 
         if INTERFACE_POWER in self.enabled_interfaces:
             data[INTERFACE_POWER] = self.power_read_buffer(self.power_buffers[0])
@@ -204,10 +203,9 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
                     for col in range(len(self.data[INTERFACE_POWER])):
                         self.data[INTERFACE_POWER][col].extend(data[INTERFACE_POWER][col])
                 # Update the plot if LOGGER_PLOT is enabled
-
-        if LOGGER_PLOT in self.loggers:
-            self.plotobj.update_plot(self.data)
-                # print("TODO: Update plot")
+                if LOGGER_PLOT in self.loggers:
+                    self.plotobj.update_data(data)
+                    self.plotobj.update_plot()
         
         # return the data
         return data
@@ -237,19 +235,23 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
         
         """
 
+        end_time = time() + duration
         self.logger_start()
-        sleep(duration)
 
-        return self.logger_stop()
+        while time() < end_time:
+            self.update_callback()
+
+        self.logger_stop()
+
+        if LOGGER_OBJECT not in self.loggers:
+            return None
+        else:
+            return self.data
 
     def data_add(self, data):
         """
         """
-
-        assert(self.data.keys() == data.keys())  # TODO create error
-        for interface_id in data.keys():
-            for col in range(len(self.data[interface_id])):
-                self.data[interface_id][col].extend(data[interface_id][col])
+        mergeData(self.data, data)
 
     def power_filter_by_pin(self, pin=0, data=None):
         """
@@ -272,18 +274,6 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
 
     # def pin_duty_cycle(self, pin=0, data=None):
     #     pass
-
-
-def mergeData(data1, data2):
-    """Make class for data structure? Or at least make a method to merge that mutates the list instead of doing multiple copies
-    """
-    
-    assert(data1.keys() == data2.keys())
-    for interface_id in data1.keys():
-        for col in range(len(data1[interface_id])):
-            data1[interface_id][col].extend(data2[interface_id][col])
-    return data1
-
 
 def power_filter_by_pin(pin, data, verbose=0):
     """
