@@ -13,7 +13,7 @@ from os import curdir, path
 import copy
 
 # Todo, remove dependency
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 from pydgilib_extra.dgilib_extra_config import *
 from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO, gpio_augment_edges
@@ -85,20 +85,12 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
         if LOGGER_PLOT in self.loggers:
             self.plotobj = DGILibPlot(kwargs)
 
-        self.augment_gpio = kwargs.get("augment_gpio", False)
-
     def __enter__(self):
         """
         """
 
         DGILibInterfaceGPIO.__enter__(self)
         DGILibInterfacePower.__enter__(self)
-
-#         print(f"power_buffers at logger {self.power_buffers}")
-
-#         if self.file_name is not None:
-#             # TODO per interface
-#             self.writer = "csv.writer"(open(file_name, 'w'))
 
         return self
 
@@ -109,7 +101,7 @@ class DGILibLogger(DGILibInterfaceGPIO, DGILibInterfacePower):
         # Should be removed and updated every time update_callback is called
         if LOGGER_PLOT in self.loggers:
             if self.augment_gpio:
-                gpio_augment_edges(self.data[INTERFACE_GPIO], 0, self.data[INTERFACE_POWER][0][-1])
+                gpio_augment_edges(self.data[INTERFACE_GPIO], self.gpio_delay_time, self.gpio_switch_time, self.data[INTERFACE_POWER][0][-1])
             self.plotobj.update_plot(self.data)
             #self.fig, self.ax = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
             # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)

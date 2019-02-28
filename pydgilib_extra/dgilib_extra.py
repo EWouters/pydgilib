@@ -24,6 +24,7 @@ class DGILibExtra(DGILib, DGILibLogger):
         """
 
         DGILib.__init__(self, *args, **kwargs)
+
         DGILibLogger.__init__(self, *args, **kwargs)
 
         self.available_interfaces = []
@@ -37,6 +38,8 @@ class DGILibExtra(DGILib, DGILibLogger):
         DGILib.__enter__(self)
 
         self.available_interfaces = self.interface_list()
+
+        DGILibLogger.__enter__(self)
 
         return self
 
