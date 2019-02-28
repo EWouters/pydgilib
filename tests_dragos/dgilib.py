@@ -15,6 +15,6 @@ config_dict = {
 }
 
 with DGILibExtra(**config_dict) as dgilib:
-	data = dgilib.logger(1)
+    data = dgilib.logger(1)
 
-	while True: a = 2+2
+    while True: dgilib.keep_plot()

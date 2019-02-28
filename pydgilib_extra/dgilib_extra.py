@@ -101,3 +101,7 @@ class DGILibExtra(DGILib, DGILibLogger):
             )
 
         return timer_prescaler / timer_frequency
+
+    def keep_plot(self):
+        if self.plotobj is not None:
+            self.plotobj.keep_plot()
