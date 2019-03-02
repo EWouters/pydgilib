@@ -18,17 +18,23 @@ class InterfaceData(object):
 
     __slots__ = ['timestamps', 'values']
 
-    def __init__(self, interface_data=None):
+    def __init__(self, *args):
         """Take tuple of timestamps and values."""
-        if interface_data is None:
+        if not args:
             self.timestamps = []
             self.values = []
-        elif isinstance(interface_data, InterfaceData):
-            self = interface_data
+        elif len(args) == 1 and isinstance(args[0], InterfaceData):
+            self = args[0]
+        elif len(args) == 1 and valid_interface_data(args[0]):
+            self.timestamps, self.values = args[0]
+        elif len(args) == 2 and isinstance(args[0], list) and isinstance(args[1], list):
+            self.timestamps, self.values = args
+        elif len(args) == 2 and isinstance(args[0], (int, float)) and isinstance(args[1], (int, float, list)):
+            self.timestamps = [args[0]]
+            self.values = [args[1]]
         else:
-            assert valid_interface_data(
-                interface_data), f"Samples passed to InterfaceData were not valid_interface_data. {interface_data}"
-            self.timestamps, self.values = interface_data
+            raise ValueError(
+                f"Samples passed to InterfaceData must be tuple([],[]) or timestamps, values or InterfaceData. Got {args}")
 
     def __iadd__(self, interface_data):
         """Append new interface_data (in-place).
@@ -75,14 +81,25 @@ class InterfaceData(object):
             return 0
 
     def __getitem__(self, index):
-        if index == self.__slots__[0]:
-            return self.timestamps
-        elif index == self.__slots__[1]:
-            return self.values
-        else:
-            return (self.timestamps[index], self.values[index])
+        """Get item.
+
+        Used to provide `timestamp, value = interface_data[5]` and
+        `timestamp, value = interface_data[2:5]` syntax
+        """
+        return (self.timestamps[index], self.values[index])
+        # # Provides data["timestamps"] as well
+        # if index == self.__slots__[0]:
+        #     return self.timestamps
+        # elif index == self.__slots__[1]:
+        #     return self.values
+        # else:
+        #     return (self.timestamps[index], self.values[index])
 
     def __contains__(self, item):
+        """Contains.
+
+        Used to provide `([1], [2]) in interface_data` syntax
+        """
         if isinstance(item, InterfaceData):
             return all(any(item_timestamp == self_timestamp and item_value == self_value for self_timestamp, self_value in self) for item_timestamp, item_value in item)
         else:

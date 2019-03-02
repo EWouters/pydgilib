@@ -96,7 +96,8 @@ class TestPyDGILib(object):
             data_obj = dgilib.data
 
         assert(len(data) == len(data_obj))
-        assert(len(tuple(data[INTERFACE_POWER])) == len(data_obj[INTERFACE_POWER]))
+        assert(len(tuple(data[INTERFACE_POWER]))
+               == len(data_obj[INTERFACE_POWER]))
         assert(len(data[INTERFACE_GPIO]) == len(data_obj[INTERFACE_GPIO]))
         assert(tuple(data[INTERFACE_POWER])[0] == data_obj[INTERFACE_POWER][0])
         assert(tuple(data[INTERFACE_POWER])[1] == data_obj[INTERFACE_POWER][1])
@@ -151,6 +152,14 @@ class TestInterfaceData(object):
         data = InterfaceData(([1, 2], [3, 4]))
         assert tuple(data) == ((1, 3), (2, 4),), "Incorrect value"
 
+        # Instantiation from two lists
+        data = InterfaceData([1, 2], [3, 4])
+        assert tuple(data) == ((1, 3), (2, 4),), "Incorrect value"
+
+        # Instantiation from two ints
+        data = InterfaceData(1, 2)
+        assert tuple(data) == ((1, 2),), "Incorrect value"
+
         # try catch assert error?
 
     def test__getattr__(self):
@@ -159,36 +168,36 @@ class TestInterfaceData(object):
         data = InterfaceData()
         assert data.timestamps == [], "Incorrect value"
         assert data.values == [], "Incorrect value"
-        assert data["timestamps"] == [], "Incorrect value"
-        assert data["values"] == [], "Incorrect value"
+        # assert data["timestamps"] == [], "Incorrect value"
+        # assert data["values"] == [], "Incorrect value"
 
         # Instantiation from tuple
         data = InterfaceData(([], []))
         assert data.timestamps == [], "Incorrect value"
         assert data.values == [], "Incorrect value"
-        assert data["timestamps"] == [], "Incorrect value"
-        assert data["values"] == [], "Incorrect value"
+        # assert data["timestamps"] == [], "Incorrect value"
+        # assert data["values"] == [], "Incorrect value"
 
         # Instantiation from list
         data = InterfaceData([[1], [2]])
         assert data.timestamps == [1], "Incorrect value"
         assert data.values == [2], "Incorrect value"
-        assert data["timestamps"] == [1], "Incorrect value"
-        assert data["values"] == [2], "Incorrect value"
+        # assert data["timestamps"] == [1], "Incorrect value"
+        # assert data["values"] == [2], "Incorrect value"
 
         # Instantiation from tuple
         data = InterfaceData(([1], [2]))
         assert data.timestamps == [1], "Incorrect value"
         assert data.values == [2], "Incorrect value"
-        assert data["timestamps"] == [1], "Incorrect value"
-        assert data["values"] == [2], "Incorrect value"
+        # assert data["timestamps"] == [1], "Incorrect value"
+        # assert data["values"] == [2], "Incorrect value"
 
         # Instantiation from tuple
         data = InterfaceData(([1, 2], [3, 4]))
         assert data.timestamps == [1, 2], "Incorrect value"
         assert data.values == [3, 4], "Incorrect value"
-        assert data["timestamps"] == [1, 2], "Incorrect value"
-        assert data["values"] == [3, 4], "Incorrect value"
+        # assert data["timestamps"] == [1, 2], "Incorrect value"
+        # assert data["values"] == [3, 4], "Incorrect value"
         assert data[0] == (1, 3), "Incorrect value"
         assert data[1] == (2, 4), "Incorrect value"
 
@@ -200,7 +209,7 @@ class TestInterfaceData(object):
         data = InterfaceData([[1], [2]])
 
         # Setting as tuple (not recommended)
-        data["timestamps"][0] = 3
+        data.timestamps[0] = 3
         assert tuple(data) == ((3, 2),), "Incorrect value"
 
         # Setting as attribute (not recommended)
@@ -306,10 +315,33 @@ class TestInterfaceData(object):
 
     def test__getitem__(self):
         """Tests for __getitem__ function."""
-        # Simple instantiaton
         data = InterfaceData(([1, 2], [3, 4]))
         assert data[0] == (1, 3), "Incorrect value"
         assert data[1] == (2, 4), "Incorrect value"
+        assert data[::-1] == ([2, 1], [4, 3]), "Incorrect value"
+        data.append([[9, 8, 7, 6], [34, 45, 56, 67]])
+        assert data[4:6] == ([7, 6], [56, 67]), "Incorrect value"
+        
+        # Loops
+        for timestamp, value in data:
+            assert timestamp == 1 and value == 3, "Incorrect value"
+            break
+        for timestamp, value in reversed(data):
+            assert timestamp == 6 and value == 67, "Incorrect value"
+            break
+        for sample in data:
+            assert InterfaceData(*sample) in data, "Incorrect value"
+
+    def test__contains__(self):
+        """Tests for __contains__ function."""
+        data = InterfaceData(([1, 2], [3, 4]))
+        assert ([2], [4]) in data, "Incorrect value"
+        assert ([9], [34]) not in data, "Incorrect value"
+        assert ([], []) in data, "Incorrect value"
+        assert data in data + ([10], [34]), "Incorrect value"
+        assert data + ([10], [34]) not in data, "Incorrect value"
+        assert data + ([10], [34]) in data + ([10], [34]), "Incorrect value"
+
 
     def test_valid_interface_data(self):
         """Tests for valid_interface_data function."""
@@ -396,11 +428,13 @@ class TestLoggerData(object):
         # Add dict for existing interface
         data = LoggerData({INTERFACE_POWER: ([1], [2])})
         data += {INTERFACE_POWER: ([2], [3])}
-        assert tuple(data[INTERFACE_POWER]) == ((1, 2), (2, 3)), "Incorrect value"
+        assert tuple(data[INTERFACE_POWER]) == (
+            (1, 2), (2, 3)), "Incorrect value"
         # Add LoggerData for existing interface
         data = LoggerData({INTERFACE_POWER: ([1], [2])})
         data += LoggerData({INTERFACE_POWER: ([2], [3])})
-        assert tuple(data[INTERFACE_POWER]) == ((1, 2), (2, 3)), "Incorrect value"
+        assert tuple(data[INTERFACE_POWER]) == (
+            (1, 2), (2, 3)), "Incorrect value"
 
         # Add dict and LoggerData with new interfaces
         data = LoggerData({INTERFACE_POWER: ([1], [2])})
@@ -418,7 +452,8 @@ class TestLoggerData(object):
             INTERFACE_POWER: ([2], [3]), INTERFACE_GPIO: ([2], [3])}
         data += LoggerData({INTERFACE_POWER: ([3], [4]),
                             INTERFACE_GPIO: ([1], [2])})
-        assert tuple(data[INTERFACE_POWER]) == ((1, 2), (2, 3), (3, 4)), "Incorrect value"
+        assert tuple(data[INTERFACE_POWER]) == (
+            (1, 2), (2, 3), (3, 4)), "Incorrect value"
         assert tuple(data[INTERFACE_GPIO]) == (
             (2, 3), (1, 2)), "Incorrect value"
         assert tuple(data[4]) == ((3, 5), (4, 6)), "Incorrect value"
@@ -429,14 +464,17 @@ class TestLoggerData(object):
         data1 = LoggerData({INTERFACE_POWER: ([1], [2])})
         data2 = LoggerData({INTERFACE_POWER: ([2], [3])})
         data = data1 + data2
-        assert tuple(data[INTERFACE_POWER]) == ((1, 2), (2, 3)), "Incorrect value"
+        assert tuple(data[INTERFACE_POWER]) == (
+            (1, 2), (2, 3)), "Incorrect value"
         # Check that data has been deep copied
         data1[INTERFACE_POWER] = ([4], [5])
-        assert tuple(data[INTERFACE_POWER]) == ((1, 2), (2, 3)), "Incorrect value"
+        assert tuple(data[INTERFACE_POWER]) == (
+            (1, 2), (2, 3)), "Incorrect value"
         # Delete original copies (decrease reference count to them)
         del data1
         del data2
-        assert tuple(data[INTERFACE_POWER]) == ((1, 2), (2, 3)), "Incorrect value"
+        assert tuple(data[INTERFACE_POWER]) == (
+            (1, 2), (2, 3)), "Incorrect value"
         # # Check that data has been shallow copied
         # data = LoggerData({INTERFACE_POWER: ([1], [2])}), "Incorrect value"
         # data1 = data
