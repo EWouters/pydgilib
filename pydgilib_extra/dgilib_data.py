@@ -13,38 +13,36 @@ attr_dict = {
 }
 
 
-class InterfaceData(tuple):
+class InterfaceData(object):
     """Class to store DGILib Logger Interface Data."""
 
-    def __new__(*args, **kwargs):
+    __slots__ = ['timestamps', 'values']
+
+    def __init__(self, interface_data=None):
         """Take tuple of timestamps and values."""
-        # Call init function of tuple
-        if len(args) == 1:
-            args = *args, ([], [])
-        assert valid_interface_data(
-            args[1]), f"Samples passed to InterfaceData were not valid_interface_data. {args[1]}"
-        return tuple.__new__(*args, **kwargs)
-
-    @property
-    def timestamps(self):
-        """Get the list of timestamps."""
-        return self[0]
-
-    @property
-    def values(self):
-        """Get the list of values."""
-        return self[1]
+        if interface_data is None:
+            self.timestamps = []
+            self.values = []
+        elif isinstance(interface_data, InterfaceData):
+            self = interface_data
+        else:
+            assert valid_interface_data(
+                interface_data), f"Samples passed to InterfaceData were not valid_interface_data. {interface_data}"
+            self.timestamps, self.values = interface_data
 
     def __iadd__(self, interface_data):
         """Append new interface_data (in-place).
 
         Used to provide `interface_data += interface_data1` syntax
         """
-        if not isinstance(interface_data, InterfaceData):
+        if isinstance(interface_data, InterfaceData):
+            self.timestamps.extend(interface_data.timestamps)
+            self.values.extend(interface_data.values)
+        else:
             assert valid_interface_data(
                 interface_data), f"Samples passed to InterfaceData were not valid_interface_data. {interface_data}"
-        self[0].extend(interface_data[0])
-        self[1].extend(interface_data[1])
+            self.timestamps.extend(interface_data[0])
+            self.values.extend(interface_data[1])
         return self
 
     def __add__(self, interface_data):
@@ -71,7 +69,25 @@ class InterfaceData(tuple):
 
     def __len__(self):
         """Get the number of samples."""
-        return len(self[0])
+        if len(self.timestamps):
+            return len(self.timestamps)
+        else:
+            return 0
+
+    def __getitem__(self, index):
+        if index == self.__slots__[0]:
+            return self.timestamps
+        elif index == self.__slots__[1]:
+            return self.values
+        else:
+            return (self.timestamps[index], self.values[index])
+
+    def __contains__(self, item):
+        if isinstance(item, InterfaceData):
+            return all(any(item_timestamp == self_timestamp and item_value == self_value for self_timestamp, self_value in self) for item_timestamp, item_value in item)
+        else:
+            _item = InterfaceData(item)
+            return all(any(item_timestamp == self_timestamp and item_value == self_value for self_timestamp, self_value in self) for item_timestamp, item_value in _item)
 
 
 class LoggerData(dict):
@@ -167,7 +183,7 @@ class LoggerData(dict):
             raise ValueError(
                 f"attr must be a named or numbered interface. Got {attr}")
 
-    def __repr__(self):
+    def __str__(self):
         """Print data.
 
         Used to provide `str(data)` syntax.
