@@ -1,74 +1,58 @@
-"""This module provides Python bindings for DGILib Extra."""
-
-__author__ = "Erik Wouters <ehwo(at)kth.se>"
-__credits__ = "Atmel Corporation. / Rev.: Atmel-42771A-DGILib_User Guide-09/2016"
-__license__ = "MIT"
-__version__ = "0.1"
-__revision__ = " $Id: dgilib_extra.py 1586 2019-02-13 15:56:25Z EWouters $ "
-__docformat__ = "reStructuredText"
+"""This module provides user friendly way to interact with the DGILib API."""
 
 from time import sleep
 
 from pydgilib.dgilib import DGILib
 
-from pydgilib_extra.dgilib_extra_config import *
+from pydgilib.dgilib_config import INTERFACE_TIMESTAMP
 from pydgilib_extra.dgilib_logger import DGILibLogger
 
 
-class DGILibExtra(DGILib, DGILibLogger):
-    """Python bindings for DGILib Extra.
-    """
+class DGILibExtra(DGILib):
+    """A user friendly way to interact with the DGILib API."""
 
     def __init__(self, *args, **kwargs):
-        """
-        """
-
+        """Instantiate DGILibExtra object."""
         DGILib.__init__(self, *args, **kwargs)
-
-        DGILibLogger.__init__(self, *args, **kwargs)
+        self.logger = DGILibLogger(self, *args, **kwargs)
 
         self.available_interfaces = []
         self.enabled_interfaces = []
         self.timer_factor = None
 
     def __enter__(self):
-        """
-        """
-
+        """For usage in `with DGILibExtra() as dgilib:` syntax."""
         DGILib.__enter__(self)
 
-        self.available_interfaces = self.interface_list()
+        self.available_interfaces = self.interface_communication.interface_list()
 
-        DGILibLogger.__enter__(self)
+        self.logger.__enter__()
 
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-
+        """For usage in `with DGILibExtra() as dgilib:` syntax."""
         DGILibLogger.__exit__(self, exc_type, exc_value, traceback)
 
         for interface in self.enabled_interfaces:
-            self.interface_disable(interface)
+            self.interface_communication.interface_disable(interface)
 
-        DGILib.__exit__(self, exc_type, exc_value, traceback)
+        self.logger.__exit__(exc_type, exc_value, traceback)
 
         if self.verbose:
             print("bye from DGILib Extra")
 
     def info(self):
         """Get the build information of DGILib.
-        
-        :param print_info: A flag used to print the build information to the console (default is False)
-        :type print_info: bool
+
         :return:  Version information of DGILib:
             - major_version: the major_version of DGILib
             - minor_version: the minor_version of DGILib
             - build_number: the build number of DGILib. 0 if not supported
-            - major_fw: the major firmware version of the DGI device connected
-            - minor_fw: the minor firmware version of the DGI device connected
+            - major_fw: the major firmware version of the connected DGI device
+            - minor_fw: the minor firmware version of the connected DGI device
         :rtype: tuple
         """
-
         major_version = self.get_major_version()
         minor_version = self.get_minor_version()
         build_number = self.get_build_number()
@@ -77,27 +61,25 @@ class DGILibExtra(DGILib, DGILibLogger):
         return major_version, minor_version, build_number, major_fw, minor_fw
 
     def device_reset(self, duration=1):
-        """Set the device reset line for duration seconds.
-        """
-
+        """Set the device reset line for duration seconds."""
         self.target_reset(True)
         sleep(duration)
         self.target_reset(False)
 
     def get_time_factor(self):
         """Get the factor to multiply timestamps by to get seconds.
-        
+
         :return: timer_factor
         :rtype: double
         """
-
         _, config_value = self.interface_get_configuration(INTERFACE_TIMESTAMP)
         timer_prescaler = config_value[0]
         timer_frequency = config_value[1]
 
-        if self.verbose:
+        if self.pydgilib.verbose:
             print(
-                f"timer_factor: {timer_prescaler / timer_frequency}, timer_prescaler: {timer_prescaler}, timer_frequency: {timer_frequency}"
-            )
+                f"timer_factor: {timer_prescaler / timer_frequency}, "
+                f"timer_prescaler: {timer_prescaler}, timer_frequency: "
+                f"{timer_frequency}")
 
         return timer_prescaler / timer_frequency

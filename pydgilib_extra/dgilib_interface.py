@@ -1,16 +1,8 @@
-"""This module wraps the calls to the Power Interface."""
-
-from time import sleep
-
-from pydgilib.dgilib_config import (
-    CALIBRATING, DONE, IDLE, OVERFLOWED, RUNNING, XAM)
-from pydgilib_extra.dgilib_extra_config import INTERFACE_POWER
-from pydgilib_extra.dgilib_extra_exceptions import (
-    PowerReadError, PowerStatusError)
+"""This module provides a base interface class."""
 
 
-class DGILibInterfacePower(object):
-    """Wraps the calls to the Power interface."""
+class DGILibInterface(object):
+    """Provides a base interface class."""
 
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibInterfacePower object."""
