@@ -3,13 +3,13 @@
 from os import getcwd
 from ctypes import cdll
 
-from pydgilib.dgilib_exceptions import DLLError
+from pydgilib.dgilib_exceptions import (
+    DLLError, DeviceIndexError, DeviceConnectionError)
 from pydgilib.dgilib_discovery import DGILibDiscovery
 from pydgilib.dgilib_housekeeping import DGILibHousekeeping
 from pydgilib.dgilib_interface_communication import (
     DGILibInterfaceCommunication)
 from pydgilib.dgilib_auxiliary import DGILibAuxiliary
-from pydgilib.dgilib_exceptions import InstantiationError
 
 
 class DGILib(object):
@@ -31,6 +31,57 @@ class DGILib(object):
     ...     dgilib.get_major_version()
     5
     """
+
+    # Add modules
+    # Discovery
+    discovery = DGILibDiscovery
+    discover = DGILibDiscovery.discover
+    get_device_count = DGILibDiscovery.get_device_count
+    get_device_name = DGILibDiscovery.get_device_name
+    get_device_serial = DGILibDiscovery.get_device_serial
+    is_msd_mode = DGILibDiscovery.is_msd_mode
+    set_mode = DGILibDiscovery.set_mode
+
+    # Housekeeping
+    housekeeping = DGILibHousekeeping
+    connect = DGILibHousekeeping.connect
+    disconnect = DGILibHousekeeping.disconnect
+    connection_status = DGILibHousekeeping.connection_status
+    get_major_version = DGILibHousekeeping.get_major_version
+    get_minor_version = DGILibHousekeeping.get_minor_version
+    get_build_number = DGILibHousekeeping.get_build_number
+    get_fw_version = DGILibHousekeeping.get_fw_version
+    start_polling = DGILibHousekeeping.start_polling
+    stop_polling = DGILibHousekeeping.stop_polling
+    target_reset = DGILibHousekeeping.target_reset
+
+    # Interface communication
+    interface_communication = DGILibInterfaceCommunication
+    interface_list = DGILibInterfaceCommunication.interface_list
+    interface_enable = DGILibInterfaceCommunication.interface_enable
+    interface_disable = DGILibInterfaceCommunication.interface_disable
+    interface_get_configuration = DGILibInterfaceCommunication.interface_get_configuration
+    interface_set_configuration = DGILibInterfaceCommunication.interface_set_configuration
+    interface_clear_buffer = DGILibInterfaceCommunication.interface_clear_buffer
+    interface_read_data = DGILibInterfaceCommunication.interface_read_data
+    interface_write_data = DGILibInterfaceCommunication.interface_write_data
+
+    # Auxilary
+    auxiliary = DGILibAuxiliary
+    auxiliary_power_initialize = DGILibAuxiliary.auxiliary_power_initialize
+    auxiliary_power_uninitialize = DGILibAuxiliary.auxiliary_power_uninitialize
+    auxiliary_power_register_buffer_pointers = DGILibAuxiliary.auxiliary_power_register_buffer_pointers
+    auxiliary_power_unregister_buffer_pointers = DGILibAuxiliary.auxiliary_power_unregister_buffer_pointers
+    auxiliary_power_calibration_is_valid = DGILibAuxiliary.auxiliary_power_calibration_is_valid
+    auxiliary_power_trigger_calibration = DGILibAuxiliary.auxiliary_power_trigger_calibration
+    auxiliary_power_get_calibration = DGILibAuxiliary.auxiliary_power_get_calibration
+    auxiliary_power_get_circuit_type = DGILibAuxiliary.auxiliary_power_get_circuit_type
+    auxiliary_power_get_status = DGILibAuxiliary.auxiliary_power_get_status
+    auxiliary_power_start = DGILibAuxiliary.auxiliary_power_start
+    auxiliary_power_stop = DGILibAuxiliary.auxiliary_power_stop
+    auxiliary_power_lock_data_for_reading = DGILibAuxiliary.auxiliary_power_lock_data_for_reading
+    auxiliary_power_copy_data = DGILibAuxiliary.auxiliary_power_copy_data
+    auxiliary_power_free_data = DGILibAuxiliary.auxiliary_power_free_data
 
     def __init__(self, dgilib_path="dgilib.dll", *args, **kwargs):
         """Instantiate DGILib object.
@@ -67,32 +118,58 @@ class DGILib(object):
         self.device_sn = kwargs.get("device_sn", None)
         self.verbose = kwargs.get("verbose", 0)
 
+        self.dgi_hndl = None
+        self.power_hndl = None
+
         # Instantiate modules
-        self.discovery = DGILibDiscovery(self)
-        self.housekeeping = DGILibHousekeeping(self)
-        self.interface_communication = DGILibInterfaceCommunication(self)
-        self.auxiliary = DGILibAuxiliary(self)
+        # self.discovery(self)
+        # self.housekeeping(self)
+        # self.interface_communication(self)
+        # self.auxiliary(self)
 
     def __enter__(self):
         """For usage in `with DGILib() as dgilib:` syntax."""
-        DGILibDiscovery.__enter__(self)
-        DGILibHousekeeping.__enter__(self)
-        DGILibAuxiliary.__enter__(self)
+        # Discovery
+        self.discover()
+        device_count = self.get_device_count()
+
+        if self.device_sn is None:
+            if self.device_index is None:
+                self.device_index = 0
+            elif self.device_index > device_count - 1:
+                raise DeviceIndexError(
+                    f"Discovered {device_count} devices so could not select "
+                    f"device with index {self.device_index}."
+                )
+            self.device_sn = self.get_device_serial(self.device_index)
+
+        # UNTESTED:
+        # if self.is_msd_mode(self.device_sn):
+        #     res = self.set_mode(self.device_sn, 1)
+        #     print(f"\t{res} set_mode 1")
+
+        # Housekeeping
+        self.dgi_hndl = self.connect(self.device_sn)
+        c_status = self.connection_status()
+        if c_status:
+            raise DeviceConnectionError(
+                f"Could not connect to device. Connection status: {c_status}.")
+
+        # Interface communication
+
+        # Auxilary
+        self.power_hndl = self.auxiliary_power_initialize()
 
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         """For usage in `with DGILib() as dgilib:` syntax."""
-        DGILibAuxiliary.__exit__(self, exc_type, exc_value, traceback)
-        DGILibHousekeeping.__exit__(self, exc_type, exc_value, traceback)
-        DGILibDiscovery.__exit__(self, exc_type, exc_value, traceback)
+        # Discovery
 
-        if self.verbose:
-            print("bye from DGILib")
+        # Housekeeping
+        self.disconnect()
 
-    def isDGILib(self, pydgilib):
-        """Use to detect that this is a DGILib class."""
-        if not isinstance(pydgilib, DGILib):
-            raise InstantiationError(
-                f"This class can only be instantiated with a DGILib class. Got"
-                f" {pydgilib}")
+        # Interface communication
+
+        # Auxilary
+        self.auxiliary_power_uninitialize()

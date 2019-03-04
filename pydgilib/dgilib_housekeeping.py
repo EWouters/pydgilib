@@ -17,41 +17,9 @@ class DGILibHousekeeping(object):
     The library helps parse data streams of high complexity.
     """
 
-    def __init__(self, pydgilib):
-        """Populate pydgilib attribute."""
-        pydgilib.isDGILib()
-        self.pydgilib = pydgilib
-        # Make methods available in pydgilib.
-        self.pydgilib.connect = self.connect
-        self.pydgilib.disconnect = self.disconnect
-        self.pydgilib.connection_status = self.connection_status
-        self.pydgilib.get_major_version = self.get_major_version
-        self.pydgilib.get_minor_version = self.get_minor_version
-        self.pydgilib.get_build_number = self.get_build_number
-        self.pydgilib.get_fw_version = self.get_fw_version
-        self.pydgilib.start_polling = self.start_polling
-        self.pydgilib.stop_polling = self.stop_polling
-        self.pydgilib.target_reset = self.target_reset
-
-    def __enter__(self):
-        """For usage in `with DGILib() as dgilib:` syntax.
-
-        :raises: :exc:`DeviceConnectionError`
-        """
-        self.pydgilib.dgi_hndl = self.connect(self.pydgilib.device_sn)
-        c_status = self.connection_status()
-        if c_status:
-            raise DeviceConnectionError(
-                f"Could not connect to device. Connection status: {c_status}."
-            )
-
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        """For usage in `with DGILib() as dgilib:` syntax."""
-        self.disconnect()
-        if self.pydgilib.verbose:
-            print("bye from Housekeeping")
+    dgilib = None
+    verbose = None
+    dgi_hndl = None
 
     def connect(self, device_sn):
         """`connect`.
@@ -79,10 +47,10 @@ class DGILibHousekeeping(object):
         dgi_hndl = c_uint()  # Create the dgi_hndl
 
         # Initialize (not in manual, exists in dgilib.h)
-        # self.pydgilib.dgilib.Initialize(byref(dgi_hndl))
+        # self.dgilib.Initialize(byref(dgi_hndl))
 
-        res = self.pydgilib.dgilib.connect(device_sn, byref(dgi_hndl))
-        if self.pydgilib.verbose:
+        res = self.dgilib.connect(device_sn, byref(dgi_hndl))
+        if self.verbose:
             print(f"\t{res} connect")
         if res:
             raise DeviceReturnError(f"connect returned: {res}")
@@ -104,14 +72,14 @@ class DGILibHousekeeping(object):
 
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.disconnect(self.pydgilib.dgi_hndl)
-        if self.pydgilib.verbose:
+        res = self.dgilib.disconnect(self.dgi_hndl)
+        if self.verbose:
             print(f"\t{res} disconnect")
         if res:
             raise DeviceReturnError(f"disconnect returned: {res}")
 
         # UnInitialize (not in manual, exists in dgilib.h)
-        # self.pydgilib.dgilib.UnInitialize(dgi_hndl)
+        # self.dgilib.UnInitialize(dgi_hndl)
 
     def connection_status(self):
         """`connection_status`.
@@ -129,9 +97,9 @@ class DGILibHousekeeping(object):
         :return: A non-zero return value indicates a connection error.
         :rtype: int
         """
-        c_status = self.pydgilib.dgilib.connection_status(
-            self.pydgilib.dgi_hndl)
-        if self.pydgilib.verbose:
+        c_status = self.dgilib.connection_status(
+            self.dgi_hndl)
+        if self.verbose:
             print(f"connection_status: {c_status}")
 
         return c_status
@@ -146,9 +114,9 @@ class DGILibHousekeeping(object):
         :return: The major version of the DGI library
         :rtype: int
         """
-        major_version = self.pydgilib.dgilib.get_major_version()
+        major_version = self.dgilib.get_major_version()
 
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(f"major_version: {major_version}")
 
         return major_version
@@ -163,9 +131,9 @@ class DGILibHousekeeping(object):
         :return: The minor version of the DGI library
         :rtype: int
         """
-        minor_version = self.pydgilib.dgilib.get_minor_version()
+        minor_version = self.dgilib.get_minor_version()
 
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(f"minor_version: {minor_version}")
 
         return minor_version
@@ -182,9 +150,9 @@ class DGILibHousekeeping(object):
         :return: The build number of DGILib. If not supported, returns 0.
         :rtype: int
         """
-        build_number = self.pydgilib.dgilib.get_build_number()
+        build_number = self.dgilib.get_build_number()
 
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(f"build_number: {build_number}")
 
         return build_number
@@ -215,13 +183,13 @@ class DGILibHousekeeping(object):
         """
         major_fw = c_ubyte()
         minor_fw = c_ubyte()
-        res = self.pydgilib.dgilib.get_fw_version(
-            self.pydgilib.dgi_hndl, byref(major_fw), byref(minor_fw))
-        if self.pydgilib.verbose:
+        res = self.dgilib.get_fw_version(
+            self.dgi_hndl, byref(major_fw), byref(minor_fw))
+        if self.verbose:
             print(f"\t{res} get_fw_version")
         if res:
             raise DeviceReturnError(f"get_fw_version returned: {res}")
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(f"major_fw: {major_fw.value}\nminor_fw: {minor_fw.value}")
 
         return major_fw.value, minor_fw.value
@@ -246,8 +214,8 @@ class DGILibHousekeeping(object):
         :type dgi_hndl: c_uint()
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.start_polling(self.pydgilib.dgi_hndl)
-        if self.pydgilib.verbose:
+        res = self.dgilib.start_polling(self.dgi_hndl)
+        if self.verbose:
             print(f"\t{res} start_polling")
         if res:
             raise DeviceReturnError(f"start_polling returned: {res}")
@@ -270,8 +238,8 @@ class DGILibHousekeeping(object):
         :type dgi_hndl: c_uint()
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.stop_polling(self.pydgilib.dgi_hndl)
-        if self.pydgilib.verbose:
+        res = self.dgilib.stop_polling(self.dgi_hndl)
+        if self.verbose:
             print(f"\t{res} stop_polling")
         if res:
             raise DeviceReturnError(f"stop_polling returned: {res}")
@@ -295,9 +263,9 @@ class DGILibHousekeeping(object):
         :type hold_reset: bool
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.target_reset(
-            self.pydgilib.dgi_hndl, hold_reset)
-        if self.pydgilib.verbose:
+        res = self.dgilib.target_reset(
+            self.dgi_hndl, hold_reset)
+        if self.verbose:
             print(f"\t{res} target_reset")
         if res:
             raise DeviceReturnError(f"target_reset returned: {res}")

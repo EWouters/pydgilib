@@ -8,7 +8,7 @@ class DGILibInterface(object):
         """Instantiate DGILibInterfacePower object."""
         # Argument parsing
         self.power_buffers = kwargs.get("power_buffers", [])
-        if self.pydgilib.verbose:
+        if self.verbose:
             print("power_buffers: ", self.power_buffers)
 
     def __enter__(self):
@@ -115,7 +115,7 @@ class DGILibInterface(object):
         #   - OVERFLOWED = 0x11
         # and raise PowerStatusError if it is.
         power_status = self.auxiliary_power_get_status()
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(f"power_status: {power_status}")
         # if power_status <= DONE or power_status == OVERFLOWED:
         if power_status not in (IDLE, RUNNING, DONE, OVERFLOWED):
@@ -152,9 +152,9 @@ class DGILibInterface(object):
             if self.auxiliary_power_get_status() != OVERFLOWED:
                 break
 
-        if self.pydgilib.verbose >= 2:
+        if self.verbose >= 2:
             print(f"Collected {len(power_samples)} power samples")
-        if self.pydgilib.verbose >= 4:
+        if self.verbose >= 4:
             print(timestamps, power_samples)
 
         return timestamps, power_samples

@@ -6,9 +6,7 @@ from pydgilib_extra import (
     LOGGER_CSV, LOGGER_OBJECT, INTERFACE_POWER, INTERFACE_SPI, INTERFACE_GPIO)
 import unittest
 
-# dgilib_path = "C:\\Users\\erikw_000\\Documents\\GitHub\\Atmel-SAML11\\Python\\dgilib.dll"
-
-dgilib_path = "/home/erik/GitHub/Atmel-SAML11/Python/pydgilib/dgilib.dll"
+dgilib_path = "C:\\Users\\erikw_000\\Documents\\GitHub\\Atmel-SAML11\\Python\\dgilib.dll"
 
 
 class TestPyDGILib(object):

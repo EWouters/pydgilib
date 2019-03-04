@@ -3,8 +3,7 @@
 from ctypes import byref, create_string_buffer
 
 from pydgilib.dgilib_config import GET_STRING_SIZE
-from pydgilib.dgilib_exceptions import (
-    DeviceIndexError, DeviceReturnError)
+from pydgilib.dgilib_exceptions import DeviceReturnError
 
 
 class DGILibDiscovery(object):
@@ -15,93 +14,51 @@ class DGILibDiscovery(object):
     Gateway Interface user guide for further details. DGILib handles
     the low-level USB communication and adds a level of buffering for
     minimizing the chance of overflows.
+
+    TODO?
+    2.1.1. initialize_status_change_notification
+    Initializes the system necessary for using the status change notification
+    callback mechanisms. A handle will be created to keep track of the registered
+    callbacks. This function must always be called before registering and
+    unregistering notification callbacks.
+    Function definition
+    void initialize_status_change_notification(uint32_t* handlep)
+    Parameters
+    handlep Pointer to a variable that will hold the handle
+    2.1.2. uninitialize_status_change_notification
+    Uninitializes the status change notification callback mechanisms. This
+    function must be called when shutting down to clean up memory allocations.
+    Function definition
+    void uninitialize_status_change_notification(uint32_t handle)
+    Parameters
+    handle Handle to uninitialize
+    2.1.3. register_for_device_status_change_notifications
+    Registers provided function pointer with the device status change mechanism.
+    Whenever there is a change (device connected or disconnected) the callback
+    will be executed. Note that it is not allowed to connect to a device in the
+    context of the callback function. The callback function has the following
+    definition: typedef void (*DeviceStatusChangedCallBack)(char* device_name,
+    char* device_serial, BOOL connected)
+    Function definition
+    void register_for_device_status_change_notifications(uint32_t handle,
+    DeviceStatusChangedCallBack deviceStatusChangedCallBack)
+    Parameters
+    handle Handle to change notification mechanisms
+    deviceStatusChangedCallBack Function pointer that will be called when the
+    devices change
+    2.1.4. unregister_for_device_status_change_notifications
+    Unregisters previously registered function pointer from the device status
+    change mechanism.
+    Function definition
+    void unregister_for_device_status_change_notifications(uint32_t handle,
+    DeviceStatusChangedCallBack deviceStatusChangedCallBack)
+    Parameters
+    handle Handle to change notification mechanisms
+    deviceStatusChangedCallBack Function pointer that will be removed
     """
 
-    def __init__(self, pydgilib):
-        """Populate pydgilib attribute."""
-        pydgilib.isDGILib()
-        self.pydgilib = pydgilib
-        # Make methods available in pydgilib.
-        self.pydgilib.discover = self.discover
-        self.pydgilib.get_device_count = self.get_device_count
-        self.pydgilib.get_device_name = self.get_device_name
-        self.pydgilib.get_device_serial = self.get_device_serial
-        self.pydgilib.is_msd_mode = self.is_msd_mode
-        self.pydgilib.set_mode = self.set_mode
-
-    def __enter__(self):
-        """For usage in `with DGILib() as dgilib:` syntax.
-
-        :raises: :exc:`DeviceIndexError`
-        """
-        self.discover()
-        device_count = self.get_device_count()
-
-        if self.pydgilib.device_sn is None:
-            if self.pydgilib.device_index is None:
-                self.pydgilib.device_index = 0
-            elif self.pydgilib.device_index > device_count - 1:
-                raise DeviceIndexError(
-                    f"Discovered {device_count} devices so could not select "
-                    f"device with index {self.pydgilib.device_index}."
-                )
-            self.pydgilib.device_sn = self.pydgilib.get_device_serial(
-                self.pydgilib.device_index)
-
-        # UNTESTED:
-        # if self.is_msd_mode(self, self.pydgilib.device_sn):
-        #     res = self.set_mode(self.pydgilib.device_sn, 1)
-        #     print(f"\t{res} set_mode 1")
-
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        """For usage in `with DGILib() as dgilib:` syntax."""
-        if self.pydgilib.verbose:
-            print("bye from Discovery")
-
-        """
-TODO?
-2.1.1. initialize_status_change_notification
-Initializes the system necessary for using the status change notification
-callback mechanisms. A handle will be created to keep track of the registered
-callbacks. This function must always be called before registering and
-unregistering notification callbacks.
-Function definition
-void initialize_status_change_notification(uint32_t* handlep)
-Parameters
-handlep Pointer to a variable that will hold the handle
-2.1.2. uninitialize_status_change_notification
-Uninitializes the status change notification callback mechanisms. This
-function must be called when shutting down to clean up memory allocations.
-Function definition
-void uninitialize_status_change_notification(uint32_t handle)
-Parameters
-handle Handle to uninitialize
-2.1.3. register_for_device_status_change_notifications
-Registers provided function pointer with the device status change mechanism.
-Whenever there is a change (device connected or disconnected) the callback
-will be executed. Note that it is not allowed to connect to a device in the
-context of the callback function. The callback function has the following
-definition: typedef void (*DeviceStatusChangedCallBack)(char* device_name,
-char* device_serial, BOOL connected)
-Function definition
-void register_for_device_status_change_notifications(uint32_t handle,
-DeviceStatusChangedCallBack deviceStatusChangedCallBack)
-Parameters
-handle Handle to change notification mechanisms
-deviceStatusChangedCallBack Function pointer that will be called when the
-devices change
-2.1.4. unregister_for_device_status_change_notifications
-Unregisters previously registered function pointer from the device status
-change mechanism.
-Function definition
-void unregister_for_device_status_change_notifications(uint32_t handle,
-DeviceStatusChangedCallBack deviceStatusChangedCallBack)
-Parameters
-handle Handle to change notification mechanisms
-deviceStatusChangedCallBack Function pointer that will be removed
-        """
+    dgilib = None
+    verbose = None
 
     def discover(self):
         """`discover`.
@@ -112,7 +69,7 @@ deviceStatusChangedCallBack Function pointer that will be removed
 
         `void discover(void)`
         """
-        self.pydgilib.dgilib.discover()
+        self.dgilib.discover()
 
     def get_device_count(self):
         """`get_device_count`.
@@ -124,8 +81,8 @@ deviceStatusChangedCallBack Function pointer that will be removed
         :return: The number of devices detected
         :rtype: int
         """
-        device_count = self.pydgilib.dgilib.get_device_count()
-        if self.pydgilib.verbose:
+        device_count = self.dgilib.get_device_count()
+        if self.verbose:
             print(f"device_count: {device_count}")
         return device_count
 
@@ -151,8 +108,8 @@ deviceStatusChangedCallBack Function pointer that will be removed
         :raises: :exc:`DeviceReturnError`
         """
         name = create_string_buffer(GET_STRING_SIZE)
-        res = self.pydgilib.dgilib.get_device_name(index, byref(name))
-        if self.pydgilib.verbose:
+        res = self.dgilib.get_device_name(index, byref(name))
+        if self.verbose:
             print(f"\t{res} get_device_name: {name.value}")
         if res:
             raise DeviceReturnError(f"get_device_name returned: {res}")
@@ -181,8 +138,8 @@ deviceStatusChangedCallBack Function pointer that will be removed
         :raises: :exc:`DeviceReturnError`
         """
         device_sn = create_string_buffer(GET_STRING_SIZE)
-        res = self.pydgilib.dgilib.get_device_serial(index, byref(device_sn))
-        if self.pydgilib.verbose:
+        res = self.dgilib.get_device_serial(index, byref(device_sn))
+        if self.verbose:
             print(f"\t{res} get_device_serial: {device_sn.value}")
         if res:
             raise DeviceReturnError(f"get_device_serial returned: {res}")
@@ -208,14 +165,14 @@ deviceStatusChangedCallBack Function pointer that will be removed
         +------------+------------+
 
         :param device_sn: Serial number of the device to check (defaults to
-            self.pydgilib.device_sn)
+            self.device_sn)
         :type device_sn: str or None
         :return: A non-zero return value indicates that the mode must be
             changed by `set_mode` before proceeding.
         :rtype: int
         """
-        msd_mode = self.pydgilib.dgilib.is_msd_mode(device_sn)
-        if self.pydgilib.verbose:
+        msd_mode = self.dgilib.is_msd_mode(device_sn)
+        if self.verbose:
             print(f"msd_mode: {msd_mode}")
         return msd_mode
 
@@ -240,8 +197,8 @@ deviceStatusChangedCallBack Function pointer that will be removed
         :type nmbed: int
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.set_mode(device_sn, nmbed)
-        if self.pydgilib.verbose:
+        res = self.dgilib.set_mode(device_sn, nmbed)
+        if self.verbose:
             print(f"\t{res} set_mode {nmbed}")
         if res:
             raise DeviceReturnError(f"set_mode returned: {res}")

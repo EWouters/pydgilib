@@ -21,19 +21,9 @@ class DGILibInterfaceCommunication(object):
     buffers for each data source.
     """
 
-    def __init__(self, pydgilib):
-        """Populate pydgilib attribute."""
-        pydgilib.isDGILib()
-        self.pydgilib = pydgilib
-        # Make methods available in pydgilib.
-        self.pydgilib.interface_list = self.interface_list
-        self.pydgilib.interface_enable = self.interface_enable
-        self.pydgilib.interface_disable = self.interface_disable
-        self.pydgilib.interface_get_configuration = self.interface_get_configuration
-        self.pydgilib.interface_set_configuration = self.interface_set_configuration
-        self.pydgilib.interface_clear_buffer = self.interface_clear_buffer
-        self.pydgilib.interface_read_data = self.interface_read_data
-        self.pydgilib.interface_write_data = self.interface_write_data
+    dgilib = None
+    verbose = None
+    dgi_hndl = None
 
     def interface_list(self):
         """`interface_list`.
@@ -61,9 +51,9 @@ class DGILibInterfaceCommunication(object):
         """
         interfaces = (c_ubyte * NUM_INTERFACES)()
         interfaceCount = c_ubyte()
-        res = self.pydgilib.dgilib.interface_list(
-            self.pydgilib.dgi_hndl, byref(interfaces), byref(interfaceCount))
-        if self.pydgilib.verbose:
+        res = self.dgilib.interface_list(
+            self.dgi_hndl, byref(interfaces), byref(interfaceCount))
+        if self.verbose:
             print(
                 f"\t{res} interface_list: {interfaces[:interfaceCount.value]},"
                 f" interfaceCount: {interfaceCount.value}")
@@ -98,9 +88,9 @@ class DGILibInterfaceCommunication(object):
         :type timestamp: bool
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.interface_enable(
-            self.pydgilib.dgi_hndl, interface_id, timestamp)
-        if self.pydgilib.verbose:
+        res = self.dgilib.interface_enable(
+            self.dgi_hndl, interface_id, timestamp)
+        if self.verbose:
             print(
                 f"\t{res} interface_enable: {interface_id}, timestamp: "
                 f"{timestamp}")
@@ -127,9 +117,9 @@ class DGILibInterfaceCommunication(object):
         :type interface_id: int
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.interface_disable(
-            self.pydgilib.dgi_hndl, interface_id)
-        if self.pydgilib.verbose:
+        res = self.dgilib.interface_disable(
+            self.dgi_hndl, interface_id)
+        if self.verbose:
             print(f"\t{res} interface_disable: {interface_id}")
         if res:
             raise DeviceReturnError(f"interface_disable returned: {res}")
@@ -167,18 +157,18 @@ class DGILibInterfaceCommunication(object):
         config_id = (c_uint * NUM_CONFIG_IDS)()
         config_value = (c_uint * NUM_CONFIG_IDS)()
         config_cnt = c_uint()
-        res = self.pydgilib.dgilib.interface_get_configuration(
-            self.pydgilib.dgi_hndl,
+        res = self.dgilib.interface_get_configuration(
+            self.dgi_hndl,
             interface_id,
             byref(config_id),
             byref(config_value),
             byref(config_cnt))
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(
                 f"\t{res} interface_get_configuration: {interface_id}, "
                 f"config_cnt: {config_cnt.value}"
             )
-            if self.pydgilib.verbose >= 2:
+            if self.verbose >= 2:
                 for i in range(config_cnt.value):
                     print(
                         f"\t\tconfig_id: {config_id[i]},\tvalue: "
@@ -235,17 +225,17 @@ class DGILibInterfaceCommunication(object):
 
         config_id = (c_uint * NUM_CONFIG_IDS)(*config_id)
         config_value = (c_uint * NUM_CONFIG_IDS)(*config_value)
-        res = self.pydgilib.dgilib.interface_set_configuration(
-            self.pydgilib.dgi_hndl,
+        res = self.dgilib.interface_set_configuration(
+            self.dgi_hndl,
             interface_id,
             byref(config_id),
             byref(config_value),
             config_cnt)
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(
                 f"\t{res} interface_set_configuration: {interface_id}, "
                 f"config_cnt: {config_cnt.value}")
-            if self.pydgilib.verbose >= 2:
+            if self.verbose >= 2:
                 for i in range(config_cnt.value):
                     print(
                         f"\t\tconfig_id: {config_id[i]},\tvalue: "
@@ -272,9 +262,9 @@ class DGILibInterfaceCommunication(object):
         :type interface_id: int
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.interface_clear_buffer(
-            self.pydgilib.dgi_hndl, interface_id)
-        if self.pydgilib.verbose:
+        res = self.dgilib.interface_clear_buffer(
+            self.dgi_hndl, interface_id)
+        if self.verbose:
             print(f"\t{res} interface_clear_buffer: {interface_id}")
         if res:
             raise DeviceReturnError(f"interface_clear_buffer returned: {res}")
@@ -321,8 +311,8 @@ class DGILibInterfaceCommunication(object):
         ovf_index = c_uint(0)
         ovf_length = c_uint(0)
         ovf_entry_count = c_uint(0)
-        res = self.pydgilib.dgilib.interface_read_data(
-            self.pydgilib.dgi_hndl,
+        res = self.dgilib.interface_read_data(
+            self.dgi_hndl,
             interface_id,
             buffer,
             ticks,
@@ -330,11 +320,11 @@ class DGILibInterfaceCommunication(object):
             byref(ovf_index),
             byref(ovf_length),
             byref(ovf_entry_count))
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(
                 f"\t{res} interface_read_data: {interface_id}, length: "
                 f"{length.value}")
-            if self.pydgilib.verbose >= 2:
+            if self.verbose >= 2:
                 for i in range(length.value):
                     print(f"\t{i}:\tbuffer: {buffer[i]},\ttick: {ticks[i]}")
         if res:
@@ -377,13 +367,13 @@ class DGILibInterfaceCommunication(object):
         """
         length = c_uint(len(buffer))
         buffer = (c_ubyte * BUFFER_SIZE)(*buffer)
-        res = self.pydgilib.dgilib.interface_write_data(
-            self.pydgilib.dgi_hndl, interface_id, byref(buffer), byref(length))
-        if self.pydgilib.verbose:
+        res = self.dgilib.interface_write_data(
+            self.dgi_hndl, interface_id, byref(buffer), byref(length))
+        if self.verbose:
             print(
                 f"\t{res} interface_write_data: {interface_id}, length: "
                 f"{length.value}")
-            if self.pydgilib.verbose >= 2:
+            if self.verbose >= 2:
                 for i in range(length.value):
                     print(f"\t{i}:\tbuffer: {buffer[i]}")
         if res:

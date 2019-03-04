@@ -20,11 +20,11 @@ class DGILibInterfaceGPIO(object):
     def __init__(self, dgilib, *args, **kwargs):
         """Instantiate DGILibInterfaceGPIO object."""
         # Argument parsing
-        self.pydgilib.dgilib = dgilib
+        self.dgilib = dgilib
         self.read_mode = kwargs.get("read_mode", [False] * 4)
         self.write_mode = kwargs.get("write_mode", [False] * 4)
-        self.pydgilib.verbose = kwargs.get("verbose", 0)
-        if self.pydgilib.verbose:
+        self.verbose = kwargs.get("verbose", 0)
+        if self.verbose:
             print("read_mode: ", self.read_mode)
             print("write_mode: ", self.write_mode)
 
@@ -145,7 +145,7 @@ class DGILibInterfaceGPIO(object):
         pin_values = [int2bool(pin_value) for pin_value in pin_values]
         timestamps = [tick * self.interface_enable for tick in ticks]
 
-        if self.pydgilib.verbose >= 2:
+        if self.verbose >= 2:
             print(
                 f"Collected {len(pin_values)} gpio samples (4 pins per sample)"
             )
@@ -170,7 +170,7 @@ class DGILibInterfaceGPIO(object):
 
         self.interface_write_data(INTERFACE_GPIO, [pin_values])
 
-        if self.pydgilib.verbose >= 2:
+        if self.verbose >= 2:
             print(f"Sent gpio packet")
 
 

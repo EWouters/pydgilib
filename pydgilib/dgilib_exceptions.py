@@ -18,12 +18,6 @@ class Error(Exception):
         return self.msg
 
 
-class InstantiationError(Error):
-    """Exception raised instantiating subclass."""
-
-    pass
-
-
 class DLLError(Error):
     """Exception raised opening dgilib.dll.
 

@@ -76,7 +76,7 @@ class DGILibExtra(DGILib):
         timer_prescaler = config_value[0]
         timer_frequency = config_value[1]
 
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(
                 f"timer_factor: {timer_prescaler / timer_frequency}, "
                 f"timer_prescaler: {timer_prescaler}, timer_frequency: "

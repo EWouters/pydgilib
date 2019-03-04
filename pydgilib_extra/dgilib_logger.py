@@ -229,7 +229,7 @@ class DGILibLogger(object):
         if data is None:
             data = self.data
 
-        return power_filter_by_pin(pin, data, self.pydgilib.verbose)
+        return power_filter_by_pin(pin, data, self.verbose)
 
     def calculate_average(self, power_data=None, start_time=None,
                           end_time=None):

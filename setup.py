@@ -20,7 +20,6 @@ setup(
     zip_safe=False,
     setup_requires=[
         # ... (other setup requirements)
-    ]
-    + pytest_runner,
-    tests_require=["pytest"],
+    ] + pytest_runner,
+    tests_require=["pytest", "pytest-benchmark"],
 )

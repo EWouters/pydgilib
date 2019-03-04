@@ -29,37 +29,10 @@ class DGILibAuxiliary(object):
     calibration.
     """
 
-    def __init__(self, pydgilib):
-        """Populate pydgilib attribute."""
-        pydgilib.isDGILib()
-        self.pydgilib = pydgilib
-        # Make methods available in pydgilib.
-        self.pydgilib.auxiliary_power_initialize = self.auxiliary_power_initialize
-        self.pydgilib.auxiliary_power_uninitialize = self.auxiliary_power_uninitialize
-        self.pydgilib.auxiliary_power_register_buffer_pointers = self.auxiliary_power_register_buffer_pointers
-        self.pydgilib.auxiliary_power_unregister_buffer_pointers = self.auxiliary_power_unregister_buffer_pointers
-        self.pydgilib.auxiliary_power_calibration_is_valid = self.auxiliary_power_calibration_is_valid
-        self.pydgilib.auxiliary_power_trigger_calibration = self.auxiliary_power_trigger_calibration
-        self.pydgilib.auxiliary_power_get_calibration = self.auxiliary_power_get_calibration
-        self.pydgilib.auxiliary_power_get_circuit_type = self.auxiliary_power_get_circuit_type
-        self.pydgilib.auxiliary_power_get_status = self.auxiliary_power_get_status
-        self.pydgilib.auxiliary_power_start = self.auxiliary_power_start
-        self.pydgilib.auxiliary_power_stop = self.auxiliary_power_stop
-        self.pydgilib.auxiliary_power_lock_data_for_reading = self.auxiliary_power_lock_data_for_reading
-        self.pydgilib.auxiliary_power_copy_data = self.auxiliary_power_copy_data
-        self.pydgilib.auxiliary_power_free_data = self.auxiliary_power_free_data
-
-    def __enter__(self):
-        """For usage in `with DGILib() as dgilib:` syntax."""
-        self.pydgilib.power_hndl = self.auxiliary_power_initialize()
-
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        """For usage in `with DGILib() as dgilib:` syntax."""
-        self.auxiliary_power_uninitialize()
-        if self.pydgilib.verbose:
-            print("bye from Auxiliary")
+    dgilib = None
+    verbose = None
+    dgi_hndl = None
+    power_hndl = None
 
     def auxiliary_power_initialize(self):
         """`auxiliary_power_initialize`.
@@ -83,9 +56,9 @@ class DGILibAuxiliary(object):
         """
         power_hndl = c_uint()
 
-        res = self.pydgilib.dgilib.auxiliary_power_initialize(
-            byref(power_hndl), self.pydgilib.dgi_hndl)
-        if self.pydgilib.verbose:
+        res = self.dgilib.auxiliary_power_initialize(
+            byref(power_hndl), self.dgi_hndl)
+        if self.verbose:
             print(f"\t{res} auxiliary_power_initialize")
         if res:
             raise DeviceReturnError(
@@ -108,9 +81,9 @@ class DGILibAuxiliary(object):
 
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.auxiliary_power_uninitialize(
-            self.pydgilib.power_hndl)
-        if self.pydgilib.verbose:
+        res = self.dgilib.auxiliary_power_uninitialize(
+            self.power_hndl)
+        if self.verbose:
             print(f"\t{res} auxiliary_power_uninitialize")
         if res:
             raise DeviceReturnError(
@@ -168,8 +141,8 @@ class DGILibAuxiliary(object):
         channel = c_int(channel)
         power_type = c_int(power_type)
 
-        res = self.pydgilib.dgilib.auxiliary_power_register_buffer_pointers(
-            self.pydgilib.power_hndl,
+        res = self.dgilib.auxiliary_power_register_buffer_pointers(
+            self.power_hndl,
             byref(self.powerBuffer),
             byref(self.powerTimestamp),
             byref(self.powerCount),
@@ -177,7 +150,7 @@ class DGILibAuxiliary(object):
             channel,
             power_type,
         )
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(f"\t{res} auxiliary_power_register_buffer_pointers")
         if res:
             raise DeviceReturnError(
@@ -213,9 +186,9 @@ class DGILibAuxiliary(object):
         channel = c_int(channel)
         power_type = c_int(power_type)
 
-        res = self.pydgilib.dgilib.auxiliary_power_unregister_buffer_pointers(
-            self.pydgilib.power_hndl, channel, power_type)
-        if self.pydgilib.verbose:
+        res = self.dgilib.auxiliary_power_unregister_buffer_pointers(
+            self.power_hndl, channel, power_type)
+        if self.verbose:
             print(
                 f"\t{res} auxiliary_power_unregister_buffer_pointers, channel:"
                 f" {channel.value}, power_type: {power_type.value}")
@@ -244,9 +217,9 @@ class DGILibAuxiliary(object):
         :return: True if the calibration is valid, False otherwise
         :rtype: bool
         """
-        calibration_is_valid = self.pydgilib.dgilib.auxiliary_power_calibration_is_valid(
-            self.pydgilib.power_hndl)
-        if self.pydgilib.verbose:
+        calibration_is_valid = self.dgilib.auxiliary_power_calibration_is_valid(
+            self.power_hndl)
+        if self.verbose:
             print(
                 f"auxiliary_power_calibration_is_valid: {calibration_is_valid}"
             )
@@ -275,9 +248,9 @@ class DGILibAuxiliary(object):
         :raises: :exc:`DeviceReturnError`
         """
         circuit_type = c_int(circuit_type)
-        res = self.pydgilib.dgilib.auxiliary_power_trigger_calibration(
-            self.pydgilib.power_hndl, circuit_type)
-        if self.pydgilib.verbose:
+        res = self.dgilib.auxiliary_power_trigger_calibration(
+            self.power_hndl, circuit_type)
+        if self.verbose:
             print(f"\t{res} auxiliary_power_trigger_calibration")
         if res:
             raise DeviceReturnError(
@@ -311,11 +284,11 @@ class DGILibAuxiliary(object):
         :raises: :exc:`DeviceReturnError`
         """
         data = (c_ubyte * length)()
-        length = self.pydgilib.dgilib.auxiliary_power_get_calibration(
-            self.pydgilib.power_hndl, byref(data))
-        if self.pydgilib.verbose:
+        length = self.dgilib.auxiliary_power_get_calibration(
+            self.power_hndl, byref(data))
+        if self.verbose:
             print(f"auxiliary_power_get_calibration: {length}")
-        if self.pydgilib.verbose >= 2:
+        if self.verbose >= 2:
             for i in range(length):
                 print(f"\t{i}:\t{data[i]}")
 
@@ -343,9 +316,9 @@ class DGILibAuxiliary(object):
         :raises: :exc:`DeviceReturnError`
         """
         circuit = c_int()
-        res = self.pydgilib.dgilib.auxiliary_power_get_circuit_type(
-            self.pydgilib.power_hndl, byref(circuit))
-        if self.pydgilib.verbose:
+        res = self.dgilib.auxiliary_power_get_circuit_type(
+            self.power_hndl, byref(circuit))
+        if self.verbose:
             print(f"\t{res} auxiliary_power_get_circuit_type: {circuit.value}")
         if res:
             raise DeviceReturnError(
@@ -388,9 +361,9 @@ class DGILibAuxiliary(object):
             - `CALIBRATION_FAILED` = 0x20
         :rtype: int
         """
-        status = self.pydgilib.dgilib.auxiliary_power_get_status(
-            self.pydgilib.power_hndl)
-        if self.pydgilib.verbose:
+        status = self.dgilib.auxiliary_power_get_status(
+            self.power_hndl)
+        if self.verbose:
             print(f"power_status: {status}")
 
         return status
@@ -432,9 +405,9 @@ class DGILibAuxiliary(object):
         """
         mode = c_int(mode)
         parameter = c_int(parameter)
-        res = self.pydgilib.dgilib.auxiliary_power_start(
-            self.pydgilib.power_hndl, mode, parameter)
-        if self.pydgilib.verbose:
+        res = self.dgilib.auxiliary_power_start(
+            self.power_hndl, mode, parameter)
+        if self.verbose:
             print(
                 f"\t{res} auxiliary_power_start, mode: {mode.value}, "
                 f"parameter: {parameter.value}")
@@ -458,9 +431,9 @@ class DGILibAuxiliary(object):
 
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.auxiliary_power_stop(
-            self.pydgilib.power_hndl)
-        if self.pydgilib.verbose:
+        res = self.dgilib.auxiliary_power_stop(
+            self.power_hndl)
+        if self.verbose:
             print(f"\t{res} auxiliary_power_stop")
         if res:
             raise DeviceReturnError(f"auxiliary_power_stop returned: {res}")
@@ -484,9 +457,9 @@ class DGILibAuxiliary(object):
 
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.auxiliary_power_lock_data_for_reading(
-            self.pydgilib.power_hndl)
-        if self.pydgilib.verbose:
+        res = self.dgilib.auxiliary_power_lock_data_for_reading(
+            self.power_hndl)
+        if self.verbose:
             print(f"\t{res} auxiliary_power_lock_data_for_reading")
         if res:
             raise DeviceReturnError(
@@ -540,8 +513,8 @@ class DGILibAuxiliary(object):
         channel = c_int(channel)
         power_type = c_int(power_type)
 
-        res = self.pydgilib.dgilib.auxiliary_power_copy_data(
-            self.pydgilib.power_hndl,
+        res = self.dgilib.auxiliary_power_copy_data(
+            self.power_hndl,
             self.powerBuffer,
             self.powerTimestamp,
             # byref(self.powerCount),
@@ -552,13 +525,13 @@ class DGILibAuxiliary(object):
             channel,
             power_type,
         )
-        if self.pydgilib.verbose:
+        if self.verbose:
             print(
                 f"\t{res} auxiliary_power_copy_data: {count.value} samples, "
                 f"power_type: {power_type.value}")
             # f"\t{res} auxiliary_power_copy_data: {self.powerCount.value} "
             # f"samples, power_type: {power_type.value}"
-            if self.pydgilib.verbose >= 3:
+            if self.verbose >= 3:
                 for i in range(min(count.value, MAX_PRINT)):
                     # for i in range(min(self.powerCount.value, MAX_PRINT)):
                     #     print(f"\t{i}: buffer: {buffer[i]}, timestamp: "
@@ -591,9 +564,9 @@ class DGILibAuxiliary(object):
 
         :raises: :exc:`DeviceReturnError`
         """
-        res = self.pydgilib.dgilib.auxiliary_power_free_data(
-            self.pydgilib.power_hndl)
-        if self.pydgilib.verbose:
+        res = self.dgilib.auxiliary_power_free_data(
+            self.power_hndl)
+        if self.verbose:
             print(f"\t{res} auxiliary_power_free_data")
         if res:
             raise DeviceReturnError(
