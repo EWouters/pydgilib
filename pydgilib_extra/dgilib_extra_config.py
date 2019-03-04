@@ -11,9 +11,11 @@ LOGGER_PLOT = 2
 
 INTERFACE_POWER = 0x100  # 256
 
-LOGGER_CSV_HEADER = {
-    INTERFACE_GPIO: ["timestamp", "gpio0", "gpio1", "gpio2", "gpio3"],
-    INTERFACE_POWER: ["timestamp", "current"]}
+NUM_PINS = 4
+
+# LOGGER_CSV_HEADER = {
+#     INTERFACE_GPIO: ["timestamp"] + [f"gpio{n}" for n in range(NUM_PINS)],
+#     INTERFACE_POWER: ["timestamp", "current"]}
 # INTERFACE_POWER: {
 #     POWER_CURRENT: ["timestamp", "current"],
 #     POWER_VOLTAGE: ["timestamp", "voltage"],

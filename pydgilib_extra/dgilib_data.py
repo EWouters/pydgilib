@@ -218,12 +218,10 @@ class LoggerData(dict):
             if interface in INTERFACES.values():
                 for name, number in INTERFACES.items():
                     if interface == number:
-                        output += f"\t{number:4}: {name:{' '}^{10}}, " \
-                            "samples: {len(self[interface][0]):7}\n"
+                        output += f"\t{number:4}: {name + ',':{' '}^{10}} samples: {len(self[interface]):7}\n"
                         break
             else:
-                output += f"\t{interface:4}: (unknown) , " \
-                    "samples: {len(self[interface][0]):7}\n"
+                output += f"\t{interface:4}: (unknown),  samples: {len(self[interface]):7}\n"
 
         return output
 

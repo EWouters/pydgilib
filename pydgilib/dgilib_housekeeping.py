@@ -266,6 +266,6 @@ class DGILibHousekeeping(object):
         res = self.dgilib.target_reset(
             self.dgi_hndl, hold_reset)
         if self.verbose:
-            print(f"\t{res} target_reset")
+            print(f"\t{res} target_reset {hold_reset}")
         if res:
             raise DeviceReturnError(f"target_reset returned: {res}")

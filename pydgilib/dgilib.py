@@ -83,7 +83,7 @@ class DGILib(object):
     auxiliary_power_copy_data = DGILibAuxiliary.auxiliary_power_copy_data
     auxiliary_power_free_data = DGILibAuxiliary.auxiliary_power_free_data
 
-    def __init__(self, dgilib_path="dgilib.dll", *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Instantiate DGILib object.
 
         :param dgilib_path: Path to dgilib.dll (More info at:
@@ -102,6 +102,10 @@ class DGILib(object):
         :raises: :exc:`DLLError`
         """
         # Load the dgilib.dll
+        if args:
+            dgilib_path = args[0]
+        else:
+            dgilib_path = kwargs.get("dgilib_path", "dgilib.dll")
         try:
             self.dgilib = cdll.LoadLibrary(dgilib_path)
         except OSError as e:
@@ -158,7 +162,6 @@ class DGILib(object):
         # Interface communication
 
         # Auxilary
-        self.power_hndl = self.auxiliary_power_initialize()
 
         return self
 
@@ -172,4 +175,3 @@ class DGILib(object):
         # Interface communication
 
         # Auxilary
-        self.auxiliary_power_uninitialize()

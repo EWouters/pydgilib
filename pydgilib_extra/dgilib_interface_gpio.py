@@ -1,12 +1,14 @@
 """This module wraps the calls to the GPIO interface."""
 
-from pydgilib_extra.dgilib_extra_config import INTERFACE_GPIO
+from pydgilib_extra.dgilib_extra_config import (INTERFACE_GPIO, NUM_PINS)
+from pydgilib_extra.dgilib_interface import DGILibInterface
+from pydgilib_extra.dgilib_data import InterfaceData
 
 
-# TODO: make these functions faster
+# TODO: make these functions faster/better?
 def int2bool(i):
     """Convert int to list of bool."""
-    return [bit is "1" for bit in f"{i:04b}"]
+    return [bit is "1" for bit in f"{i:04b}"]  # Note: NUM_PINS is hardcoded here
 
 
 def bool2int(b):
@@ -14,39 +16,41 @@ def bool2int(b):
     return int("".join("1" if d else "0" for d in b), 2)
 
 
-class DGILibInterfaceGPIO(object):
+class DGILibInterfaceGPIO(DGILibInterface):
     """Wraps the calls to the GPIO interface."""
 
-    def __init__(self, dgilib, *args, **kwargs):
-        """Instantiate DGILibInterfaceGPIO object."""
-        # Argument parsing
-        self.dgilib = dgilib
-        self.read_mode = kwargs.get("read_mode", [False] * 4)
-        self.write_mode = kwargs.get("write_mode", [False] * 4)
-        self.verbose = kwargs.get("verbose", 0)
-        if self.verbose:
-            print("read_mode: ", self.read_mode)
-            print("write_mode: ", self.write_mode)
+    name = "gpio"
+    csv_header = ["timestamp"] + [f"gpio{n}" for n in range(NUM_PINS)]
 
+    def __init__(self, *args, **kwargs):
+        """Instantiate DGILibInterfaceGPIO object."""
+        # Set default values for attributes
+        self.read_mode = [False] * 4
+        self.write_mode = [False] * 4
+        # Instantiate base class
+        DGILibInterface.__init__(self, *args, **kwargs)
+        # Parse arguments
         self.augment_gpio = kwargs.get("augment_gpio", None)
         self.gpio_delay_time = kwargs.get("gpio_delay_time", 0)
         self.gpio_switch_time = kwargs.get("gpio_switch_time", 0)
         # If augment_gpio was not specified set it to true if gpio_delay_time
-        # or gpio_switch_time were non 0.
+        # or gpio_switch_time was non 0.
         if self.augment_gpio is None:
             self.augment_gpio = (
                 self.gpio_delay_time != 0 or self.gpio_switch_time != 0)
 
-    def __enter__(self):
-        """For usage in `with DGILibExtra() as dgilib:` syntax."""
-        self.gpio_set_config(
-            read_mode=self.read_mode, write_mode=self.write_mode)
+        if self.dgilib_extra.timer_factor is None:
+            self.dgilib_extra.timer_factor = self.dgilib_extra.get_time_factor()
 
-        return self
+        self.set_config(*args, **kwargs)
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        """For usage in `with DGILibExtra() as dgilib:` syntax."""
-        self.gpio_set_config()  # Disables interface.
+        if self.verbose:
+            print("read_mode: ", self.read_mode)
+            print("write_mode: ", self.write_mode)
+            print("augment_gpio: ", self.augment_gpio)
+            if self.augment_gpio:
+                print("gpio_delay_time: ", self.gpio_delay_time)
+                print("gpio_switch_time: ", self.gpio_switch_time)
 
     def get_config(self):
         """Get the pin-mode for the GPIO pins.
@@ -65,7 +69,7 @@ class DGILibInterfaceGPIO(object):
         :rtype: (list(bool), list(bool))
         """
         # Get the configuration
-        _, config_value = self.interface_get_configuration(
+        _, config_value = self.dgilib_extra.interface_get_configuration(
             INTERFACE_GPIO)
 
         # Convert int to lists of bool
@@ -80,7 +84,7 @@ class DGILibInterfaceGPIO(object):
 #         self.read_mode = read_mode
 #         self.write_mode = write_mode
 
-    def set_config(self, **kwargs):
+    def set_config(self, *args, **kwargs):
         """Set the pin-mode for the GPIO pins.
 
         The GPIO configuration controls the direction of the pins, and enables
@@ -111,26 +115,13 @@ class DGILibInterfaceGPIO(object):
 
         # Set the configuration
         if "read_mode" in kwargs:
-            self.interface_set_configuration(INTERFACE_GPIO, [0], [read_mode])
+            self.dgilib_extra.interface_set_configuration(
+                INTERFACE_GPIO, [0], [read_mode])
         if "write_mode" in kwargs:
-            self.interface_set_configuration(
+            self.dgilib_extra.interface_set_configuration(
                 INTERFACE_GPIO, [1], [write_mode])
 
-        # Enable the interface if any of the pins are set to read mode or
-        # write mode
-        if read_mode or write_mode:
-            if INTERFACE_GPIO not in self.enabled_interfaces:
-                self.interface_enable(INTERFACE_GPIO)
-                self.enabled_interfaces.append(INTERFACE_GPIO)
-            if self.interface_enable is None:
-                self.interface_enable = self.get_time_factor()
-        # Disable the interface if none of the pins are set to read mode or
-        # write mode
-        elif INTERFACE_GPIO in self.enabled_interfaces:
-            self.interface_disable(INTERFACE_GPIO)
-            self.enabled_interfaces.remove(INTERFACE_GPIO)
-
-    def gpio_read(self):
+    def read(self):
         """Get the state of the GPIO pins.
 
         Clears the buffer and returns the values.
@@ -140,19 +131,20 @@ class DGILibInterfaceGPIO(object):
         :rtype: (list(float), list(list(bool)))
         """
         # Read the data from the buffer
-        pin_values, ticks = self.interface_read_data(INTERFACE_GPIO)
+        pin_values, ticks = self.dgilib_extra.interface_read_data(
+            INTERFACE_GPIO)
 
         pin_values = [int2bool(pin_value) for pin_value in pin_values]
-        timestamps = [tick * self.interface_enable for tick in ticks]
+        timestamps = [tick * self.dgilib_extra.timer_factor for tick in ticks]
 
         if self.verbose >= 2:
             print(
                 f"Collected {len(pin_values)} gpio samples (4 pins per sample)"
             )
 
-        return timestamps, pin_values
+        return InterfaceData(timestamps, pin_values)
 
-    def gpio_write(self, pin_values):
+    def write(self, pin_values):
         """Set the state of the GPIO pins.
 
         Make sure to set the pin to write mode first. Possibly also needs to
@@ -168,7 +160,7 @@ class DGILibInterfaceGPIO(object):
         # Convert list of bool to int
         pin_values = bool2int(pin_values)
 
-        self.interface_write_data(INTERFACE_GPIO, [pin_values])
+        self.dgilib_extra.interface_write_data(INTERFACE_GPIO, [pin_values])
 
         if self.verbose >= 2:
             print(f"Sent gpio packet")

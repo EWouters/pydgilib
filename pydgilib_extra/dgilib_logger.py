@@ -10,13 +10,10 @@ from time import sleep
 import matplotlib.pyplot as plt
 
 from pydgilib.dgilib_config import INTERFACE_GPIO
-from pydgilib_extra.dgilib_data import InterfaceData, LoggerData
+from pydgilib_extra.dgilib_data import LoggerData
 from pydgilib_extra.dgilib_extra_config import (
-    INTERFACE_POWER, INTERFACES, LOGGER_CSV, LOGGER_CSV_HEADER, LOGGER_OBJECT,
-    LOGGER_PLOT)
-from pydgilib_extra.dgilib_interface_gpio import (
-    DGILibInterfaceGPIO, gpio_augment_edges)
-from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
+    INTERFACE_POWER, INTERFACES, LOGGER_CSV, LOGGER_OBJECT, LOGGER_PLOT)
+# from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
 
 
 class DGILibLogger(object):
@@ -27,8 +24,10 @@ class DGILibLogger(object):
         - Power mode
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, dgilib_extra, *args, **kwargs):
         """Instantiate DGILibInterfacePower object."""
+        self.dgilib_extra = dgilib_extra
+
         # Get enabled loggers
         self.loggers = kwargs.get("loggers", [])
 
@@ -81,131 +80,92 @@ class DGILibLogger(object):
         if LOGGER_OBJECT in self.loggers:
             self.data = {}
 
-        # Initialize interfaces
-        self.interfaces[INTERFACE_GPIO] = DGILibInterfaceGPIO(
-            self, *args, **kwargs)
-        self.interfaces[INTERFACE_POWER] = DGILibInterfaceGPIO(
-            self, *args, **kwargs)
-
-    def __enter__(self):
-        """For usage in `with DGILibExtra() as dgilib:` syntax."""
-        DGILibInterfaceGPIO.__enter__(self)
-        DGILibInterfacePower.__enter__(self)
-
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        """For usage in `with DGILibExtra() as dgilib:` syntax."""
-        if LOGGER_PLOT in self.loggers:
-            if self.augment_gpio:
-                gpio_augment_edges(
-                    self.data[INTERFACE_GPIO], self.gpio_delay_time,
-                    self.gpio_switch_time, self.data[INTERFACE_POWER][0][-1])
-            self.fig, self.ax = logger_plot_data(
-                self.data, self.plot_pins, self.fig, self.ax)
-            # logger_plot_data(self.data, [r or w for r, w in zip
-            # (self.read_mode, self.write_mode)], self.plot_pins)
-
-        DGILibInterfaceGPIO.__exit__(self, exc_type, exc_value, traceback)
-        DGILibInterfacePower.__exit__(self, exc_type, exc_value, traceback)
-
     def logger_start(self):
         """Call to start logging."""
         if LOGGER_CSV in self.loggers:
-            for interface_id in self.enabled_interfaces:
+            for interface in self.dgilib_extra.interfaces.values():
                 # Open file handle
-                self.file_handles[interface_id] = open(path.join(
+                interface.file_handle = open(path.join(
                     self.log_folder,
-                    (self.file_name_base + str(INTERFACES[interface_id]) +
-                     ".csv"), "w"))
+                    (self.file_name_base + "_" + interface.name + ".csv")), "w")
                 # Create csv.writer
-                self.csv_writers[interface_id] = csv.writer(
-                    self.file_handles[interface_id])
+                interface.csv_writer = csv.writer(
+                    interface.file_handle)
                 # Write header to file
-                self.csv_writers[interface_id].writerow(
-                    LOGGER_CSV_HEADER[interface_id])
+                interface.csv_writer.writerow(interface.csv_header)
 
         # Create data structure self.data if LOGGER_OBJECT is enabled
         if LOGGER_OBJECT in self.loggers:
-            self.data = LoggerData(self.enabled_interfaces)
+            self.dgilib_extra.data = LoggerData(
+                self.dgilib_extra.enabled_interfaces)
 
         # Create axes self.axes if LOGGER_PLOT is enabled
         if LOGGER_PLOT in self.loggers:
             pass
             # print("TODO: Create axes, or what if they were parsed?")
 
-        self.start_polling()
-        self.auxiliary_power_start()
+        self.dgilib_extra.start_polling()
+        self.dgilib_extra.auxiliary_power_start()
 
-    def update_callback(self):
+    def update_callback(self, return_data=False):
         """Call to get new data."""
+        if return_data:
+            logger_data = LoggerData()
         # Get data
-        for interface_id in self.enabled_interfaces:
-            interface_data = InterfaceData()
-
-        if INTERFACE_GPIO in self.enabled_interfaces:
-            data[INTERFACE_GPIO] = self.gpio_read()
+        for interface in self.dgilib_extra.interfaces.values():
+            # Read from the interface
+            interface_data = interface.read()
             # Check if any data has arrived
-            if data[INTERFACE_GPIO]:
-                # Write to registered loggers
+            if interface_data:
                 if LOGGER_CSV in self.loggers:
-                    self.csv_writers[INTERFACE_GPIO].writerows([
-                        (timestamps, *pin_values)
-                        for timestamps, pin_values in
-                        zip(*data[INTERFACE_GPIO])])
+                    interface.csv_writer.writerows(interface_data)
                 # Merge data into self.data if LOGGER_OBJECT is enabled
                 if LOGGER_OBJECT in self.loggers:
-                    self.data += data
+                    self.dgilib_extra.data[interface.interface_id] += interface_data
                 # Update the plot if LOGGER_PLOT is enabled
                 if LOGGER_PLOT in self.loggers:
                     pass
                     # print("TODO: Update plot")
-
-        if INTERFACE_POWER in self.enabled_interfaces:
-            data[INTERFACE_POWER] = self.power_read_buffer(
-                self.power_buffers[0])
-            # Check if any data has arrived
-            if data[INTERFACE_POWER]:
-                # Write to registered loggers
-                if LOGGER_CSV in self.loggers:
-                    self.csv_writers[INTERFACE_POWER].writerows(
-                        zip(*data[INTERFACE_POWER]))
-                # Merge data into self.data if LOGGER_OBJECT is enabled
-                if LOGGER_OBJECT in self.loggers:
-                    for col in range(len(self.data[INTERFACE_POWER])):
-                        self.data[INTERFACE_POWER][col].extend(
-                            data[INTERFACE_POWER][col])
-                # Update the plot if LOGGER_PLOT is enabled
-                if LOGGER_PLOT in self.loggers:
-                    pass
-                    # print("TODO: Update plot")
+                if return_data:
+                    logger_data[interface.interface_id] += interface_data
 
         # Return the data
-        return data
+        if return_data:
+            return logger_data
 
-    def logger_stop(self):
+    def logger_stop(self, return_data=False):
         """Call to stop logging."""
-        self.stop_polling()
-        self.auxiliary_power_stop()
+        self.dgilib_extra.stop_polling()
+        self.dgilib_extra.auxiliary_power_stop()
 
         # Get last data from buffer
         if LOGGER_OBJECT in self.loggers:
             self.update_callback()
         else:
-            data = self.update_callback()
+            data = self.update_callback(return_data)
 
         if LOGGER_CSV in self.loggers:
-            for interface_id in self.enabled_interfaces:
+            for interface in self.dgilib_extra.interfaces.values():
                 # Close file handle
-                self.file_handles[interface_id].close()
+                interface.file_handle.close()
+
+        if LOGGER_PLOT in self.loggers:
+            # print("TODO: Plot")
+            pass
+            # if self.dgilib_extra.interfaces[INTERFACE_GPIO].augment_gpio:
+            #     gpio_augment_edges(
+            #         self.data[INTERFACE_GPIO], self.gpio_delay_time,
+            #         self.gpio_switch_time, self.data[INTERFACE_POWER][0][-1])
+            # self.fig, self.ax = logger_plot_data(
+            #     self.data, self.plot_pins, self.fig, self.ax)
 
         if LOGGER_OBJECT in self.loggers:
-            return self.data
-        else:
+            return self.dgilib_extra.data
+        elif return_data:
             return data
 
-    def logger(self, duration=10):
-        """logger.
+    def log(self, duration=10):
+        """log.
 
         TODO: call update_callback at specified intervals to avoid buffer
         overflows (figure out the formula based on the samplerate and
