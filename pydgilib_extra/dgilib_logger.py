@@ -407,7 +407,7 @@ def power_and_time_per_pulse(data, pin, verbose=0, power_factor=1e3):
     for timestamp, pin_values in zip(*data[INTERFACE_GPIO]):
         if all(pin_values):
             if verbose:
-                print(f"power_and_time_per_pulse done, charges: {len(currents)}, times: {len(times)}")
+                print(f"power_and_time_per_pulse done, charges: {len(charges)}, times: {len(times)}")
             break
         if not pin_value and pin_values[pin]:
             pin_value = True
@@ -427,5 +427,4 @@ def power_and_time_per_pulse(data, pin, verbose=0, power_factor=1e3):
             times.append(time_sum)
             power_sum = 0
             time_sum = 0
-                
     return charges, times
