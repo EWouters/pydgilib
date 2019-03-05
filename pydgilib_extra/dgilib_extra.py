@@ -18,6 +18,7 @@ class DGILibExtra(DGILib):
 
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibExtra object."""
+
         # Set default values for attributes
         self.available_interfaces = []
         self.enabled_interfaces = []
@@ -29,6 +30,10 @@ class DGILibExtra(DGILib):
         # Store arguments
         self.args = args
         self.kwargs = kwargs
+
+        if self.verbose >= 2:
+            print("args: ", args)
+            print("kwargs: ", kwargs)
 
     def __enter__(self):
         """For usage in `with DGILibExtra() as dgilib:` syntax."""

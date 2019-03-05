@@ -66,7 +66,7 @@ class DGILib(object):
     interface_read_data = DGILibInterfaceCommunication.interface_read_data
     interface_write_data = DGILibInterfaceCommunication.interface_write_data
 
-    # Auxilary
+    # Auxiliary
     auxiliary = DGILibAuxiliary
     auxiliary_power_initialize = DGILibAuxiliary.auxiliary_power_initialize
     auxiliary_power_uninitialize = DGILibAuxiliary.auxiliary_power_uninitialize
@@ -161,7 +161,7 @@ class DGILib(object):
 
         # Interface communication
 
-        # Auxilary
+        # Auxiliary
 
         return self
 
@@ -174,4 +174,4 @@ class DGILib(object):
 
         # Interface communication
 
-        # Auxilary
+        # Auxiliary

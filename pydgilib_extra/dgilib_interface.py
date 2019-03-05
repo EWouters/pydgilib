@@ -10,12 +10,18 @@ class DGILibInterface(object):
     name = "interface_name"
     csv_header = ["timestamps", "values"]
 
+    is_polling = False
+
     def __init__(self, dgilib_extra, interface_id, *args, **kwargs):
         """Instantiate DGILibInterfaceGPIO object."""
+        self.file_handle = None
+        self.csv_writer = None
         # Argument parsing
         self.dgilib_extra = dgilib_extra
         self.interface_id = interface_id
         self.verbose = kwargs.get("verbose", 0)
+        # Set interface configuration
+        self.set_config(*args, **kwargs)
 
     def get_config(self):
         """Get configuration options.
@@ -57,3 +63,17 @@ class DGILibInterface(object):
     def write(self, *args, **kwargs):
         """Read data from the interface."""
         pass
+
+    def start(self):
+        """Start polling."""
+        if not self.is_polling:
+            self.dgilib_extra.start_polling()
+
+    def stop(self):
+        """Stop polling."""
+        if self.is_polling:
+            self.dgilib_extra.stop_polling()
+
+    def csv_write_rows(self, interdace_data):
+        """csv_write_rows."""
+        self.csv_writer.writerows(interdace_data)

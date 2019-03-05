@@ -42,8 +42,6 @@ class DGILibInterfaceGPIO(DGILibInterface):
         if self.dgilib_extra.timer_factor is None:
             self.dgilib_extra.timer_factor = self.dgilib_extra.get_time_factor()
 
-        self.set_config(*args, **kwargs)
-
         if self.verbose:
             print("read_mode: ", self.read_mode)
             print("write_mode: ", self.write_mode)
@@ -164,6 +162,14 @@ class DGILibInterfaceGPIO(DGILibInterface):
 
         if self.verbose >= 2:
             print(f"Sent gpio packet")
+
+    def csv_write_rows(self, interdace_data):
+        """csv_write_rows."""
+        samples = interdace_data.get_as_lists()
+        self.csv_writer.writerows([
+            (timestamps, *pin_values)
+            for timestamps, pin_values in zip(*samples)
+        ])
 
 
 def gpio_augment_edges(samples, delay_time=0, switch_time=0, extend_to=None):

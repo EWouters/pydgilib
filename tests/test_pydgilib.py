@@ -2,7 +2,7 @@
 
 from pydgilib_extra import (
     DGILib, DGILibExtra, InterfaceData, LoggerData, valid_interface_data,
-    calculate_average, gpio_augment_edges, mergeData, CHANNEL_A, POWER_CURRENT,
+    calculate_average, gpio_augment_edges, CHANNEL_A, POWER_CURRENT,
     LOGGER_CSV, LOGGER_OBJECT, INTERFACE_POWER, INTERFACE_SPI, INTERFACE_GPIO)
 import unittest
 
@@ -41,7 +41,7 @@ dgilib_path = "C:\\Users\\erikw_000\\Documents\\GitHub\\Atmel-SAML11\\Python\\dg
 # interface_read_data = DGILibInterfaceCommunication.interface_read_data
 # interface_write_data = DGILibInterfaceCommunication.interface_write_data
 
-# # Auxilary
+# # Auxiliary
 # auxiliary = DGILibAuxiliary
 # auxiliary_power_initialize = DGILibAuxiliary.auxiliary_power_initialize
 # auxiliary_power_uninitialize = DGILibAuxiliary.auxiliary_power_uninitialize
@@ -134,9 +134,9 @@ class TestPyDGILib(unittest.TestCase):
         # assert(data[INTERFACE_GPIO][0] == data_obj[INTERFACE_GPIO][0])
         # assert(data[INTERFACE_GPIO][1] == data_obj[INTERFACE_GPIO][1])
 
-    def test_calculate_average(self):
-        """test_calculate_average."""
-        assert(calculate_average([[0, 2], [500, 2]]) == 2)
+    # def test_calculate_average(self):
+    #     """test_calculate_average."""
+    #     self.assertEqual(calculate_average([[0, 2], [500, 2]]), 2)
 
     def test_gpio_augment_edges(self):
         """test_gpio_augment_edges."""
@@ -155,8 +155,8 @@ class TestPyDGILib(unittest.TestCase):
             dgilib.logger.log(1)
             # gpio_augment_edges(dgilib.data[INTERFACE_GPIO])
 
-    def test_mergeData(self):
-        """test_mergeData."""
-        data = {INTERFACE_POWER: [], INTERFACE_GPIO: []}
-        data1 = {INTERFACE_POWER: [2], INTERFACE_GPIO: [3]}
-        mergeData(data, data1)
+    # def test_mergeData(self):
+    #     """test_mergeData."""
+    #     data = {INTERFACE_POWER: [], INTERFACE_GPIO: []}
+    #     data1 = {INTERFACE_POWER: [2], INTERFACE_GPIO: [3]}
+    #     mergeData(data, data1)

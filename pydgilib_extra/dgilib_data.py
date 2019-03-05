@@ -110,6 +110,26 @@ class InterfaceData(object):
                            for self_timestamp, self_value in self)
                        for item_timestamp, item_value in _item)
 
+    def get_as_lists(self, start_time=None, end_time=None):
+        """get_as_lists."""
+        # Return lists if no arguments specified
+        if start_time is None and end_time is None:
+            return (self.timestamps, self.values)
+
+        start_index = 0
+        end_index = len(self.timestamps) - 1
+        # Get the index of the first sample after the start_time
+        if start_time is not None:
+            while self.timestamps[start_index] < start_time and start_index < end_index:
+                start_index += 1
+        if end_time is not None:
+            while self.timestamps[end_index] < end_time and end_index >= start_index:
+                end_index -= 1
+            # Increase end_index by 1 to include the first point after the end_time
+            end_index += 1
+
+        return (self.timestamps[start_time:end_time], self.values[start_time:end_time])
+
 
 class LoggerData(dict):
     """Class to store DGILib Logger Data."""
