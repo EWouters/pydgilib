@@ -12,6 +12,7 @@ config_dict = {
     "plot_xmax": 10,
     "plot_ymax": 0.0040,
     "plot_pins": [False, False, True, True]
+    "plot_pins_method": "highlight" # or wave
 }
 
 # import pydgilib_extra.dgilib_logger
