@@ -6,7 +6,7 @@ from pydgilib_extra import (
     LOGGER_CSV, LOGGER_OBJECT, INTERFACE_POWER, INTERFACE_SPI, INTERFACE_GPIO)
 import unittest
 
-dgilib_path = "C:\\Users\\erikw_000\\Documents\\GitHub\\Atmel-SAML11\\Python\\dgilib.dll"
+dgilib_path = "C:\\Users\\Dragos\\Dropbox\\RISE\\Git\\Python\\pydgilib\\tests_dragos\\dgilib.dll"
 
 # # Discovery
 # discovery = DGILibDiscovery
