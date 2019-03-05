@@ -1,4 +1,12 @@
-from pydgilib.dgilib_exceptions import *
+"""Custom Exceptions for DGILibExtra."""
+
+from pydgilib.dgilib_exceptions import Error
+
+
+class InterfaceNotAvailableError(Error):
+    """Exception raised when enabling interface."""
+
+    pass
 
 
 class PowerStatusError(Error):
