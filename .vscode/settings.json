@@ -36,5 +36,6 @@
     "wouters",
     "xlabel",
     "ylabel"
-  ]
+  ],
+  "python.pythonPath": "D:\\Anaconda3\\envs\\SAML11-32\\python.exe"
 }
