@@ -165,11 +165,9 @@ class DGILibInterfaceGPIO(DGILibInterface):
 
     def csv_write_rows(self, interdace_data):
         """csv_write_rows."""
-        samples = interdace_data.get_as_lists()
-        self.csv_writer.writerows([
-            (timestamps, *pin_values)
-            for timestamps, pin_values in zip(*samples)
-        ])
+        self.csv_writer.writerows(
+            zip(interdace_data.timestamps,
+                *map(iter, zip(*interdace_data.values))))
 
 
 def gpio_augment_edges(samples, delay_time=0, switch_time=0, extend_to=None):
