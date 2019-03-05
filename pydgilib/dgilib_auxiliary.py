@@ -543,11 +543,11 @@ class DGILibAuxiliary(object):
             raise DeviceReturnError(
                 f"auxiliary_power_copy_data returned: {res}")
 
-        return (self.powerBuffer[:count.value],
-                self.powerTimestamp[: count.value])
-        # return (self.powerBuffer[:self.powerCount.value],
-        #         self.powerTimestamp[:self.powerCount.value])
-        # return buffer[:], timestamp[:]
+        return (self.powerTimestamp[: count.value],
+                self.powerBuffer[:count.value])
+        # return (self.powerTimestamp[: self.powerCount.value],
+        #         self.powerBuffer[:self.powerCount.value])
+        # return timestamp[:], buffer[:]
 
     def auxiliary_power_free_data(self):
         """`auxiliary_power_free_data`.
