@@ -1,6 +1,7 @@
 """This module wraps the calls to the GPIO interface."""
 
-from pydgilib_extra.dgilib_extra_config import (INTERFACE_GPIO, NUM_PINS)
+from pydgilib.dgilib_config import INTERFACE_GPIO
+from pydgilib_extra.dgilib_extra_config import NUM_PINS
 from pydgilib_extra.dgilib_interface import DGILibInterface
 from pydgilib_extra.dgilib_data import InterfaceData
 
@@ -19,8 +20,13 @@ def bool2int(b):
 class DGILibInterfaceGPIO(DGILibInterface):
     """Wraps the calls to the GPIO interface."""
 
+    interface_id = INTERFACE_GPIO
     name = "gpio"
     csv_header = ["timestamp"] + [f"gpio{n}" for n in range(NUM_PINS)]
+
+    @staticmethod
+    def _csv_reader_map(row):
+        return float(row[0]), [value == "True" for value in row[1:]]
 
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibInterfaceGPIO object."""
@@ -39,7 +45,8 @@ class DGILibInterfaceGPIO(DGILibInterface):
             self.augment_gpio = (
                 self.gpio_delay_time != 0 or self.gpio_switch_time != 0)
 
-        if self.dgilib_extra.timer_factor is None:
+        # NOTE: Might not be the best place to do this
+        if self.dgilib_extra is not None and self.dgilib_extra.timer_factor is None:
             self.dgilib_extra.timer_factor = self.dgilib_extra.get_time_factor()
 
         if self.verbose:

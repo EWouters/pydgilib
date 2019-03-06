@@ -4,6 +4,7 @@ from time import sleep
 
 from pydgilib.dgilib_config import (
     CALIBRATING, DONE, IDLE, OVERFLOWED, RUNNING, XAM)
+from pydgilib_extra.dgilib_extra_config import INTERFACE_POWER
 from pydgilib_extra.dgilib_extra_exceptions import (
     PowerReadError, PowerStatusError, InterfaceNotAvailableError)
 
@@ -14,6 +15,7 @@ from pydgilib_extra.dgilib_data import InterfaceData
 class DGILibInterfacePower(DGILibInterface):
     """Wraps the calls to the Power interface."""
 
+    interface_id = INTERFACE_POWER
     name = "power"
     csv_header = ["timestamp", "current"]
 
