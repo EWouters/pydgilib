@@ -1,6 +1,6 @@
 """This module provides Python bindings for DGILib."""
 
-from os import getcwd
+from os import path, getcwd
 from ctypes import cdll
 
 from pydgilib.dgilib_exceptions import (
@@ -102,18 +102,21 @@ class DGILib(object):
         :raises: :exc:`DLLError`
         """
         # Load the dgilib.dll
-        dgilib_path = kwargs.get(
-            "dgilib_path", args[0] if args else "dgilib.dll")
         try:
-            self.dgilib = cdll.LoadLibrary(dgilib_path)
-        except OSError as e:
-            raise DLLError(
-                f"dgilib.dll could not be found in the specified path: "
-                f"{dgilib_path}. Specify the path to the .dll or put it in "
-                f"{getcwd()}. If you don't have it you can download it from "
-                f"https://www.microchip.com/mplab/avr-support/data-visualizer "
-                f"(download DGIlib dll, unzip the files and put the dll in "
-                f"your folder.\nError:{e}")
+            self.dgilib = cdll.LoadLibrary(path.join(getcwd(), "dgilib.dll"))
+        except OSError:
+            dgilib_path = kwargs.get(
+                "dgilib_path", args[0] if args else "dgilib.dll")
+            try:
+                self.dgilib = cdll.LoadLibrary(dgilib_path)
+            except OSError as e:
+                raise DLLError(
+                    f"dgilib.dll could not be found in the specified path: "
+                    f"{dgilib_path}. Specify the path to the .dll or put it in"
+                    f" {getcwd()}. If you don't have it you can download it "
+                    f"from https://www.microchip.com/mplab/avr-support/data-"
+                    f"visualizer (download DGIlib dll, unzip the files and put"
+                    f" the dll in {getcwd()}.\nError:{e}")
 
         # Argument parsing
         self.device_index = kwargs.get("device_index", None)

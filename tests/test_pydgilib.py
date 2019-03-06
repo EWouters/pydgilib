@@ -5,8 +5,6 @@ from pydgilib_extra import (
     INTERFACE_POWER, INTERFACE_GPIO)
 import unittest
 
-dgilib_path = "C:\\Users\\erikw_000\\Documents\\GitHub\\Atmel-SAML11\\Python\\dgilib.dll"
-
 # # Discovery
 # discovery = DGILibDiscovery
 # discover = DGILibDiscovery.discover
@@ -63,45 +61,45 @@ class TestPyDGILib(unittest.TestCase):
 
     def test_get_major_version(self):
         """test_get_major_version."""
-        with DGILib(dgilib_path) as dgilib:
+        with DGILib() as dgilib:
             self.assertIsInstance(dgilib.get_major_version(), int)
 
     def test_get_minor_version(self):
         """test_get_minor_version."""
-        with DGILib(dgilib_path) as dgilib:
+        with DGILib() as dgilib:
             self.assertIsInstance(dgilib.get_minor_version(), int)
 
     def test_get_build_number(self):
         """test_get_build_number."""
-        with DGILib(dgilib_path) as dgilib:
+        with DGILib() as dgilib:
             self.assertIsInstance(dgilib.get_build_number(), int)
 
     def test_get_device_name(self):
         """test_get_device_name."""
-        with DGILib(dgilib_path) as dgilib:
+        with DGILib() as dgilib:
             self.assertIsInstance(dgilib.get_device_name(0), bytes)
 
     def test_get_fw_version(self):
         """test_get_fw_version."""
-        with DGILib(dgilib_path) as dgilib:
+        with DGILib() as dgilib:
             major_fw, minor_fw = dgilib.get_fw_version()
             self.assertIsInstance(major_fw, int)
             self.assertIsInstance(minor_fw, int)
 
     def test_device_sn(self):
         """test_device_sn."""
-        with DGILib(dgilib_path) as dgilib:
+        with DGILib() as dgilib:
             self.assertIsInstance(dgilib.device_sn, bytes)
             self.assertEqual(len(dgilib.device_sn), 20)
 
     def test_is_msd_mode(self):
         """test_is_msd_mode."""
-        with DGILib(dgilib_path) as dgilib:
+        with DGILib() as dgilib:
             self.assertFalse(dgilib.is_msd_mode(dgilib.get_device_name(0)))
 
     def test_connection_status(self):
         """test_connection_status."""
-        with DGILib(dgilib_path) as dgilib:
+        with DGILib() as dgilib:
             self.assertIsInstance(dgilib.connection_status(), int)
 
     def test_import_and_measure(self):
@@ -110,7 +108,6 @@ class TestPyDGILib(unittest.TestCase):
         data_obj = []
 
         config_dict = {
-            "dgilib_path": dgilib_path,
             "interfaces": [INTERFACE_POWER, INTERFACE_GPIO],
             "power_buffers": [
                 {"channel": CHANNEL_A, "power_type": POWER_CURRENT}],
@@ -140,7 +137,6 @@ class TestPyDGILib(unittest.TestCase):
     def test_gpio_augment_edges(self):
         """test_gpio_augment_edges."""
         config_dict = {
-            "dgilib_path": dgilib_path,
             "interfaces": [INTERFACE_POWER, INTERFACE_GPIO],
             "power_buffers": [
                 {"channel": CHANNEL_A, "power_type": POWER_CURRENT}],
