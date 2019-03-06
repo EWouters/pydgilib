@@ -1,12 +1,3 @@
 {
-  "terminal.integrated.env.windows": {
-    "CONDA_FORCE_32BIT": 1
-  },
-  "python.unitTest.pyTestArgs": [
-    "pydgilib"
-  ],
-  "python.unitTest.unittestEnabled": false,
-  "python.unitTest.nosetestsEnabled": false,
-  "python.unitTest.pyTestEnabled": true,
-  "cSpell.language": "en"
+  "python.pythonPath": "D:\\Anaconda3\\envs\\SAML11-32\\python.exe"
 }
