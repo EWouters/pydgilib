@@ -40,7 +40,9 @@
   "terminal.integrated.env.windows": {
     "CONDA_FORCE_32BIT": 1
   },
-  "python.unitTest.pyTestArgs": ["pydgilib"],
+  "python.unitTest.pyTestArgs": [
+    "tests"
+  ],
   "python.unitTest.unittestEnabled": false,
   "python.unitTest.nosetestsEnabled": false,
   "python.unitTest.pyTestEnabled": true,
