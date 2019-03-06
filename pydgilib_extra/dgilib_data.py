@@ -110,6 +110,13 @@ class InterfaceData(object):
                            for self_timestamp, self_value in self)
                        for item_timestamp, item_value in _item)
 
+    def __str__(self):
+        """Print data.
+
+        Used to provide `str(data)` syntax.
+        """
+        return str(tuple(self))
+
     def get_as_lists(self, start_time=None, end_time=None):
         """get_as_lists."""
         # Return lists if no arguments specified

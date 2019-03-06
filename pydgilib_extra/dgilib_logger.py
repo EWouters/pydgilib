@@ -71,12 +71,11 @@ class DGILibLogger(object):
                 self.ax = self.fig.add_subplot(1, 1, 1)
             self.plot_pins = kwargs.get("plot_pins", True)
 
-        # Enable the object logger if data_in_obj exists and is True.
-        if (LOGGER_OBJECT not in self.loggers and
-                kwargs.get("data_in_obj", False)):
-            self.loggers.append(LOGGER_OBJECT)
+            # Force logging in object if logging in plot
+            if (LOGGER_OBJECT not in self.loggers):
+                self.loggers.append(LOGGER_OBJECT)
 
-    def logger_start(self):
+    def start(self):
         """Call to start logging."""
         if LOGGER_CSV in self.loggers:
             for interface in self.dgilib_extra.interfaces.values():
@@ -130,7 +129,7 @@ class DGILibLogger(object):
         if return_data:
             return logger_data
 
-    def logger_stop(self, return_data=False):
+    def stop(self, return_data=False):
         """Call to stop logging."""
         # Stop the data polling
         for interface in self.dgilib_extra.interfaces.values():
@@ -169,10 +168,10 @@ class DGILibLogger(object):
         buffersize)
 
         """
-        self.logger_start()
+        self.start()
         sleep(duration)
 
-        return self.logger_stop()
+        return self.stop()
 
     # def data_add(self, data):
     #     """TO BE REMOVED."""
@@ -311,16 +310,13 @@ def logger_plot_data(data, plot_pins=[True] * 4, fig=None, ax=None):
             fig.clf()
         ax = fig.add_subplot(1, 1, 1)
     # plt.gcf().set_size_inches(8, 6, forward=True)
-    ax.plot(*data[INTERFACE_POWER].get_as_lists())
-    if data[INTERFACE_POWER][1]:
-        max_data = max(*data[INTERFACE_POWER].get_as_lists()[1])
-    else:
-        print("NO DATA ???")
-        return
+    ax.plot(data.power.timestamps, data.power.values)
+    if data.power:
+        max_data = max(data.power.values)
     for pin, plot_pin in enumerate(plot_pins):
         if plot_pin:
-            ax.plot(data[INTERFACE_GPIO].get_as_lists()[0], [
-                    d[pin]*max_data for d in data[INTERFACE_GPIO].get_as_lists()[1]])
+            ax.plot(data.gpio.timestamps, [
+                    pin_values[pin]*max_data for pin_values in data.gpio.values])
     ax.set_xlabel('Time [s]')
     ax.set_ylabel('Current [A]')
     # ax.set_title(
@@ -329,10 +325,10 @@ def logger_plot_data(data, plot_pins=[True] * 4, fig=None, ax=None):
     #     f"{calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA, with "
     #     f"pin 3 high: "
     #     f"{calculate_average(power_filter_by_pin(3, data))*1e3:.4}")
-    ax.set_title(
-        f"Average current: {calculate_average(data[INTERFACE_POWER].get_as_lists())*1e3:.4} "
-        f"mA, with pin 2 high: {calculate_average_by_pin(data, 2)*1e3:.4} mA, "
-        f"with pin 3 high: {calculate_average_by_pin(data, 3)*1e3:.4}")
+    # ax.set_title(
+    #     f"Average current: {calculate_average(data[INTERFACE_POWER].get_as_lists())*1e3:.4} "
+    #     f"mA, with pin 2 high: {calculate_average_by_pin(data, 2)*1e3:.4} mA, "
+    #     f"with pin 3 high: {calculate_average_by_pin(data, 3)*1e3:.4}")
     fig.suptitle("Logged Data")
     fig.show()
 
