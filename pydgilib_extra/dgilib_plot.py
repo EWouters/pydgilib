@@ -245,11 +245,14 @@ class DGILibPlot(object):
         # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
         plt.pause(self.plot_pause_secs)
 
+        draw_pins(hold_times,)
+
     def draw_pins(self,
                     hold_times=None, 
                     default_plot_pins_method="highlight",
                     default_average_function="leftpoint"):
 
+        hold_times
         plot_pins=self.plot_pins
         plot_pin_values=self.plot_pin_values
         plot_pins_method=self.plot_pins_method
