@@ -221,16 +221,16 @@ class DGILibPlot(object):
             plt.draw()
             plt.pause(self.plot_pause_secs)
 
-        # for pin_idx in range(len(self.plot_pins):
+        for pin_idx in range(len(self.plot_pins):
 
-        #     if self.plot_pins[pin_idx] == True:
+            if self.plot_pins[pin_idx] == True:
 
-        #         for hold_times in identify_hold_times(data, self.plot_pins[pin_idx], pin_idx, correction_forward = self.pins_correction_forward, shrink = self.pins_interval_shrink):
+                for hold_times in identify_hold_times(data, self.plot_pins[pin_idx], pin_idx, correction_forward = self.pins_correction_forward, shrink = self.pins_interval_shrink):
 
-        #             axes.axvspan(hold_times[0], hold_times[1], color=self.pins_colors[pin_idx], alpha=0.5)
+                    axes.axvspan(hold_times[0], hold_times[1], color=self.pins_colors[pin_idx], alpha=0.5)
 
-        #             self.hold_times.append((hold_times[0], hold_times[1]))
-        #             self.hold_times_sum += hold_times[1] - hold_times[0]
+                    self.hold_times.append((hold_times[0], hold_times[1]))
+                    self.hold_times_sum += hold_times[1] - hold_times[0]
 
         self.ln.set_xdata(data.power.timestamps)
         self.ln.set_ydata(data.power.values)
@@ -246,9 +246,9 @@ class DGILibPlot(object):
         plt.pause(self.plot_pause_secs)
 
     def draw_pins(self,
-            hold_times = None, 
-            default_plot_pins_method="highlight",
-            default_average_function="leftpoint"):
+                    hold_times=None, 
+                    default_plot_pins_method="highlight",
+                    default_average_function="leftpoint"):
 
         plot_pins=self.plot_pins
         plot_pin_values=self.plot_pin_values
@@ -286,8 +286,8 @@ class DGILibPlot(object):
                     for hold_times in identify_hold_times(data, plot_pins[pin_idx], pin_idx, correction_forward = pins_correction_forward, shrink = pins_interval_shrink):
                         axes.axvspan(hold_times[0], hold_times[1], color=pins_colors[pin_idx], alpha=0.5)
 
-                        hold_times.append((hold_times[0], hold_times[1]))
-                        hold_times_sum += hold_times[1] - hold_times[0]
+                        #hold_times.append((hold_times[0], hold_times[1]))
+                        #hold_times_sum += hold_times[1] - hold_times[0]
         else:
             pass
             # To be implemented
