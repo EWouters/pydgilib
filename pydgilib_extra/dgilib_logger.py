@@ -7,7 +7,7 @@ from os import curdir, path
 from time import sleep
 
 # Todo, remove dependency
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 from pydgilib.dgilib_config import (
     INTERFACE_SPI, INTERFACE_USART, INTERFACE_I2C, INTERFACE_GPIO)
@@ -56,52 +56,20 @@ class DGILibLogger(object):
             # if "fig" in kwargs: # It seems the second argument of kwargs.get
             # always gets called, so this check prevents an extra figure from
             # being created
-            # self.fig = kwargs.get("fig")
-            # if self.fig is None:
-            #    self.fig = plt.figure(figsize=(8, 6))
+            self.fig = kwargs.get("fig")
+            if self.fig is None:
+               self.fig = plt.figure(figsize=(8, 6))
             # if "ax" in kwargs: # It seems the second argument of kwargs.get
             # always gets called, so this check prevents an extra axis from
             # being created
-            # self.ax = kwargs.get("ax")
-            # if self.ax is None:
-            #    self.ax = self.fig.add_subplot(1, 1, 1)
-            #self.plot_pins = kwargs.get("plot_pins", True)
+            self.ax = kwargs.get("ax")
+            if self.ax is None:
+               self.ax = self.fig.add_subplot(1, 1, 1)
 
         # Enable the object logger if data_in_obj exists and is True.
         if (LOGGER_OBJECT not in self.loggers and
                 kwargs.get("data_in_obj", False)):
             self.loggers.append(LOGGER_OBJECT)
-==== BASE ====
-        if LOGGER_OBJECT in self.loggers:
-            self.data = {}
-
-        # Initialize interfaces
-        DGILibInterfaceGPIO.__init__(self, *args, **kwargs)
-        DGILibInterfacePower.__init__(self, *args, **kwargs)
-
-    def __enter__(self):
-        """
-        """
-
-        DGILibInterfaceGPIO.__enter__(self)
-        DGILibInterfacePower.__enter__(self)
-
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        """
-        """
-
-        # Should be removed and updated every time update_callback is called
-        if LOGGER_PLOT in self.loggers:
-            if self.augment_gpio:
-                gpio_augment_edges(self.data[INTERFACE_GPIO], self.gpio_delay_time, self.gpio_switch_time, self.data[INTERFACE_POWER][0][-1])
-            self.fig, self.ax = logger_plot_data(self.data, self.plot_pins, self.fig, self.ax)
-            # logger_plot_data(self.data, [r or w for r, w in zip(self.read_mode, self.write_mode)], self.plot_pins)
-
-        DGILibInterfaceGPIO.__exit__(self, exc_type, exc_value, traceback)
-        DGILibInterfacePower.__exit__(self, exc_type, exc_value, traceback)
-==== BASE ====
 
     def logger_start(self):
         """Call to start logging."""
@@ -149,26 +117,7 @@ class DGILibLogger(object):
                     self.dgilib_extra.data[interface.interface_id] += interface_data
                 # Update the plot if LOGGER_PLOT is enabled
                 if LOGGER_PLOT in self.loggers:
-                    pass
-                    # print("TODO: Update plot")
-                if return_data:
-                    logger_data[interface.interface_id] += interface_data
-
-==== BASE ====
-        if INTERFACE_POWER in self.enabled_interfaces:
-            data[INTERFACE_POWER] = self.power_read_buffer(self.power_buffers[0])
-            # Check if any data has arrived
-            if data[INTERFACE_POWER]:
-                # Write to registered loggers
-                if LOGGER_CSV in self.loggers:
-                    self.csv_writers[INTERFACE_POWER].writerows(zip(*data[INTERFACE_POWER]))
-                # Merge data into self.data if LOGGER_OBJECT is enabled
-                if LOGGER_OBJECT in self.loggers:
-                    for col in range(len(self.data[INTERFACE_POWER])):
-                        self.data[INTERFACE_POWER][col].extend(data[INTERFACE_POWER][col])
-                # Update the plot if LOGGER_PLOT is enabled
-                if LOGGER_PLOT in self.loggers:
-                    pass
+                    self.dgilib_extra.plotobj.update_plot()
                     # print("TODO: Update plot")
                 if return_data:
                     logger_data[interface.interface_id] += interface_data
@@ -195,13 +144,14 @@ class DGILibLogger(object):
                 interface.file_handle.close()
 
         if LOGGER_PLOT in self.loggers:
+            pass
             # print("TODO: Plot")
             # if self.dgilib_extra.interfaces[INTERFACE_GPIO].augment_gpio:
             #     gpio_augment_edges(
             #         self.data[INTERFACE_GPIO], self.gpio_delay_time,
             #         self.gpio_switch_time, self.data[INTERFACE_POWER][0][-1])
-            self.fig, self.ax = logger_plot_data(
-                self.dgilib_extra.data, self.plot_pins, self.fig, self.ax)
+            #self.fig, self.ax = logger_plot_data(
+            #    self.dgilib_extra.data, self.plot_pins, self.fig, self.ax)
 
         if LOGGER_OBJECT in self.loggers:
             return self.dgilib_extra.data
@@ -211,15 +161,15 @@ class DGILibLogger(object):
     def log(self, duration=10):
         """log.
 
-        while time() < end_time:
-            self.update_callback()
+        TODO: call update_callback at specified intervals to avoid buffer
+        overflows (figure out the formula based on the samplerate and
+        buffersize)
 
-        self.logger_stop()
+        """
+        self.logger_start()
+        sleep(duration)
 
-        if LOGGER_OBJECT not in self.loggers:
-            return None
-        else:
-            return self.data
+        return self.logger_stop()
 
     # def data_add(self, data):
     #     """TO BE REMOVED."""
@@ -253,10 +203,14 @@ class DGILibLogger(object):
 # def mergeData(data1, data2):
 #     """mergeData.
 
-
-def power_filter_by_pin(pin, data, verbose=0):
-    """
-==== BASE ====
+#     Make class for data structure? Or at least make a method to merge that
+#     mutates the list instead of doing multiple copies.
+#     """
+#     assert(data1.keys() == data2.keys())
+#     for interface_id in data1.keys():
+#         for col in range(len(data1[interface_id])):
+#             data1[interface_id][col].extend(data2[interface_id][col])
+#     return data1
 
 
 def power_filter_by_pin(pin, data, verbose=0):

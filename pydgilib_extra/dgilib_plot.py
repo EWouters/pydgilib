@@ -10,7 +10,9 @@ from matplotlib.widgets import Slider, Button
 
 class DGILibPlot(object):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, dgilib_extra, *args, **kwargs):
+        self.dgilib_extra = dgilib_extra
+
         # Maybe the user wants to put the power figure along with other figures he wants
         # if "fig" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra figure from being created
         self.fig = kwargs.get("fig")
@@ -185,22 +187,17 @@ class DGILibPlot(object):
         self.spos.set_val(0)
         self.swidth.set_val(self.plot_xmax)
 
-    def update_data(self, data):
-        if data is None: return
-        if INTERFACE_POWER not in data: return
-        if INTERFACE_GPIO not in data: return
-        mergeData(self.data, data)
-
     def update_plot(self):
-        # if data is None:
-        #     data = self.data
+        data = self.dgilib_extra.data
+        verbose = self.verbose
 
-        if INTERFACE_POWER not in self.data: return
-        if INTERFACE_GPIO not in self.data: return
-        if len(self.data[INTERFACE_POWER]) == 0: return
-        if len(self.data[INTERFACE_GPIO]) == 0: return
-        if len(self.data[INTERFACE_POWER][0]) == 0: return
-        if len(self.data[INTERFACE_GPIO][0]) == 0: return
+        # In this if, the smart DGILibData object tests if it has data inside
+        # TODO: Make 'if data: return' work for if data has no actual values in it.
+        # ... Right now is if it has no interfaces.
+        if (not data): 
+            raise ArgumentError("dgilib_plot.update_plot: Expected 'data' containing interfaces. Got 'data' with no interfaces. Data is: " + str(data))
+        if (not data.power) or (not data.gpio):
+            raise ArgumentError("dgilib_plot.update_plot: Expected 'data' containing power. Got 'data' with interfaces but no values. Data is: " + str(data))
 
         if not plt.fignum_exists(self.fig.number):
             plt.show()
@@ -234,16 +231,17 @@ class DGILibPlot(object):
 
     def draw_pins(self,
             hold_times = None, 
-            what_pins_to_plot=self.plot_pins,
-            what_pin_values_to_check=self.plot_pin_values,
-            plot_pins_method=self.plot_pins_method,
             default_plot_pins_method="highlight",
-            default_average_function="leftpoint",
-            verbose=self.verbose):
+            default_average_function="leftpoint"):
+
+        plot_pins=self.plot_pins
+        plot_pin_values=self.plot_pin_values
+        plot_pins_method=self.plot_pins_method
+        verbose=self.verbose
 
         no_of_pins = len(self.plot_pins)
 
-        if what_pins_to_plot is None:
+        if plot_pins is None:
             return
         else:
             if (plot_pins_method is not "highlight") and (plot_pins_method is not "wave"):
@@ -254,26 +252,26 @@ class DGILibPlot(object):
         if (average_function is None):
             if verbose: print("")
 
-        if (self.hold_times is None) or (self.hold_times == []):
-            if self.verbose: print("draw_pins: No hold times available")
+        if (hold_times is None) or (hold_times == []):
+            if verbose: print("draw_pins: No hold times available")
             return
 
-        if (self.plot_pins is None) or (self.plot_pins == []):
-            if self.verbose: print("draw_pins: No information about what pins to plot (\"plot_pins\" property) available")
+        if (plot_pins is None) or (plot_pins == []):
+            if verbose: print("draw_pins: No information about what pins to plot (\"plot_pins\" property) available")
             return
 
-        if (self.plot_pin_values is None) or (self.plot_pin_values == []):
-            if self.verbose: print("draw_pins: No information about what values to compare the pins to (\"plot_pin_values\" property) available")
+        if (plot_pin_values is None) or (plot_pin_values == []):
+            if verbose: print("draw_pins: No information about what values to compare the pins to (\"plot_pin_values\" property) available")
             return
 
-        if self.plot_pins_method == "highlight":
+        if plot_pins_method == "highlight":
             for pin_idx in range(no_of_pins): # For every pin number (0,1,2,3)
-                if self.plot_pins[pin_idx] == True: # If we want them plotted
-                    for hold_times in identify_hold_times(self.data, self.plot_pins[pin_idx], pin_idx, correction_forward = self.pins_correction_forward, shrink = self.pins_interval_shrink):
-                        axes.axvspan(hold_times[0], hold_times[1], color=self.pins_colors[pin_idx], alpha=0.5)
+                if plot_pins[pin_idx] == True: # If we want them plotted
+                    for hold_times in identify_hold_times(data, plot_pins[pin_idx], pin_idx, correction_forward = pins_correction_forward, shrink = pins_interval_shrink):
+                        axes.axvspan(hold_times[0], hold_times[1], color=pins_colors[pin_idx], alpha=0.5)
 
-                        self.hold_times.append((hold_times[0], hold_times[1]))
-                        self.hold_times_sum += hold_times[1] - hold_times[0]
+                        hold_times.append((hold_times[0], hold_times[1]))
+                        hold_times_sum += hold_times[1] - hold_times[0]
         else:
             pass
             # To be implemented
@@ -282,8 +280,12 @@ class DGILibPlot(object):
     def plot_still_exists(self):
         return plt.fignum_exists(self.fig.number)
 
-    def keep_plot(self):
+    def plot_pause(self):
         plt.pause(self.plot_pause)
+
+    def keep_plot_alive(self):
+        while self.plot_still_exists():
+            self.plot_pause()
 
 
 def calculate_average_leftpoint_single_interval(power_data, start_time=None, end_time=None):

@@ -11,6 +11,7 @@ from pydgilib_extra.dgilib_logger import DGILibLogger
 from pydgilib_extra.dgilib_interface import DGILibInterface
 from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO
 from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
+from pydgilib_extra.dgilib_plot import DGILibPlot
 
 
 class DGILibExtra(DGILib):
@@ -50,9 +51,16 @@ class DGILibExtra(DGILib):
                 self.interfaces[interface_id].enable()
 
         # Instantiate logger if there were any loggers specified
-        if self.kwargs.get("loggers", []):
+        loggers = self.kwargs.get("loggers", None)
+        if loggers:
             self.logger = DGILibLogger(
                 self, *self.args, **self.kwargs)
+
+            if "LOGGER_PLOT" in loggers:
+                self.plotobj = DGILibPlot(self, *self.args, **self.kwargs)
+                self.plot_pause = self.plotobj.plot_pause
+                self.plot_still_exists = self.plotobj.plot_still_exists
+                self.keep_plot_alive = self.plotobj.keep_plot_alive
 
         return self
 
@@ -105,15 +113,20 @@ class DGILibExtra(DGILib):
 
         return timer_prescaler / timer_frequency
 
-    def keep_plot(self):
-        if self.plotobj is not None:
-            self.plotobj.keep_plot()
+def instantiate_interface(interface_id, dgilib_extra):
+    """
+    instantiate_interface.
 
-    def plot_still_exists(self):
-        if self.plotobj is not None:
-            return self.plotobj.plot_still_exists()
+    Arguments:
+	interface_id {int} -- ID of the interface
+	dgilib_extra {DGILibExtra} -- DGILibExtra object
 
-    def hold_plot(self):
-        if self.plotobj is not None:
-            while self.plot_still_exists():
-                self.keep_plot()
+    Returns:
+	DGILibInterface -- DGILibInterface object
+
+    """
+    if interface_id == INTERFACE_GPIO:
+	    return DGILibInterfaceGPIO(dgilib_extra, interface_id, *dgilib_extra.args, **dgilib_extra.kwargs)
+    elif interface_id == INTERFACE_POWER:
+	    return DGILibInterfacePower(dgilib_extra, interface_id, *dgilib_extra.args, **dgilib_extra.kwargs)
+    return DGILibInterface(dgilib_extra, interface_id, *dgilib_extra.args, **dgilib_extra.kwargs)
