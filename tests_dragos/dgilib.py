@@ -23,4 +23,4 @@ config_dict = {
 with DGILibExtra(**config_dict) as dgilib:
     data = dgilib.logger.log(10)
 
-    dgilib.keep_plot_alive()
+    dgilib.logger.keep_plot_alive()

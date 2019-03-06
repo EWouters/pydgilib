@@ -11,7 +11,6 @@ from pydgilib_extra.dgilib_logger import DGILibLogger
 from pydgilib_extra.dgilib_interface import DGILibInterface
 from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO
 from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
-from pydgilib_extra.dgilib_plot import DGILibPlot
 
 class DGILibExtra(DGILib):
     """A user friendly way to interact with the DGILib API."""

@@ -13,7 +13,7 @@ from pydgilib_extra.dgilib_data import LoggerData
 from pydgilib_extra.dgilib_extra_config import (
     INTERFACE_POWER, LOGGER_CSV, LOGGER_OBJECT, LOGGER_PLOT)
 # from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
-
+from pydgilib_extra.dgilib_plot import DGILibPlot
 
 class DGILibLogger(object):
     """Wraps the logging functionality for DGILibExtra.
@@ -47,13 +47,6 @@ class DGILibLogger(object):
             self.file_name_base = kwargs["file_name_base"]
         self.log_folder = kwargs.get("log_folder", curdir)
 
-                #     if LOGGER_PLOT in loggers:
-                # print("Plot included!")
-                # self.plotobj = DGILibPlot(self, *self.args, **self.kwargs)
-                # self.plot_pause = self.plotobj.plot_pause
-                # self.plot_still_exists = self.plotobj.plot_still_exists
-                # self.keep_plot_alive = self.plotobj.keep_plot_alive
-
         # Enable the plot logger if figure has been specified.
         if (LOGGER_PLOT not in self.loggers and
                 ("fig" in kwargs or "ax" in kwargs)):
@@ -61,7 +54,10 @@ class DGILibLogger(object):
 
         # Set self.figure if LOGGER_PLOT enabled.
         if LOGGER_PLOT in self.loggers:
-            pass
+            self.plotobj = DGILibPlot(self, self.dgilib_extra, *args, **kwargs)
+            self.plot_pause = self.plotobj.plot_pause
+            self.plot_still_exists = self.plotobj.plot_still_exists
+            self.keep_plot_alive = self.plotobj.keep_plot_alive
             # # if "fig" in kwargs: # It seems the second argument of kwargs.get
             # # always gets called, so this check prevents an extra figure from
             # # being created
@@ -118,8 +114,8 @@ class DGILibLogger(object):
                     self.dgilib_extra.data[interface_id] += interface_data
                 # Update the plot if LOGGER_PLOT is enabled
                 if LOGGER_PLOT in self.loggers:
-                    if self.dgilib_extra.plotobj is not None:
-                        self.dgilib_extra.plotobj.update_plot()
+                    if self.plotobj is not None:
+                        self.plotobj.update_plot(self.dgilib_extra.data)
                     else:
                         print("Error: There's no plot!")
                     # print("TODO: Update plot")

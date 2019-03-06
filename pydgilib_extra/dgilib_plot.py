@@ -193,9 +193,12 @@ class DGILibPlot(object):
         self.spos.set_val(0)
         self.swidth.set_val(self.plot_xmax)
 
-    def update_plot(self):
-        data = self.dgilib_extra.data
+    def update_plot(self, data):
         verbose = self.verbose
+
+        if data is None:
+            if verbose: print("dgilib_plot.update_plot: Expected 'data', got an empty object.")
+            return
 
         # In this if, the smart DGILibData object tests if it has data inside
         # TODO: Make 'if data: return' work for if data has no actual values in it.
