@@ -331,7 +331,7 @@ class DGILibInterfaceCommunication(object):
             raise DeviceReturnError(
                 f"interface_read_data: {interface_id} returned: {res}")
 
-        return buffer[:length.value], ticks[:length.value]
+        return ticks[:length.value], buffer[:length.value]
 
     def interface_write_data(self, interface_id, buffer):
         """`interface_write_data`.

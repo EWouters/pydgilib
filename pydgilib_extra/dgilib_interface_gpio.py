@@ -8,7 +8,7 @@ from pydgilib_extra.dgilib_data import InterfaceData
 # TODO: make these functions faster/better?
 def int2bool(i):
     """Convert int to list of bool."""
-    return [bit is "1" for bit in f"{i:04b}"]  # Note: NUM_PINS is hardcoded here
+    return [bit is "1" for bit in f"{i:04b}"]  # NOTE: NUM_PINS is hardcoded here
 
 
 def bool2int(b):
@@ -25,8 +25,8 @@ class DGILibInterfaceGPIO(DGILibInterface):
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibInterfaceGPIO object."""
         # Set default values for attributes
-        self.read_mode = [False] * 4
-        self.write_mode = [False] * 4
+        self.read_mode = [False] * NUM_PINS
+        self.write_mode = [False] * NUM_PINS
         # Instantiate base class
         DGILibInterface.__init__(self, *args, **kwargs)
         # Parse arguments
@@ -76,7 +76,7 @@ class DGILibInterfaceGPIO(DGILibInterface):
 
         return read_mode, write_mode
 
-#     def set_config(self, read_mode=[False] * 4, write_mode=[False] * 4):
+#     def set_config(self, read_mode=[False] * NUM_PINS, write_mode=[False] * NUM_PINS):
 
 #         # Update internal values
 #         self.read_mode = read_mode
@@ -129,7 +129,7 @@ class DGILibInterfaceGPIO(DGILibInterface):
         :rtype: (list(float), list(list(bool)))
         """
         # Read the data from the buffer
-        pin_values, ticks = self.dgilib_extra.interface_read_data(
+        ticks, pin_values = self.dgilib_extra.interface_read_data(
             INTERFACE_GPIO)
 
         pin_values = [int2bool(pin_value) for pin_value in pin_values]
@@ -137,10 +137,16 @@ class DGILibInterfaceGPIO(DGILibInterface):
 
         if self.verbose >= 2:
             print(
-                f"Collected {len(pin_values)} gpio samples (4 pins per sample)"
+                f"Collected {len(pin_values)} gpio samples ({NUM_PINS} pins per sample)"
             )
 
-        return InterfaceData(timestamps, pin_values)
+        if self.augment_gpio:
+            interface_data = InterfaceData(timestamps, pin_values)
+            gpio_augment_edges(
+                interface_data, self.gpio_delay_time, self.gpio_switch_time)
+            return interface_data
+        else:
+            return InterfaceData(timestamps, pin_values)
 
     def write(self, pin_values):
         """Set the state of the GPIO pins.
@@ -170,7 +176,7 @@ class DGILibInterfaceGPIO(DGILibInterface):
                 *map(iter, zip(*interdace_data.values))))
 
 
-def gpio_augment_edges(samples, delay_time=0, switch_time=0, extend_to=None):
+def gpio_augment_edges(interface_data, delay_time=0, switch_time=0, extend_to=None):
     """GPIO Augment Edges.
 
     Augments the edges of the GPIO data by inserting an extra sample of the
@@ -184,8 +190,8 @@ def gpio_augment_edges(samples, delay_time=0, switch_time=0, extend_to=None):
     Can insert the last datapoint again at the time specified (has to be after
     last sample).
 
-    :param samples: Tuple of samples of GPIO data.
-    :type samples: tuple(list(int), list(list(bool)))
+    :param interface_data: InterfaceData object of GPIO data.
+    :type interface_data: InterfaceData
     :param delay_time: Switch time of GPIO pin.
     :type delay_time: float
     :param switch_time: Switch time of GPIO pin.
@@ -193,30 +199,32 @@ def gpio_augment_edges(samples, delay_time=0, switch_time=0, extend_to=None):
     :param extend_to: Inserts the last pin values again at the time specified
         (only used if time is after last sample).
     :type extend_to: float
-    :return: Tuple of samples of GPIO data.
-    :rtype: tuple(list(int), list(list(bool)))
+    :return: InterfaceData object of augmented GPIO data.
+    :rtype: InterfaceData
     """
-    pin_states = [False] * 4
+    pin_states = [False] * NUM_PINS
 
     # iterate over the list and insert items at the same time:
     i = 0
-    while i < len(samples[0]):
-        if samples[1][i] != pin_states:
+    while i < len(interface_data.timestamps):
+        if interface_data.values[i] != pin_states:
             # This inserts a time sample at time + switch time (so moves the
             # time stamp into the future)
-            samples[0].insert(i, samples[0][i] - switch_time)
+            interface_data.timestamps.insert(
+                i, interface_data.timestamps[i] - switch_time)
             # This inserts the last datapoint again at the time the next
             # switch actually arrived (without switch time)
-            samples[1].insert(i, pin_states)
+            interface_data.values.insert(i, pin_states)
             i += 1
-            pin_states = samples[1][i]
+            pin_states = interface_data.values[i]
         i += 1
 
     # Delay all time stamps by delay_time
-    samples[0] = [t + delay_time for t in samples[0]]
+    interface_data.timestamps = [
+        t + delay_time for t in interface_data.timestamps]
 
     if extend_to is not None:
-        if extend_to >= samples[0][-1]:
-            samples[0].append(extend_to)
-            samples[1].append(pin_states)
-    return samples
+        if extend_to >= interface_data.timestamps[-1]:
+            interface_data.timestamps.append(extend_to)
+            interface_data.values.append(pin_states)
+    return interface_data
