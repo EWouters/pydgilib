@@ -4,7 +4,7 @@
 import copy
 import csv
 from os import curdir, path
-from time import sleep
+from time import sleep, time
 
 # Todo, remove dependency
 import matplotlib.pyplot as plt
@@ -169,10 +169,19 @@ class DGILibLogger(object):
         buffersize)
 
         """
-        self.start()
-        sleep(duration)
 
-        return self.stop()
+        end_time = time() + duration
+        self.start()
+
+        while time() < end_time:
+            self.update_callback()
+
+        return self.stop() # TODO: Should we return here or just stop and check for LOGGER_OBJECT below and then return?
+
+        # if LOGGER_OBJECT not in self.loggers:
+        #     return None
+        # else:
+        #     return self.data
 
     # def data_add(self, data):
     #     """TO BE REMOVED."""
