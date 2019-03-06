@@ -1,9 +1,8 @@
 """This module holds the automated tests for DGILib."""
 
 from pydgilib_extra import (
-    DGILib, DGILibExtra, InterfaceData, LoggerData, valid_interface_data,
-    calculate_average, gpio_augment_edges, CHANNEL_A, POWER_CURRENT,
-    LOGGER_CSV, LOGGER_OBJECT, INTERFACE_POWER, INTERFACE_SPI, INTERFACE_GPIO)
+    DGILib, DGILibExtra, CHANNEL_A, POWER_CURRENT, LOGGER_CSV, LOGGER_OBJECT,
+    INTERFACE_POWER, INTERFACE_GPIO)
 import unittest
 
 dgilib_path = "C:\\Users\\erikw_000\\Documents\\GitHub\\Atmel-SAML11\\Python\\dgilib.dll"

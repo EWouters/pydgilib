@@ -6,7 +6,7 @@ from pydgilib.dgilib import DGILib
 
 from pydgilib.dgilib_config import (
     INTERFACE_GPIO, INTERFACE_TIMESTAMP, INTERFACE_POWER_DATA)
-from pydgilib_extra.dgilib_extra_config import (INTERFACES, INTERFACE_POWER)
+from pydgilib_extra.dgilib_extra_config import INTERFACE_POWER
 from pydgilib_extra.dgilib_logger import DGILibLogger
 from pydgilib_extra.dgilib_interface import DGILibInterface
 from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO
@@ -16,20 +16,31 @@ from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 class DGILibExtra(DGILib):
     """A user friendly way to interact with the DGILib API."""
 
+    # Add module
+    logger = DGILibLogger
+    interfaces = {INTERFACE_GPIO: DGILibInterfaceGPIO,
+                  INTERFACE_POWER: DGILibInterfacePower}
+    # NOTE: This is to make sure DGILibExtra can always access the static
+    # attributes of these classes, even when the class is not instantiated
+    # BUG: When connecting multiple devices and using multiple loggers this
+    # will use the same logger for all instances.
+
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibExtra object."""
-
         # Set default values for attributes
         self.available_interfaces = []
         self.enabled_interfaces = []
         self.timer_factor = None
-        self.interfaces = {}
         self.data = None
         # Instantiate base class
         DGILib.__init__(self, *args, **kwargs)
         # Store arguments
         self.args = args
         self.kwargs = kwargs
+
+        # Instantiate logger if there were any loggers specified
+        if self.kwargs.get("loggers", []):
+            self.logger = self.logger(self, *self.args, **self.kwargs)
 
         if self.verbose >= 2:
             print("args: ", args)
@@ -45,15 +56,12 @@ class DGILibExtra(DGILib):
         # Instantiate interface objects and enable the interfaces
         if "interfaces" in self.kwargs:
             for interface_id in self.kwargs["interfaces"]:
-                self.interfaces[interface_id] = instantiate_interface(
-                    interface_id, self)
-                self.interfaces[interface_id].enable()
-
-        # Instantiate logger if there were any loggers specified
-        if self.kwargs.get("loggers", []):
-            self.logger = DGILibLogger(
-                self, *self.args, **self.kwargs)
-
+                if interface_id in self.interfaces:
+                    self.interfaces[interface_id] = self.interfaces[interface_id](
+                        self, *self.args, **self.kwargs)
+                else:
+                    self.interfaces[interface_id] = DGILibInterface(
+                        self, *self.args, **self.kwargs)
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
@@ -104,22 +112,3 @@ class DGILibExtra(DGILib):
                 f"{timer_frequency}")
 
         return timer_prescaler / timer_frequency
-
-
-def instantiate_interface(interface_id, dgilib_extra):
-    """
-    instantiate_interface.
-
-    Arguments:
-        interface_id {int} -- ID of the interface
-        dgilib_extra {DGILibExtra} -- DGILibExtra object
-
-    Returns:
-        DGILibInterface -- DGILibInterface object
-
-    """
-    if interface_id == INTERFACE_GPIO:
-        return DGILibInterfaceGPIO(dgilib_extra, interface_id, *dgilib_extra.args, **dgilib_extra.kwargs)
-    elif interface_id == INTERFACE_POWER:
-        return DGILibInterfacePower(dgilib_extra, interface_id, *dgilib_extra.args, **dgilib_extra.kwargs)
-    return DGILibInterface(dgilib_extra, interface_id, *dgilib_extra.args, **dgilib_extra.kwargs)

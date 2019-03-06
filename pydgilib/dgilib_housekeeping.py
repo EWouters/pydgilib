@@ -97,8 +97,7 @@ class DGILibHousekeeping(object):
         :return: A non-zero return value indicates a connection error.
         :rtype: int
         """
-        c_status = self.dgilib.connection_status(
-            self.dgi_hndl)
+        c_status = self.dgilib.connection_status(self.dgi_hndl)
         if self.verbose:
             print(f"connection_status: {c_status}")
 

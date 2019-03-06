@@ -44,8 +44,12 @@ class InterfaceData(object):
             assert valid_interface_data(
                 interface_data), f"Samples passed to InterfaceData were not " \
                 "valid_interface_data. {interface_data}"
-            self.timestamps.extend(interface_data[0])
-            self.values.extend(interface_data[1])
+            if isinstance(interface_data[0], list):
+                self.timestamps.extend(interface_data[0])
+                self.values.extend(interface_data[1])
+            else:
+                self.timestamps.extend([interface_data[0]])
+                self.values.extend([interface_data[1]])
         return self
 
     def __add__(self, interface_data):
@@ -261,5 +265,5 @@ def valid_interface_data(samples):
     """Check if samples are valid InterfaceData."""
     return (isinstance(samples, (tuple, list)) and
             len(samples) == 2 and
-            all(isinstance(sample, list) for sample in samples) and
-            len(samples[0]) == len(samples[1]))
+            all(isinstance(sample, (list, float, int)) for sample in samples) and
+            (isinstance(samples[0], float) or len(samples[0]) == len(samples[1])))

@@ -2,18 +2,16 @@
 """This module wraps the logging functionality for DGILibExtra."""
 
 import copy
-import csv
-from os import curdir, path
+from os import curdir
 from time import sleep
 
 # Todo, remove dependency
 import matplotlib.pyplot as plt
 
-from pydgilib.dgilib_config import (
-    INTERFACE_SPI, INTERFACE_USART, INTERFACE_I2C, INTERFACE_GPIO)
+from pydgilib.dgilib_config import INTERFACE_GPIO
 from pydgilib_extra.dgilib_data import LoggerData
 from pydgilib_extra.dgilib_extra_config import (
-    INTERFACE_POWER, INTERFACES, LOGGER_CSV, LOGGER_OBJECT, LOGGER_PLOT)
+    INTERFACE_POWER, LOGGER_CSV, LOGGER_OBJECT, LOGGER_PLOT)
 # from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
 
 
@@ -25,9 +23,12 @@ class DGILibLogger(object):
         - Power mode
     """
 
-    def __init__(self, dgilib_extra, *args, **kwargs):
+    file_name_base = "log"
+
+    def __init__(self, *args, **kwargs):
         """Instantiate DGILibInterfacePower object."""
-        self.dgilib_extra = dgilib_extra
+        self.dgilib_extra = kwargs.get(
+            "dgilib_extra", args[0] if args else None)
 
         # Get enabled loggers
         self.loggers = kwargs.get("loggers", [])
@@ -42,13 +43,15 @@ class DGILibLogger(object):
         # file_name_base - merely the optional base of the filename
         #     (Preferably leave standard).
         # log_folder - where log files will be saved
-        self.file_name_base = kwargs.get("file_name_base", "log")
+        if "file_name_base" in kwargs:
+            self.file_name_base = kwargs["file_name_base"]
         self.log_folder = kwargs.get("log_folder", curdir)
 
         # Import matplotlib.pyplot as plt if LOGGER_PLOT in self.loggers and
         # no figure has been specified
         if LOGGER_PLOT in self.loggers:
-            import matplotlib.pyplot as plt
+            # import matplotlib.pyplot as plt
+            pass
 
         # Enable the plot logger if figure has been specified.
         if (LOGGER_PLOT not in self.loggers and
@@ -79,20 +82,7 @@ class DGILibLogger(object):
         """Call to start logging."""
         if LOGGER_CSV in self.loggers:
             for interface in self.dgilib_extra.interfaces.values():
-                # Open file handle
-                interface.file_handle = open(path.join(
-                    self.log_folder,
-                    (self.file_name_base + "_" + interface.name + ".csv")), "w")
-                # Create csv.writer
-                interface.csv_writer = csv.writer(
-                    interface.file_handle)
-                # Write header to file
-                interface.csv_writer.writerow(interface.csv_header)
-
-        # Create data structure self.data if LOGGER_OBJECT is enabled
-        if LOGGER_OBJECT in self.loggers:
-            self.dgilib_extra.data = LoggerData(
-                self.dgilib_extra.enabled_interfaces)
+                interface.init_csv_writer()
 
         # Create axes self.axes if LOGGER_PLOT is enabled
         if LOGGER_PLOT in self.loggers:
@@ -101,14 +91,20 @@ class DGILibLogger(object):
 
         # Start the data polling
         for interface in self.dgilib_extra.interfaces.values():
+            interface.enable()
             interface.start()
+
+        # Create data structure self.data if LOGGER_OBJECT is enabled
+        if LOGGER_OBJECT in self.loggers:
+            self.dgilib_extra.data = LoggerData(
+                self.dgilib_extra.enabled_interfaces)
 
     def update_callback(self, return_data=False):
         """Call to get new data."""
         if return_data:
             logger_data = LoggerData()
         # Get data
-        for interface in self.dgilib_extra.interfaces.values():
+        for interface_id, interface in self.dgilib_extra.interfaces.items():
             # Read from the interface
             interface_data = interface.read()
             # Check if any data has arrived
@@ -117,13 +113,13 @@ class DGILibLogger(object):
                     interface.csv_write_rows(interface_data)
                 # Merge data into self.data if LOGGER_OBJECT is enabled
                 if LOGGER_OBJECT in self.loggers:
-                    self.dgilib_extra.data[interface.interface_id] += interface_data
+                    self.dgilib_extra.data[interface_id] += interface_data
                 # Update the plot if LOGGER_PLOT is enabled
                 if LOGGER_PLOT in self.loggers:
                     pass
                     # print("TODO: Update plot")
                 if return_data:
-                    logger_data[interface.interface_id] += interface_data
+                    logger_data[interface_id] += interface_data
 
         # Return the data
         if return_data:
@@ -141,10 +137,10 @@ class DGILibLogger(object):
         else:
             data = self.update_callback(return_data)
 
+        # Close file handle
         if LOGGER_CSV in self.loggers:
             for interface in self.dgilib_extra.interfaces.values():
-                # Close file handle
-                interface.file_handle.close()
+                interface.close_csv_writer()
 
         if LOGGER_PLOT in self.loggers:
             # print("TODO: Plot")
@@ -331,6 +327,9 @@ def logger_plot_data(data, plot_pins=[True] * 4, fig=None, ax=None):
     #     f"with pin 3 high: {calculate_average_by_pin(data, 3)*1e3:.4}")
     fig.suptitle("Logged Data")
     fig.show()
+
+    while fig.fignum_exists(fig.number):
+        fig.pause(1)
 
     return fig, ax
 

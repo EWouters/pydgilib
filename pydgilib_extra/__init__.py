@@ -10,7 +10,9 @@ from pydgilib_extra.dgilib_extra import DGILibExtra
 from pydgilib_extra.dgilib_logger import (
     calculate_average, power_filter_by_pin,
     logger_plot_data, calculate_average_by_pin, power_and_time_per_pulse)
-from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
+from pydgilib_extra.dgilib_interface_gpio import (
+    DGILibInterfaceGPIO, gpio_augment_edges)
+from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 from pydgilib_extra.dgilib_data import (
     LoggerData, InterfaceData, valid_interface_data)
 

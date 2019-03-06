@@ -34,7 +34,7 @@ class DGILib(object):
 
     # Add modules
     # Discovery
-    discovery = DGILibDiscovery
+    # discovery = DGILibDiscovery
     discover = DGILibDiscovery.discover
     get_device_count = DGILibDiscovery.get_device_count
     get_device_name = DGILibDiscovery.get_device_name
@@ -43,7 +43,7 @@ class DGILib(object):
     set_mode = DGILibDiscovery.set_mode
 
     # Housekeeping
-    housekeeping = DGILibHousekeeping
+    # housekeeping = DGILibHousekeeping
     connect = DGILibHousekeeping.connect
     disconnect = DGILibHousekeeping.disconnect
     connection_status = DGILibHousekeeping.connection_status
@@ -56,7 +56,7 @@ class DGILib(object):
     target_reset = DGILibHousekeeping.target_reset
 
     # Interface communication
-    interface_communication = DGILibInterfaceCommunication
+    # interface_communication = DGILibInterfaceCommunication
     interface_list = DGILibInterfaceCommunication.interface_list
     interface_enable = DGILibInterfaceCommunication.interface_enable
     interface_disable = DGILibInterfaceCommunication.interface_disable
@@ -67,7 +67,7 @@ class DGILib(object):
     interface_write_data = DGILibInterfaceCommunication.interface_write_data
 
     # Auxiliary
-    auxiliary = DGILibAuxiliary
+    # auxiliary = DGILibAuxiliary
     auxiliary_power_initialize = DGILibAuxiliary.auxiliary_power_initialize
     auxiliary_power_uninitialize = DGILibAuxiliary.auxiliary_power_uninitialize
     auxiliary_power_register_buffer_pointers = DGILibAuxiliary.auxiliary_power_register_buffer_pointers
@@ -102,10 +102,8 @@ class DGILib(object):
         :raises: :exc:`DLLError`
         """
         # Load the dgilib.dll
-        if args:
-            dgilib_path = args[0]
-        else:
-            dgilib_path = kwargs.get("dgilib_path", "dgilib.dll")
+        dgilib_path = kwargs.get(
+            "dgilib_path", args[0] if args else "dgilib.dll")
         try:
             self.dgilib = cdll.LoadLibrary(dgilib_path)
         except OSError as e:
