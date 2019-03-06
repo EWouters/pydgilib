@@ -1,0 +1,50 @@
+{
+  "cSpell.words": [
+    "atmel",
+    "byref",
+    "cdll",
+    "ctypes",
+    "dgi",
+    "dgilib",
+    "edbg",
+    "ehwo",
+    "getcwd",
+    "gpio",
+    "handlep",
+    "hndl",
+    "ilib",
+    "int",
+    "ints",
+    "ivar",
+    "mbed",
+    "nmbed",
+    "power",
+    "pydgilib",
+    "pylint",
+    "pyplot",
+    "rtype",
+    "set",
+    "ubyte",
+    "uint",
+    "ulonglong",
+    "uninitialize",
+    "uninitializes",
+    "unregister",
+    "unregistering",
+    "unregisters",
+    "usart",
+    "wouters",
+    "xlabel",
+    "ylabel"
+  ],
+  "terminal.integrated.env.windows": {
+    "CONDA_FORCE_32BIT": 1
+  },
+  "python.unitTest.pyTestArgs": [
+    "tests"
+  ],
+  "python.unitTest.unittestEnabled": false,
+  "python.unitTest.nosetestsEnabled": false,
+  "python.unitTest.pyTestEnabled": true,
+  "cSpell.language": "en"
+}
