@@ -14,7 +14,7 @@ from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
 from pydgilib_extra.dgilib_data import (
     LoggerData, InterfaceData, valid_interface_data)
 
-from pydgilib_extra.dgilib_logger_functions import mergeData
+#from pydgilib_extra.dgilib_logger_functions import mergeData
 
 __author__ = "EWouters <ehwo(at)kth.se>"
 __url__ = "https://github.com/EWouters/Atmel-SAML11/tree/master/Python/" \

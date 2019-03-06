@@ -6,13 +6,12 @@ from pydgilib.dgilib import DGILib
 
 from pydgilib.dgilib_config import (
     INTERFACE_GPIO, INTERFACE_TIMESTAMP, INTERFACE_POWER_DATA)
-from pydgilib_extra.dgilib_extra_config import (INTERFACES, INTERFACE_POWER)
+from pydgilib_extra.dgilib_extra_config import (INTERFACES, INTERFACE_POWER, LOGGER_PLOT)
 from pydgilib_extra.dgilib_logger import DGILibLogger
 from pydgilib_extra.dgilib_interface import DGILibInterface
 from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO
 from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 from pydgilib_extra.dgilib_plot import DGILibPlot
-
 
 class DGILibExtra(DGILib):
     """A user friendly way to interact with the DGILib API."""
@@ -56,7 +55,8 @@ class DGILibExtra(DGILib):
             self.logger = DGILibLogger(
                 self, *self.args, **self.kwargs)
 
-            if "LOGGER_PLOT" in loggers:
+            if LOGGER_PLOT in loggers:
+                print("Plot included!")
                 self.plotobj = DGILibPlot(self, *self.args, **self.kwargs)
                 self.plot_pause = self.plotobj.plot_pause
                 self.plot_still_exists = self.plotobj.plot_still_exists

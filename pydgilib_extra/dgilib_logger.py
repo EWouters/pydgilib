@@ -53,18 +53,19 @@ class DGILibLogger(object):
 
         # Set self.figure if LOGGER_PLOT enabled.
         if LOGGER_PLOT in self.loggers:
-            # if "fig" in kwargs: # It seems the second argument of kwargs.get
-            # always gets called, so this check prevents an extra figure from
-            # being created
-            self.fig = kwargs.get("fig")
-            if self.fig is None:
-               self.fig = plt.figure(figsize=(8, 6))
-            # if "ax" in kwargs: # It seems the second argument of kwargs.get
-            # always gets called, so this check prevents an extra axis from
-            # being created
-            self.ax = kwargs.get("ax")
-            if self.ax is None:
-               self.ax = self.fig.add_subplot(1, 1, 1)
+            pass
+            # # if "fig" in kwargs: # It seems the second argument of kwargs.get
+            # # always gets called, so this check prevents an extra figure from
+            # # being created
+            # self.fig = kwargs.get("fig")
+            # if self.fig is None:
+            #    self.fig = plt.figure(figsize=(8, 6))
+            # # if "ax" in kwargs: # It seems the second argument of kwargs.get
+            # # always gets called, so this check prevents an extra axis from
+            # # being created
+            # self.ax = kwargs.get("ax")
+            # if self.ax is None:
+            #    self.ax = self.fig.add_subplot(1, 1, 1)
 
             # Force logging in object if logging in plot
             if (LOGGER_OBJECT not in self.loggers):
@@ -116,7 +117,10 @@ class DGILibLogger(object):
                     self.dgilib_extra.data[interface.interface_id] += interface_data
                 # Update the plot if LOGGER_PLOT is enabled
                 if LOGGER_PLOT in self.loggers:
-                    self.dgilib_extra.plotobj.update_plot()
+                    if self.dgilib_extra.plotobj is not None:
+                        self.dgilib_extra.plotobj.update_plot()
+                    else:
+                        print("Error: There's no plot!")
                     # print("TODO: Update plot")
                 if return_data:
                     logger_data[interface.interface_id] += interface_data
@@ -300,6 +304,7 @@ def calculate_average_by_pin(data, pin=0, start_time=None, end_time=None):
 # Should be removed and updated every time update_callback is called
 def logger_plot_data(data, plot_pins=[True] * 4, fig=None, ax=None):
     """TO BE REMOVED."""
+    return
     if ax is None:
         if fig is None:
             fig = plt.figure(figsize=(8, 6))

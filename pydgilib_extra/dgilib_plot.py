@@ -14,11 +14,15 @@ class DGILibPlot(object):
         self.dgilib_extra = dgilib_extra
 
         # Maybe the user wants to put the power figure along with other figures he wants
-        # if "fig" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra figure from being created
+        # if "fig" in kwargs: # It seems the second argument of kwargs.get
+            # always gets called, so this check prevents an extra figure from
+            # being created
         self.fig = kwargs.get("fig")
         if self.fig is None:
             self.fig = plt.figure(figsize=(8, 6))
-        # if "ax" in kwargs: # It seems the second argument of kwargs.get always gets called, so this check prevents an extra axis from being created
+        # if "ax" in kwargs: # It seems the second argument of kwargs.get
+            # always gets called, so this check prevents an extra axis from
+            # being created
         self.ax = kwargs.get("ax")
         if self.ax is None:
             self.ax = self.fig.add_subplot(1, 1, 1)
@@ -53,7 +57,7 @@ class DGILibPlot(object):
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
         self.pins_correction_forward = kwargs.get("pins_correction_forward", 0.00075)
         self.pins_interval_shrink = kwargs.get("pins_interval_shrink", 0.0010)
-        self.plot_pause = kwargs.get("plot_interactivity_pause", 0.00000001)
+        self.plot_pause_secs = kwargs.get("plot_interactivity_pause", 0.00000001)
 
         # Hardwiring these values to 0
         self.plot_xmin = 0
@@ -86,7 +90,9 @@ class DGILibPlot(object):
 
         self.colors = ["red", "orange", "blue", "green"]
 
-        self.data = {INTERFACE_GPIO: [[],[]], INTERFACE_POWER: [[],[]]}
+        #self.data = {INTERFACE_GPIO: [[],[]], INTERFACE_POWER: [[],[]]}
+
+        self.verbose = kwargs.get("verbose", 0)
 
         self.initialize_sliders()
 
@@ -194,16 +200,23 @@ class DGILibPlot(object):
         # In this if, the smart DGILibData object tests if it has data inside
         # TODO: Make 'if data: return' work for if data has no actual values in it.
         # ... Right now is if it has no interfaces.
-        if (not data): 
-            raise ArgumentError("dgilib_plot.update_plot: Expected 'data' containing interfaces. Got 'data' with no interfaces. Data is: " + str(data))
-        if (not data.power) or (not data.gpio):
-            raise ArgumentError("dgilib_plot.update_plot: Expected 'data' containing power. Got 'data' with interfaces but no values. Data is: " + str(data))
+        if (not data):
+            if verbose: print("dgilib_plot.update_plot: Expected 'data' containing interfaces. Got 'data' with no interfaces. Returning from call with no work done.")
+            return
+        if (not data.power):
+            if verbose: print("dgilib_plot.update_plot: Expected 'data' containing power data. Got 'data' with interfaces but no power timestamp & value pairs. Returning from call with no work done.")
+            return
+        if (not data.gpio):
+            if verbose: print("dgilib_plot.update_plot: Expected 'data' containing gpio data. Got 'data' with interfaces but no gpio timestamp & value pairs.")
+            return
+
+        print(str(data))
 
         if not plt.fignum_exists(self.fig.number):
             plt.show()
         else:
             plt.draw()
-            plt.pause(self.plot_pause)
+            plt.pause(self.plot_pause_secs)
 
         # for pin_idx in range(len(self.plot_pins):
 
@@ -216,8 +229,8 @@ class DGILibPlot(object):
         #             self.hold_times.append((hold_times[0], hold_times[1]))
         #             self.hold_times_sum += hold_times[1] - hold_times[0]
 
-        self.ln.set_xdata(self.data[INTERFACE_POWER][0])
-        self.ln.set_ydata(self.data[INTERFACE_POWER][1])
+        self.ln.set_xdata(data.power.timestamps)
+        self.ln.set_ydata(data.power.values)
 
         pos = self.spos.val
         width = self.swidth.val
@@ -227,7 +240,7 @@ class DGILibPlot(object):
 
         # visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
         # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
-        plt.pause(self.plot_pause)
+        plt.pause(self.plot_pause_secs)
 
     def draw_pins(self,
             hold_times = None, 
@@ -281,7 +294,7 @@ class DGILibPlot(object):
         return plt.fignum_exists(self.fig.number)
 
     def plot_pause(self):
-        plt.pause(self.plot_pause)
+        plt.pause(self.plot_pause_secs)
 
     def keep_plot_alive(self):
         while self.plot_still_exists():
