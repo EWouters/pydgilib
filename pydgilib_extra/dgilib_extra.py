@@ -12,7 +12,6 @@ from pydgilib_extra.dgilib_interface import DGILibInterface
 from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO
 from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 
-
 class DGILibExtra(DGILib):
     """A user friendly way to interact with the DGILib API."""
 

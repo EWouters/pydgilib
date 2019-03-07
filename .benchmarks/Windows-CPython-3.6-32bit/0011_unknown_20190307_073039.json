@@ -1,0 +1,105 @@
+{
+    "machine_info": {
+        "node": "DESKTOP-68SJRTS",
+        "processor": "Intel64 Family 6 Model 42 Stepping 7, GenuineIntel",
+        "machine": "AMD64",
+        "python_compiler": "MSC v.1900 32 bit (Intel)",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.6.5",
+        "python_version": "3.6.5",
+        "python_build": [
+            "default",
+            "Apr  6 2018 16:13:16"
+        ],
+        "release": "10",
+        "system": "Windows",
+        "cpu": {
+            "vendor_id": "GenuineIntel",
+            "hardware": "unknown",
+            "brand": "Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz"
+        }
+    },
+    "commit_info": {
+        "id": "unknown",
+        "time": null,
+        "author_time": null,
+        "dirty": false,
+        "error": "FileNotFoundError(2, 'The system cannot find the file specified', None, 2, None)",
+        "project": "pydgilib",
+        "branch": "(unknown)"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_data_iadd_speed",
+            "fullname": "tests/test_benchmarks.py::test_data_iadd_speed",
+            "params": null,
+            "param": null,
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 2.3547104,
+                "max": 2.3892633,
+                "mean": 2.36853868,
+                "stddev": 0.014020823393331732,
+                "rounds": 5,
+                "median": 2.3709191999999994,
+                "iqr": 0.02010639999999997,
+                "q1": 2.3558687000000003,
+                "q3": 2.3759751000000002,
+                "iqr_outliers": 0,
+                "stddev_outliers": 1,
+                "outliers": "1;0",
+                "ld15iqr": 2.3547104,
+                "hd15iqr": 2.3892633,
+                "ops": 0.42220125364387123,
+                "total": 11.8426934,
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_data_no_class_speed",
+            "fullname": "tests/test_benchmarks.py::test_data_no_class_speed",
+            "params": null,
+            "param": null,
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 2.2382667000000005,
+                "max": 2.3274085999999983,
+                "mean": 2.2806848999999993,
+                "stddev": 0.040138267233151774,
+                "rounds": 5,
+                "median": 2.2927751999999977,
+                "iqr": 0.07182327499999808,
+                "q1": 2.2391630250000008,
+                "q3": 2.310986299999999,
+                "iqr_outliers": 0,
+                "stddev_outliers": 3,
+                "outliers": "3;0",
+                "ld15iqr": 2.2382667000000005,
+                "hd15iqr": 2.3274085999999983,
+                "ops": 0.43846477871625333,
+                "total": 11.403424499999996,
+                "iterations": 1
+            }
+        }
+    ],
+    "datetime": "2019-03-07T07:31:21.738884",
+    "version": "3.2.2"
+}

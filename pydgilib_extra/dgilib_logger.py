@@ -14,7 +14,9 @@ from pydgilib_extra.dgilib_extra_config import (
     INTERFACE_POWER, LOGGER_CSV, LOGGER_OBJECT, LOGGER_PLOT, FILE_NAME_BASE,
     POLLING, POWER)
 # from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
+from pydgilib_extra.dgilib_plot import DGILibPlot
 
+how_many_times = 0
 
 class DGILibLogger(object):
     """Wraps the logging functionality for DGILibExtra.
@@ -53,7 +55,10 @@ class DGILibLogger(object):
         # Set self.figure if LOGGER_PLOT enabled
         # Create axes self.axes if LOGGER_PLOT is enabled
         if LOGGER_PLOT in self.loggers:
-            pass  # TODO
+            self.plotobj = DGILibPlot(self, self.dgilib_extra, *args, **kwargs)
+            self.plot_pause = self.plotobj.plot_pause
+            self.plot_still_exists = self.plotobj.plot_still_exists
+            self.keep_plot_alive = self.plotobj.keep_plot_alive
 
             # Force logging in object if logging in plot
             if (LOGGER_OBJECT not in self.loggers):
@@ -93,7 +98,10 @@ class DGILibLogger(object):
                     self.dgilib_extra.data[interface_id] += interface_data
                 # Update the plot if LOGGER_PLOT is enabled
                 if LOGGER_PLOT in self.loggers:
-                    pass  # TODO
+                    if self.plotobj is not None:
+                        self.plotobj.update_plot(self.dgilib_extra.data)
+                    else:
+                        print("Error: There's no plot!")
                 if return_data:
                     logger_data[interface_id] += interface_data
 
@@ -103,6 +111,9 @@ class DGILibLogger(object):
 
     def stop(self, return_data=False):
         """Call to stop logging."""
+        
+        data = None # TODO: Maybe delete -Dragos
+
         # Stop the data polling
         self.stop_polling()
 
