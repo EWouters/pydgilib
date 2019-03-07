@@ -8,8 +8,11 @@ from pydgilib_extra.dgilib_data import InterfaceData
 
 # TODO: make these functions faster/better?
 def int2bool(i):
-    """Convert int to list of bool."""
-    return [bit is "1" for bit in f"{i:04b}"]  # NOTE: NUM_PINS is hardcoded here
+    """Convert int to list of bool.
+
+    NOTE: NUM_PINS is hardcoded here.
+    """
+    return [bit is "1" for bit in f"{i:04b}"]
 
 
 def bool2int(b):
@@ -80,12 +83,6 @@ class DGILibInterfaceGPIO(DGILibInterface):
 
         return read_mode, write_mode
 
-#     def set_config(self, read_mode=[False] * NUM_PINS, write_mode=[False] * NUM_PINS):
-
-#         # Update internal values
-#         self.read_mode = read_mode
-#         self.write_mode = write_mode
-
     def set_config(self, *args, **kwargs):
         """Set the pin-mode for the GPIO pins.
 
@@ -140,9 +137,8 @@ class DGILibInterfaceGPIO(DGILibInterface):
         timestamps = [tick * self.dgilib_extra.timer_factor for tick in ticks]
 
         if self.verbose >= 2:
-            print(
-                f"Collected {len(pin_values)} gpio samples ({NUM_PINS} pins per sample)"
-            )
+            print(f"Collected {len(pin_values)} gpio samples ({NUM_PINS} " +
+                  "pins per sample)")
 
         if self.augment_gpio:
             interface_data = InterfaceData(timestamps, pin_values)
@@ -180,7 +176,8 @@ class DGILibInterfaceGPIO(DGILibInterface):
                 *map(iter, zip(*interdace_data.values))))
 
 
-def gpio_augment_edges(interface_data, delay_time=0, switch_time=0, extend_to=None):
+def gpio_augment_edges(
+        interface_data, delay_time=0, switch_time=0, extend_to=None):
     """GPIO Augment Edges.
 
     Augments the edges of the GPIO data by inserting an extra sample of the

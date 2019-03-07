@@ -16,21 +16,13 @@ from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 class DGILibExtra(DGILib):
     """A user friendly way to interact with the DGILib API."""
 
-    # Add module
-    logger = DGILibLogger
-    interfaces = {INTERFACE_GPIO: DGILibInterfaceGPIO,
-                  INTERFACE_POWER: DGILibInterfacePower}
-    # NOTE: This is to make sure DGILibExtra can always access the static
-    # attributes of these classes, even when the class is not instantiated
-    # BUG: When connecting multiple devices and using multiple loggers this
-    # will use the same logger for all instances.
-
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibExtra object."""
-        # Set default values for attributes
+        # Add modules as classes (will be replaced by objects when used)
         self.logger = DGILibLogger
         self.interfaces = {INTERFACE_GPIO: DGILibInterfaceGPIO,
                            INTERFACE_POWER: DGILibInterfacePower}
+        # Set default values for attributes
         self.available_interfaces = []
         self.enabled_interfaces = []
         self.timer_factor = None
