@@ -4,7 +4,7 @@ from pydgilib_extra.dgilib_data import LoggerData
 from pydgilib.dgilib_config import INTERFACE_GPIO
 from pydgilib_extra.dgilib_extra_config import INTERFACE_POWER
 
-num_iterations = 10000
+num_iterations = 1000
 num_values = 1000
 
 
