@@ -13,8 +13,8 @@ config_dict = {
     "plot_xmax": 10,
     "plot_ymax": 0.0040,
     "plot_pins": [False, False, True, False],
+    "plot_pins_values": [False, False, False, False],
     "plot_pins_method": "highlight",  # or wave
-    "plot_pins_values": [False, False, True, False]
 }
 
 # import pydgilib_extra.dgilib_logger
@@ -23,5 +23,7 @@ config_dict = {
 
 with DGILibExtra(**config_dict) as dgilib:
     data = dgilib.logger.log(10)
+
+    dgilib.logger.plotobj.draw_pins(data)
 
     dgilib.logger.keep_plot_alive()

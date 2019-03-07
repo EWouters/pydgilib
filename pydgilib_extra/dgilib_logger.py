@@ -56,7 +56,7 @@ class DGILibLogger(object):
         # Create axes self.axes if LOGGER_PLOT is enabled
         if LOGGER_PLOT in self.loggers:
             self.plotobj = DGILibPlot(self, self.dgilib_extra, *args, **kwargs)
-            self.plot_pause = self.plotobj.plot_pause
+            self.refresh_plot = self.plotobj.refresh_plot
             self.plot_still_exists = self.plotobj.plot_still_exists
             self.keep_plot_alive = self.plotobj.keep_plot_alive
 
@@ -111,8 +111,6 @@ class DGILibLogger(object):
 
     def stop(self, return_data=False):
         """Call to stop logging."""
-        
-        data = None # TODO: Maybe delete -Dragos
 
         # Stop the data polling
         self.stop_polling()
@@ -120,6 +118,7 @@ class DGILibLogger(object):
         # Get last data from buffer
         if LOGGER_OBJECT in self.loggers:
             self.update_callback()
+            #data = self.update_callback(True) # This is a line meant for debugging. Should not be here if it somehow got commited.
         else:
             data = self.update_callback(return_data)
 
@@ -153,6 +152,9 @@ class DGILibLogger(object):
         """
         end_time = time() + duration
         self.start()
+
+        # So that the plot has xmax (being time) as big as duration now
+        if self.plotobj is type(DGILibPlot): self.plotobj.xmax = duration
 
         if stop_function is None:
             while time() < end_time:
@@ -265,34 +267,6 @@ class DGILibLogger(object):
 #         for col in range(len(data1[interface_id])):
 #             data1[interface_id][col].extend(data2[interface_id][col])
 #     return data1
-
-
-def power_filter_by_pin(pin, data, verbose=0):
-    """Filter the data to when a specified pin is high."""
-    power_data = copy.deepcopy(data[INTERFACE_POWER])
-
-    pin_value = False
-
-    power_index = 0
-
-    if verbose:
-        print(
-            f"power_filter_by_pin filtering  {len(power_data[0])} power "
-            f"samples.")
-
-    for timestamp, pin_values in zip(*data[INTERFACE_GPIO]):
-        while (power_index < len(power_data[0]) and
-               power_data[0][power_index] < timestamp):
-            power_data[1][power_index] *= pin_value
-            power_index += 1
-
-        if pin_values[pin] != pin_value:
-            if verbose:
-                print(f"\tpin {pin} changed at {timestamp}, {pin_value}")
-            pin_value = pin_values[pin]
-
-    return power_data
-
 
 def calculate_average(power_data, start_time=None, end_time=None):
     """Calculate average value of the power_data using the left Riemann sum."""
