@@ -22,6 +22,7 @@
     "pydgilib",
     "pylint",
     "pyplot",
+    "pytest",
     "rtype",
     "set",
     "ubyte",
@@ -34,6 +35,7 @@
     "unregisters",
     "usart",
     "wouters",
+    "xfail",
     "xlabel",
     "ylabel"
   ],

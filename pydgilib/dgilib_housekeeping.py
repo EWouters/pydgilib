@@ -2,8 +2,7 @@
 
 from ctypes import (byref, c_uint, c_ubyte)
 
-from pydgilib.dgilib_exceptions import (
-    DeviceConnectionError, DeviceReturnError)
+from pydgilib.dgilib_exceptions import DeviceReturnError
 
 
 class DGILibHousekeeping(object):

@@ -13,6 +13,8 @@ INTERFACE_POWER = 0x100  # 256
 
 NUM_PINS = 4
 
+FILE_NAME_BASE = "log"
+
 # LOGGER_CSV_HEADER = {
 #     INTERFACE_GPIO: ["timestamp"] + [f"gpio{n}" for n in range(NUM_PINS)],
 #     INTERFACE_POWER: ["timestamp", "current"]}
@@ -27,3 +29,6 @@ INTERFACES = {
     "i2c": INTERFACE_I2C,
     "gpio": INTERFACE_GPIO,
     "power": INTERFACE_POWER}
+
+POLLING = 0
+POWER = 1

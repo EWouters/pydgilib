@@ -18,9 +18,9 @@ class DGILibDiscovery(object):
     TODO?
     2.1.1. initialize_status_change_notification
     Initializes the system necessary for using the status change notification
-    callback mechanisms. A handle will be created to keep track of the registered
-    callbacks. This function must always be called before registering and
-    unregistering notification callbacks.
+    callback mechanisms. A handle will be created to keep track of the
+    registered callbacks. This function must always be called before
+    registering and unregistering notification callbacks.
     Function definition
     void initialize_status_change_notification(uint32_t* handlep)
     Parameters
@@ -33,12 +33,12 @@ class DGILibDiscovery(object):
     Parameters
     handle Handle to uninitialize
     2.1.3. register_for_device_status_change_notifications
-    Registers provided function pointer with the device status change mechanism.
-    Whenever there is a change (device connected or disconnected) the callback
-    will be executed. Note that it is not allowed to connect to a device in the
-    context of the callback function. The callback function has the following
-    definition: typedef void (*DeviceStatusChangedCallBack)(char* device_name,
-    char* device_serial, BOOL connected)
+    Registers provided function pointer with the device status change
+    mechanism. Whenever there is a change (device connected or disconnected)
+    the callback will be executed. Note that it is not allowed to connect to a
+    device in the context of the callback function. The callback function has
+    the following definition: typedef void (*DeviceStatusChangedCallBack)(char*
+    device_name, char* device_serial, BOOL connected)
     Function definition
     void register_for_device_status_change_notifications(uint32_t handle,
     DeviceStatusChangedCallBack deviceStatusChangedCallBack)
@@ -55,6 +55,7 @@ class DGILibDiscovery(object):
     Parameters
     handle Handle to change notification mechanisms
     deviceStatusChangedCallBack Function pointer that will be removed
+
     """
 
     dgilib = None
@@ -86,7 +87,7 @@ class DGILibDiscovery(object):
             print(f"device_count: {device_count}")
         return device_count
 
-    def get_device_name(self, index):
+    def get_device_name(self, index=0):
         """`get_device_name`.
 
         Gets the name of a detected device.
@@ -115,7 +116,7 @@ class DGILibDiscovery(object):
             raise DeviceReturnError(f"get_device_name returned: {res}")
         return name.value
 
-    def get_device_serial(self, index):
+    def get_device_serial(self, index=0):
         """`get_device_serial`.
 
         Gets the serial number of a detected device.

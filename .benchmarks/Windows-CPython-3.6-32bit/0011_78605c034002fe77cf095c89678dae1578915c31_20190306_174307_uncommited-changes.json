@@ -1,0 +1,69 @@
+{
+    "machine_info": {
+        "node": "Erik-Z15",
+        "processor": "Intel64 Family 6 Model 60 Stepping 3, GenuineIntel",
+        "machine": "AMD64",
+        "python_compiler": "MSC v.1915 32 bit (Intel)",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.6.8",
+        "python_version": "3.6.8",
+        "python_build": [
+            "default",
+            "Feb 11 2019 15:50:09"
+        ],
+        "release": "10",
+        "system": "Windows",
+        "cpu": {
+            "vendor_id": "GenuineIntel",
+            "hardware": "unknown",
+            "brand": "Intel(R) Core(TM) i7-4700MQ CPU @ 2.40GHz"
+        }
+    },
+    "commit_info": {
+        "id": "78605c034002fe77cf095c89678dae1578915c31",
+        "time": "2019-03-06T15:57:08+01:00",
+        "author_time": "2019-03-06T15:57:08+01:00",
+        "dirty": true,
+        "project": "Atmel-SAML11",
+        "branch": "master"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_data_iadd_speed",
+            "fullname": "tests/test_benchmarks.py::test_data_iadd_speed",
+            "params": null,
+            "param": null,
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 4.010025000000001,
+                "max": 4.2307153,
+                "mean": 4.1307244999999995,
+                "stddev": 0.08218953862743102,
+                "rounds": 5,
+                "median": 4.123817599999999,
+                "iqr": 0.10290152500000094,
+                "q1": 4.087040999999999,
+                "q3": 4.189942525,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 4.010025000000001,
+                "hd15iqr": 4.2307153,
+                "ops": 0.2420882825760953,
+                "total": 20.6536225,
+                "iterations": 1
+            }
+        }
+    ],
+    "datetime": "2019-03-06T17:43:41.006529",
+    "version": "3.2.2"
+}

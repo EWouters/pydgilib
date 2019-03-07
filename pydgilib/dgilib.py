@@ -55,7 +55,7 @@ class DGILib(object):
     stop_polling = DGILibHousekeeping.stop_polling
     target_reset = DGILibHousekeeping.target_reset
 
-    # Interface communication
+    # Interface Communication
     # interface_communication = DGILibInterfaceCommunication
     interface_list = DGILibInterfaceCommunication.interface_list
     interface_enable = DGILibInterfaceCommunication.interface_enable

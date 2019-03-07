@@ -4,7 +4,7 @@ from time import sleep
 
 from pydgilib.dgilib_config import (
     CALIBRATING, DONE, IDLE, OVERFLOWED, RUNNING, XAM)
-from pydgilib_extra.dgilib_extra_config import INTERFACE_POWER
+from pydgilib_extra.dgilib_extra_config import (INTERFACE_POWER, POWER)
 from pydgilib_extra.dgilib_extra_exceptions import (
     PowerReadError, PowerStatusError, InterfaceNotAvailableError)
 
@@ -18,6 +18,7 @@ class DGILibInterfacePower(DGILibInterface):
     interface_id = INTERFACE_POWER
     name = "power"
     csv_header = ["timestamp", "current"]
+    polling_type = POWER
 
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibInterfacePower object."""
@@ -55,7 +56,17 @@ class DGILibInterfacePower(DGILibInterface):
 
         # Initialize the power handle if it is None
         if self.dgilib_extra.power_hndl is None:
-            self.dgilib_extra.power_hndl = self.dgilib_extra.auxiliary_power_initialize()
+            self.dgilib_extra.power_hndl = \
+                self.dgilib_extra.auxiliary_power_initialize()
+
+        # Enable the configurations that are in the new config and not in
+        # self.power_buffers
+        for power_buffer in power_buffers:
+            if power_buffer not in self.power_buffers:
+                self.dgilib_extra.auxiliary_power_register_buffer_pointers(
+                    channel=power_buffer["channel"],
+                    power_type=power_buffer["power_type"])
+                self.power_buffers.append(power_buffer)
 
         # Disable the configurations that are not in the new config and remove
         # them from self.power_buffers
@@ -67,15 +78,6 @@ class DGILibInterfacePower(DGILibInterface):
                 )
                 self.power_buffers.remove(power_buffer)
 
-        # Enable the configurations that are in the new config and not in
-        # self.power_buffers
-        for power_buffer in power_buffers:
-            if power_buffer not in self.power_buffers:
-                self.dgilib_extra.auxiliary_power_register_buffer_pointers(
-                    channel=power_buffer["channel"],
-                    power_type=power_buffer["power_type"])
-                self.power_buffers.append(power_buffer)
-
         # Uninitialize the power handle if there are no power buffers left
         if not self.power_buffers:
             self.dgilib_extra.auxiliary_power_uninitialize()
@@ -84,7 +86,8 @@ class DGILibInterfacePower(DGILibInterface):
         """Enable the interface."""
         if self.interface_id not in self.dgilib_extra.available_interfaces:
             raise InterfaceNotAvailableError(
-                f"Interface {self.interface_id} not available. Available interfaces: {self.dgilib_extra.available_interfaces}")
+                f"Interface {self.interface_id} not available. Available " +
+                f"interfaces: {self.dgilib_extra.available_interfaces}")
         # Check if calibration is valid and trigger calibration if it is not
         self.calibrate()
         if self.interface_id not in self.dgilib_extra.enabled_interfaces:
@@ -171,14 +174,6 @@ class DGILibInterfacePower(DGILibInterface):
             print(interface_data)
 
         return interface_data
-
-    def start(self):
-        """Start polling."""
-        self.dgilib_extra.auxiliary_power_start()
-
-    def stop(self):
-        """Stop polling."""
-        self.dgilib_extra.auxiliary_power_stop()
 
     def calibrate(self, force=False):
         """

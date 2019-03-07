@@ -6,6 +6,7 @@ import warnings
 
 from pydgilib_extra.dgilib_data import InterfaceData
 from pydgilib_extra.dgilib_extra_exceptions import InterfaceNotAvailableError
+from pydgilib_extra.dgilib_extra_config import POLLING
 
 
 class DGILibInterface(object):
@@ -15,11 +16,10 @@ class DGILibInterface(object):
     name = "interface_name"
     csv_header = ["timestamp", "value"]
     file_name_base = "log"
+    polling_type = POLLING
 
     @staticmethod
     def _csv_reader_map(row): return (float(row[0]), float(row[1]))
-
-    is_polling = False
 
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibInterfaceGPIO object."""
@@ -74,16 +74,6 @@ class DGILibInterface(object):
     def write(self, *args, **kwargs):
         """Read data from the interface."""
         pass
-
-    def start(self):
-        """Start polling."""
-        if not self.is_polling:
-            self.dgilib_extra.start_polling()
-
-    def stop(self):
-        """Stop polling."""
-        if self.is_polling:
-            self.dgilib_extra.stop_polling()
 
     def init_csv_writer(
             self, log_folder=getcwd(), file_name_base="log", newline='',
