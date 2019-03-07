@@ -52,7 +52,11 @@ class DGILibPlot(object):
         else:
             self.plot_yauto = False
 
-        self.plot_pins = kwargs.get("plot_pins", [])
+        self.plot_pins = kwargs.get("plot_pins", None)
+        self.plot_pins_values = kwargs.get("plot_pins_values", None)
+        self.plot_pins_method =  kwargs.get("plot_pins_method", "highlight")
+        self.plot_pins_colors =  kwargs.get("plot_pins_colors", ["red", "orange", "blue", "green"])
+        self.average_function =  kwargs.get("average_function", "leftpoint")
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
         self.pins_correction_forward = kwargs.get("pins_correction_forward", 0.00075)
@@ -87,8 +91,6 @@ class DGILibPlot(object):
         # Hold times for pins list, we're going to collect them
         self.hold_times = []
         self.hold_times_sum = 0.00
-
-        self.colors = ["red", "orange", "blue", "green"]
 
         #self.data = {INTERFACE_GPIO: [[],[]], INTERFACE_POWER: [[],[]]}
 
@@ -221,16 +223,21 @@ class DGILibPlot(object):
             plt.draw()
             plt.pause(self.plot_pause_secs)
 
-        for pin_idx in range(len(self.plot_pins):
+        for pin_idx in range(len(self.plot_pins)):
 
             if self.plot_pins[pin_idx] == True:
 
-                for hold_times in identify_hold_times(data, self.plot_pins[pin_idx], pin_idx, correction_forward = self.pins_correction_forward, shrink = self.pins_interval_shrink):
+                hold_times_intervals = identify_hold_times(data,
+                    self.plot_pins[pin_idx],
+                    pin_idx,
+                    correction_forward = self.pins_correction_forward,
+                    shrink = self.pins_interval_shrink)
 
-                    axes.axvspan(hold_times[0], hold_times[1], color=self.pins_colors[pin_idx], alpha=0.5)
+                for hold_time_interval in hold_times_intervals:
+                    self.ax.axvspan(hold_time_interval[0], hold_time_interval[1], color=self.plot_pins_colors[pin_idx], alpha=0.5)
 
-                    self.hold_times.append((hold_times[0], hold_times[1]))
-                    self.hold_times_sum += hold_times[1] - hold_times[0]
+                    self.hold_times.append((hold_time_interval[0], hold_time_interval[1]))
+                    self.hold_times_sum += hold_time_interval[1] - hold_time_interval[0]
 
         self.ln.set_xdata(data.power.timestamps)
         self.ln.set_ydata(data.power.values)
@@ -245,42 +252,47 @@ class DGILibPlot(object):
         # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
         plt.pause(self.plot_pause_secs)
 
-        draw_pins(hold_times,)
+        self.draw_pins()
 
     def draw_pins(self,
-                    hold_times=None, 
                     default_plot_pins_method="highlight",
                     default_average_function="leftpoint"):
 
-        hold_times
-        plot_pins=self.plot_pins
-        plot_pin_values=self.plot_pin_values
-        plot_pins_method=self.plot_pins_method
+        plot_pins = None
+        plot_pins_values = None
+        plot_pins_method = None
+        average_function = None
+
+        if self.plot_pins is None: plot_pins=self.plot_pins
+        if self.plot_pins_values is None: plot_pins_values=self.plot_pins_values
+        if self.plot_pins_method is None: plot_pins_method=self.plot_pins_method
+        if self.average_function is None: average_function=self.average_function
+            
         verbose=self.verbose
 
         no_of_pins = len(self.plot_pins)
 
         if plot_pins is None:
-            return
+            return []
         else:
             if (plot_pins_method is not "highlight") and (plot_pins_method is not "wave"):
                 if (verbose): 
-                    print("draw_pins: \"" + plot_pins_method + "\" is not a valid value for property 'plot_pins_method'. Forcing the property to value: + \"" + default_plot_pins_method + "\".")
+                    print("dgilib_plot.draw_pins: \"" + plot_pins_method + "\" is not a valid value for argument 'plot_pins_method'. Forcing the argument to value: + \"" + default_plot_pins_method + "\".")
                 plot_pins_method = default_plot_pins_method
 
-        if (average_function is None):
-            if verbose: print("")
-
-        if (hold_times is None) or (hold_times == []):
-            if verbose: print("draw_pins: No hold times available")
-            return
+        if (average_function is not "leftpoint") and (average_function is not "midpoint"):
+            if verbose: 
+                print("dgilib_plot.draw_pins + \"" + average_function + "\" is not a valid value for argument 'average_function'. Forcing the ")
+            average_function = default_average_function
 
         if (plot_pins is None) or (plot_pins == []):
-            if verbose: print("draw_pins: No information about what pins to plot (\"plot_pins\" property) available")
-            return
+            if verbose: 
+                print("dgilib_plot.draw_pins: \"plot_pins\" argument missing. Information about what pins to plot is not available.")
+            return []
 
         if (plot_pin_values is None) or (plot_pin_values == []):
-            if verbose: print("draw_pins: No information about what values to compare the pins to (\"plot_pin_values\" property) available")
+            if verbose: 
+                print("dgilib_plot.draw_pins: \"plot_pin_values\" argument missing. Information about what values to compare the pins to is not available.")
             return
 
         if plot_pins_method == "highlight":
@@ -326,36 +338,37 @@ def calculate_average_leftpoint_single_interval(power_data, start_time=None, end
 
     return sum / (end_time - start_time)
 
+# Give it an index to continue from, so it does not go through all the data
+def identify_hold_times(data, true_false, pin, correction_forward=0.00, shrink=0.00):
+    if len(data.gpio.timestamps) <= 1: return [] # We can't identify intervals with only one value
 
-def identify_hold_times(whole_data, true_false, pin, correction_forward=0.00, shrink=0.00):
-    data = whole_data[INTERFACE_GPIO]
     hold_times = []
-    start = data[0][0]
-    end = data[0][0]
+    start = data.gpio.timestamps[0]
+    end = data.gpio.timestamps[0]
     in_hold = true_false
     not_in_hold = not true_false
     search = not true_false
 
-    interval_sizes = []
+    #interval_sizes = []
 
-    for i in range(len(data[0])):
+    for i in range(len(data.gpio.timestamps)):
         if search == not_in_hold:  # Searching for start of hold time
-            if data[1][i][pin] == search:
-                start = data[0][i]
+            if data.gpio.values[i][pin] == search:
+                start = data.gpio.timestamps[i]
             else:
-                end = data[0][i]
+                end = data.gpio.timestamps[i]
                 search = not search
 
         if search == in_hold:  # Searching for end of hold time
-            if data[1][i][pin] == search:
-                end = data[0][i]
+            if data.gpio.values[i][pin] == search:
+                end = data.gpio.timestamps[i]
             else:
                 search = not search
                 to_add = (start + correction_forward + shrink, end + correction_forward - shrink)
                 if ((to_add[0] != to_add[1]) and (to_add[0] < to_add[1])):
                     hold_times.append(to_add)
-                    interval_sizes.append(to_add[1] - to_add[0])
-                start = data[0][i]
+                    #interval_sizes.append(to_add[1] - to_add[0])
+                start = data.gpio.timestamps[i]
 
     should_add_last_interval = True
     for ht in hold_times:
@@ -363,7 +376,7 @@ def identify_hold_times(whole_data, true_false, pin, correction_forward=0.00, sh
 
     if should_add_last_interval:
 
-        invented_end_time = whole_data[INTERFACE_POWER][0][-1] + correction_forward - shrink
+        invented_end_time = data.power.timestamps[-1] + correction_forward - shrink
 
         # This function ASSUMES that the intervals are about the same in size.
         # ... If the last interval that should be highlighted on the graph is
@@ -373,8 +386,8 @@ def identify_hold_times(whole_data, true_false, pin, correction_forward=0.00, sh
         # ... an average that is most likely unaffected by stuff happening at the end
         # ... of the interval, which the power interface from the board failed to
         # ... communicate to us.
-        if ((invented_end_time - start) > max(interval_sizes)):
-            invented_end_time = start + min(interval_sizes)
+        # if ((invented_end_time - start) > max(interval_sizes)):
+        #     invented_end_time = start + min(interval_sizes)
 
         to_add = (start + correction_forward + shrink, invented_end_time)
 
