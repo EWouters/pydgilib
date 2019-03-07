@@ -59,8 +59,8 @@ class DGILibPlot(object):
         self.average_function =  kwargs.get("average_function", "leftpoint")
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
-        self.pins_correction_forward = kwargs.get("pins_correction_forward", 0.00075)
-        self.pins_interval_shrink = kwargs.get("pins_interval_shrink", 0.0010)
+        self.plot_pins_correction_forward = kwargs.get("plot_pins_correction_forward", 0.00075)
+        self.plot_pins_interval_shrink = kwargs.get("plot_pins_interval_shrink", 0.0010)
         self.plot_pause_secs = kwargs.get("plot_interactivity_pause", 0.00000001)
 
         # Hardwiring these values to 0
@@ -91,8 +91,8 @@ class DGILibPlot(object):
         # Hold times for pins list, we're going to collect them
         self.hold_times = []
         self.hold_times_sum = 0.00
+        self.hold_times_last_index_calculated = 0
 
-        #self.data = {INTERFACE_GPIO: [[],[]], INTERFACE_POWER: [[],[]]}
 
         self.verbose = kwargs.get("verbose", 0)
 
@@ -223,22 +223,6 @@ class DGILibPlot(object):
             plt.draw()
             plt.pause(self.plot_pause_secs)
 
-        for pin_idx in range(len(self.plot_pins)):
-
-            if self.plot_pins[pin_idx] == True:
-
-                hold_times_intervals = identify_hold_times(data,
-                    self.plot_pins[pin_idx],
-                    pin_idx,
-                    correction_forward = self.pins_correction_forward,
-                    shrink = self.pins_interval_shrink)
-
-                for hold_time_interval in hold_times_intervals:
-                    self.ax.axvspan(hold_time_interval[0], hold_time_interval[1], color=self.plot_pins_colors[pin_idx], alpha=0.5)
-
-                    self.hold_times.append((hold_time_interval[0], hold_time_interval[1]))
-                    self.hold_times_sum += hold_time_interval[1] - hold_time_interval[0]
-
         self.ln.set_xdata(data.power.timestamps)
         self.ln.set_ydata(data.power.values)
 
@@ -252,21 +236,28 @@ class DGILibPlot(object):
         # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
         plt.pause(self.plot_pause_secs)
 
-        self.draw_pins()
+        self.draw_pins(data)
 
-    def draw_pins(self,
-                    default_plot_pins_method="highlight",
-                    default_average_function="leftpoint"):
+    def draw_pins(self, data):
+        # Here we set defaults (with or ...)
+        ax = self.ax
+        plot_pins = self.plot_pins
+        plot_pins_values = self.plot_pins_values
+        plot_pins_method = self.plot_pins_method or "highlight"
+        plot_pins_correction_forward = self.plot_pins_correction_forward or 0.00
+        plot_pins_interval_shrink = self.plot_pins_interval_shrink or 0.00
+        plot_pins_colors = self.plot_pins_colors
+        average_function = self.average_function or "leftpoint"
 
-        plot_pins = None
-        plot_pins_values = None
-        plot_pins_method = None
-        average_function = None
-
-        if self.plot_pins is None: plot_pins=self.plot_pins
-        if self.plot_pins_values is None: plot_pins_values=self.plot_pins_values
-        if self.plot_pins_method is None: plot_pins_method=self.plot_pins_method
-        if self.average_function is None: average_function=self.average_function
+        # Here we do checks and stop drawing pins if something is unset
+        if ax is None:                                      return
+        if plot_pins is None:                               return
+        if plot_pins_values is None:                        return
+        if plot_pins_method is None:                        return
+        if plot_pins_correction_forward is None:            return
+        if plot_pins_interval_shrink is None:               return
+        if plot_pins_colors is None:                        return
+        if average_function is None:                        return
             
         verbose=self.verbose
 
@@ -290,7 +281,7 @@ class DGILibPlot(object):
                 print("dgilib_plot.draw_pins: \"plot_pins\" argument missing. Information about what pins to plot is not available.")
             return []
 
-        if (plot_pin_values is None) or (plot_pin_values == []):
+        if (plot_pins_values is None) or (plot_pins_values == []):
             if verbose: 
                 print("dgilib_plot.draw_pins: \"plot_pin_values\" argument missing. Information about what values to compare the pins to is not available.")
             return
@@ -298,9 +289,13 @@ class DGILibPlot(object):
         if plot_pins_method == "highlight":
             for pin_idx in range(no_of_pins): # For every pin number (0,1,2,3)
                 if plot_pins[pin_idx] == True: # If we want them plotted
-                    for hold_times in identify_hold_times(data, plot_pins[pin_idx], pin_idx, correction_forward = pins_correction_forward, shrink = pins_interval_shrink):
-                        axes.axvspan(hold_times[0], hold_times[1], color=pins_colors[pin_idx], alpha=0.5)
-
+                    for hold_times in identify_hold_times(data, 
+                                                        self.hold_times_last_index_calculated + 1, 
+                                                        plot_pins[pin_idx], pin_idx, 
+                                                        correction_forward = plot_pins_correction_forward, 
+                                                        shrink = plot_pins_interval_shrink):
+                        ax.axvspan(hold_times[0], hold_times[1], color=plot_pins_colors[pin_idx], alpha=0.5)
+            self.hold_times_last_index_calculated = len(data.gpio.timestamps) - 1
                         #hold_times.append((hold_times[0], hold_times[1]))
                         #hold_times_sum += hold_times[1] - hold_times[0]
         else:
@@ -312,7 +307,10 @@ class DGILibPlot(object):
         return plt.fignum_exists(self.fig.number)
 
     def plot_pause(self):
-        plt.pause(self.plot_pause_secs)
+        self.ax.relim()                  # recompute the data limits
+        self.ax.autoscale_view()         # automatic axis scaling
+        self.fig.canvas.flush_events() 
+        #plt.pause(self.plot_pause_secs)
 
     def keep_plot_alive(self):
         while self.plot_still_exists():
@@ -339,7 +337,7 @@ def calculate_average_leftpoint_single_interval(power_data, start_time=None, end
     return sum / (end_time - start_time)
 
 # Give it an index to continue from, so it does not go through all the data
-def identify_hold_times(data, true_false, pin, correction_forward=0.00, shrink=0.00):
+def identify_hold_times(data, start_index, true_false, pin, correction_forward=0.00, shrink=0.00):
     if len(data.gpio.timestamps) <= 1: return [] # We can't identify intervals with only one value
 
     hold_times = []
@@ -351,7 +349,7 @@ def identify_hold_times(data, true_false, pin, correction_forward=0.00, shrink=0
 
     #interval_sizes = []
 
-    for i in range(len(data.gpio.timestamps)):
+    for i in range(start_index, len(data.gpio.timestamps)):
         if search == not_in_hold:  # Searching for start of hold time
             if data.gpio.values[i][pin] == search:
                 start = data.gpio.timestamps[i]

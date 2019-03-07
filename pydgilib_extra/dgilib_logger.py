@@ -15,6 +15,8 @@ from pydgilib_extra.dgilib_extra_config import (
 # from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
 from pydgilib_extra.dgilib_plot import DGILibPlot
 
+how_many_times = 0
+
 class DGILibLogger(object):
     """Wraps the logging functionality for DGILibExtra.
 
@@ -128,6 +130,9 @@ class DGILibLogger(object):
 
     def stop(self, return_data=False):
         """Call to stop logging."""
+        
+        data = None # TODO: Maybe delete -Dragos
+
         # Stop the data polling
         for interface in self.dgilib_extra.interfaces.values():
             interface.stop()
@@ -143,8 +148,9 @@ class DGILibLogger(object):
             for interface in self.dgilib_extra.interfaces.values():
                 interface.close_csv_writer()
 
-        if LOGGER_PLOT in self.loggers:
-            pass
+        # if LOGGER_PLOT in self.loggers:
+        #     self.plotobj.draw_pins(data)
+        #     pass
             # print("TODO: Plot")
             # if self.dgilib_extra.interfaces[INTERFACE_GPIO].augment_gpio:
             #     gpio_augment_edges(
