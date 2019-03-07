@@ -36,18 +36,15 @@ class DGILibInterfaceGPIO(DGILibInterface):
         # Instantiate base class
         DGILibInterface.__init__(self, *args, **kwargs)
         # Parse arguments
-        self.augment_gpio = kwargs.get("augment_gpio", None)
+        self.augment_gpio = kwargs.get("augment_gpio", True)
         self.gpio_delay_time = kwargs.get("gpio_delay_time", 0)
         self.gpio_switch_time = kwargs.get("gpio_switch_time", 0)
-        # If augment_gpio was not specified set it to true if gpio_delay_time
-        # or gpio_switch_time was non 0.
-        if self.augment_gpio is None:
-            self.augment_gpio = (
-                self.gpio_delay_time != 0 or self.gpio_switch_time != 0)
 
         # NOTE: Might not be the best place to do this
-        if self.dgilib_extra is not None and self.dgilib_extra.timer_factor is None:
-            self.dgilib_extra.timer_factor = self.dgilib_extra.get_time_factor()
+        if self.dgilib_extra is not None and \
+                self.dgilib_extra.timer_factor is None:
+            self.dgilib_extra.timer_factor = \
+                self.dgilib_extra.get_time_factor()
 
         if self.verbose:
             print("read_mode: ", self.read_mode)

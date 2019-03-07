@@ -12,6 +12,7 @@ from pydgilib_extra.dgilib_interface import DGILibInterface
 from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO
 from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 
+
 class DGILibExtra(DGILib):
     """A user friendly way to interact with the DGILib API."""
 
@@ -27,6 +28,9 @@ class DGILibExtra(DGILib):
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibExtra object."""
         # Set default values for attributes
+        self.logger = DGILibLogger
+        self.interfaces = {INTERFACE_GPIO: DGILibInterfaceGPIO,
+                           INTERFACE_POWER: DGILibInterfacePower}
         self.available_interfaces = []
         self.enabled_interfaces = []
         self.timer_factor = None
