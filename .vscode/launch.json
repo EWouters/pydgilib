@@ -12,6 +12,13 @@
       "console": "integratedTerminal"
     },
     {
+      "name": "Python: tests_plot/debug.py",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/tests_plot/debug.py",
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Python: Current File (Integrated Terminal)",
       "type": "python",
       "request": "launch",
@@ -36,13 +43,6 @@
       "type": "python",
       "request": "launch",
       "module": "pydgilib_extra",
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "Python: Dragos' python main test file",
-      "type": "python",
-      "request": "launch",
-      "program": "${workspaceFolder}/tests_dragos/dgilib.py",
       "console": "integratedTerminal"
     }
   ]
