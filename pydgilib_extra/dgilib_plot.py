@@ -57,6 +57,7 @@ class DGILibPlot(object):
         self.plot_pins_method =  kwargs.get("plot_pins_method", "highlight")
         self.plot_pins_colors =  kwargs.get("plot_pins_colors", ["red", "orange", "blue", "green"])
         self.average_function =  kwargs.get("average_function", "leftpoint")
+        self.axvspans = []
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
         self.plot_pins_correction_forward = kwargs.get("plot_pins_correction_forward", 0.00075)
@@ -114,7 +115,6 @@ class DGILibPlot(object):
         self.xmaxrightax = plt.axes([0.7, 0.025, 0.095, 0.04])
         self.xstepupax = plt.axes([0.3, 0.025, 0.095, 0.04])
         self.xstepdownax = plt.axes([0.2, 0.025, 0.095, 0.04])
-
 
         self.xleftbtn = Button(self.xleftax, '<x', color=self.axcolor, hovercolor='0.975')
         self.xrightbtn = Button(self.xrightax, 'x>', color=self.axcolor, hovercolor='0.975')
@@ -262,6 +262,13 @@ class DGILibPlot(object):
         self.refresh_plot(0.00000001)
 
         self.draw_pins(data)
+    
+    def clear_pins(self):
+        if self.axvspans is None: return
+        
+        for axvsp in self.axvspans:
+            axvsp.remove()
+
 
     def draw_pins(self, data):
         # Here we set defaults (with or ...)
@@ -289,8 +296,11 @@ class DGILibPlot(object):
         no_of_pins = len(self.plot_pins)
 
         if plot_pins_method == "highlight":
+
             for pin_idx in range(no_of_pins): # For every pin number (0,1,2,3)
+
                 if plot_pins[pin_idx] == True: # If we want them plotted
+                    
                     if len(self.hold_times_already_drawn) > 0:
                         # new_index = data.gpio.timestamps.index(self.hold_times_already_drawn[-1][-1])
                         # if new_index == (last_processed_index or -1):
@@ -298,20 +308,20 @@ class DGILibPlot(object):
                         last_processed_index = data.gpio.timestamps.index(self.hold_times_already_drawn[-1][-1])
                     else:
                         last_processed_index = 0
-
-                    # TODO: Use this / delete this
-                    debug = False
-                    if debug: print("Picked " + str(last_processed_index))
                         
-                    hold_times = identify_hold_times(data, 
+                    hold_times = identify_hold_times(data,
                                                     pin_idx,
                                                     plot_pins_values[pin_idx],
-                                                    last_processed_index)
+                                                    start_index=(last_processed_index + 1))
+
                     for ht in hold_times:
-                        # TODO: Move axvspan here
-                        #ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.5)
+                        # try:
+                        #     if (self.axvspans is None): self.axvspans = []
+                        # except AttributeError:
+                        #     self.axvspans = []
+                        axvsp = ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.5)
+                        self.axvspans.append(axvsp)
                         if ht not in self.hold_times_already_drawn:
-                            ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.5)
                             self.hold_times_already_drawn.append(ht)
             #self.hold_times_next_index = len(data.gpio.timestamps)
             #hold_times.append((hold_times[0], hold_times[1]))
@@ -319,7 +329,6 @@ class DGILibPlot(object):
         else:
             pass
             # To be implemented
-
 
     def plot_still_exists(self):
         return plt.fignum_exists(self.fig.number)
@@ -387,26 +396,14 @@ def what_value_is_at_time_t_for_pin(data, pin, t):
 
 def identify_toggle_times(data, pin, start_index=0):
     if len(data.gpio.timestamps) <= 1: return [] # We can't identify intervals with only one value
-    # if start_index >= len(data.gpio.timestamps):
-    #     if False: print("dgilib_plot.identify_toggle_times: 'start_index' (" + str(start_index) +") bigger than length of 'data.gpio.timestamps' (" + str(len(data.gpio.timestamps)) + "! ")
-    #     return [],[],[]
+    if start_index > (len(data.gpio.timestamps) - 1): return [] # We're being asked to do an index that does not exist yet, so just skip
 
     toggle_times = []
     true_to_false_toggle_times = []
     false_to_true_toggle_times = []
 
-    start_index = 0
-
     last_toggle_timestamp = data.gpio.timestamps[start_index]
     last_toggle_value = data.gpio.values[start_index][pin]
-    #last_toggle_index = start_index
-
-    # if consider_start_time_a_toggle:
-    #     toggle_times.append(data.gpio.timestamps[start_index])
-    #     if data.gpio.values[start_index][pin] == False:
-    #         false_to_true_toggle_times.append(data.gpio.timestamps[start_index])
-    #     if data.gpio.values[start_index][pin] == True:
-    #         true_to_false_toggle_times.append(data.gpio.timestamps[start_index])
 
     for i in range(start_index+1, len(data.gpio)):
         if last_toggle_value != data.gpio.values[i][pin]:
@@ -418,14 +415,6 @@ def identify_toggle_times(data, pin, start_index=0):
 
             last_toggle_timestamp = data.gpio.timestamps[i]
             last_toggle_value = data.gpio.values[i][pin]
-            #last_toggle_index = i
-    
-    # if consider_stop_time_a_toggle:
-    #     toggle_times.append(data.gpio.timestamps[-1])
-    #     if data.gpio.values[-1][pin] == True:
-    #         false_to_true_toggle_times.append(data.gpio.timestamps[-1])
-    #     if data.gpio.values[-1][pin] == False:
-    #         true_to_false_toggle_times.append(data.gpio.timestamps[-1])
     
     # A smart printing for debugging this function
     # Either leave 'debug = False' or comment it, but don't lose it
@@ -442,6 +431,7 @@ def identify_toggle_times(data, pin, start_index=0):
 
 def identify_hold_times(data, pin, pin_value, start_index):
     if len(data.gpio.timestamps) <= 1: return [] # We can't identify intervals with only one value
+    if start_index > (len(data.gpio.timestamps) - 1): return [] # We're being asked to do an index that does not exist yet, so just skip
 
     hold_times = []
 
