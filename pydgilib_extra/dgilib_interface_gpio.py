@@ -8,11 +8,8 @@ from pydgilib_extra.dgilib_data import InterfaceData
 
 # TODO: make these functions faster/better?
 def int2bool(i):
-    """Convert int to list of bool.
-
-    NOTE: NUM_PINS is hardcoded here.
-    """
-    return [bit is "1" for bit in f"{i:04b}"]
+    """Convert int to list of bool."""
+    return [bit is "1" for bit in str(i).rjust(NUM_PINS, '0')]
 
 
 def bool2int(b):

@@ -18,6 +18,7 @@ from pydgilib_extra.dgilib_plot import DGILibPlot
 
 how_many_times = 0
 
+
 class DGILibLogger(object):
     """Wraps the logging functionality for DGILibExtra.
 
@@ -118,7 +119,7 @@ class DGILibLogger(object):
         # Get last data from buffer
         if LOGGER_OBJECT in self.loggers:
             self.update_callback()
-            #data = self.update_callback(True) # This is a line meant for debugging. Should not be here if it somehow got commited.
+            # data = self.update_callback(True) # This is a line meant for debugging. Should not be here if it somehow got commited.
         else:
             data = self.update_callback(return_data)
 
@@ -153,8 +154,10 @@ class DGILibLogger(object):
         end_time = time() + duration
         self.start()
 
-        # So that the plot has xmax (being time) as big as duration now
-        if self.plotobj is type(DGILibPlot): self.plotobj.xmax = duration
+        if LOGGER_PLOT in self.loggers:
+            # So that the plot has xmax (being time) as big as duration now
+            if self.plotobj is type(DGILibPlot):
+                self.plotobj.xmax = duration
 
         if stop_function is None:
             while time() < end_time:
