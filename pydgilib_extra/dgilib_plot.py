@@ -64,6 +64,16 @@ class DGILibPlot(object):
         self.plot_pins_interval_shrink = kwargs.get("plot_pins_interval_shrink", 0.0010)
         self.refresh_plot_pause_secs = kwargs.get("refresh_plot_pause_secs", 0.00000001)
 
+        if self.plot_pins_method == "line":
+            self.ax_pins = self.ax.twinx()
+            self.ax_pins.set_ylabel('Pin Value')
+            self.ln_pins = self.plot_pins
+            for pin, plot_pin in enumerate(self.plot_pins):
+                if plot_pin:
+                    self.ln_pins[pin] = self.ax_pins.plot([], [])[0]
+                    # self.ln_pins[pin].set_xdata([])
+                    # self.ln_pins[pin].set_ydata([])
+
         # Hardwiring these values to 0
         self.plot_xmin = 0
         self.plot_ymin = 0
@@ -326,9 +336,16 @@ class DGILibPlot(object):
             #self.hold_times_next_index = len(data.gpio.timestamps)
             #hold_times.append((hold_times[0], hold_times[1]))
             #hold_times_sum += hold_times[1] - hold_times[0]
+        elif self.plot_pins_method == "line":
+            for pin, plot_pin in enumerate(self.plot_pins):
+                if plot_pin:
+                    self.ln_pins[pin].set_xdata(data.gpio.timestamps)
+                    self.ln_pins[pin].set_ydata(
+                        data.gpio.get_select_in_value(pin))
+            plt.draw()
+            self.refresh_plot(0.00000001)
         else:
-            pass
-            # To be implemented
+            raise ValueError(f"Unrecognized plot_pins_method: {self.plot_pins_method}")
 
     def plot_still_exists(self):
         return plt.fignum_exists(self.fig.number)
