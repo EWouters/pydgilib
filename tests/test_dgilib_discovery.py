@@ -42,6 +42,8 @@ class TestDGILibDiscovery(unittest.TestCase):
 
     @pytest.mark.xfail(raises=DeviceReturnError, reason="It seems this is " +
                        "not supported by my test setup.")
+    @pytest.mark.xfail(raises=OSError, reason="Using older version of dgilib." +
+                       "dll")
     def test_set_mode(self):
         """test_set_mode."""
         dgilib = DGILib()
