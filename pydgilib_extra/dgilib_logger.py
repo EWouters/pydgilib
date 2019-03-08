@@ -16,8 +16,6 @@ from pydgilib_extra.dgilib_extra_config import (
 # from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
 from pydgilib_extra.dgilib_plot import DGILibPlot
 
-how_many_times = 0
-
 
 class DGILibLogger(object):
     """Wraps the logging functionality for DGILibExtra.
