@@ -8,7 +8,7 @@ config_dict = {
     "power_buffers": [{"channel": CHANNEL_A, "power_type": POWER_CURRENT}],
     "read_mode": [True, True, True, True],
     "write_mode": [False, False, False, False],
-    "loggers": [LOGGER_PLOT],
+    "loggers": [LOGGER_PLOT, LOGGER_CSV, LOGGER_OBJECT],
     "verbose": 0,
     "plot_xmax": 10,
     "plot_ymax": 0.0040,
