@@ -10,7 +10,7 @@ from pydgilib_extra.dgilib_data import InterfaceData
 # TODO: make these functions faster/better?
 def int2bool(i):
     """Convert int to list of bool."""
-    return [bit is "1" for bit in str(i).rjust(NUM_PINS, '0')]
+    return [bit is '1' for bit in bin(i)[2:].zfill(NUM_PINS)]
 
 
 def bool2int(b):
