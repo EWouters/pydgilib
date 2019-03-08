@@ -88,7 +88,15 @@ class InterfaceData(object):
         Used to provide `timestamp, value = interface_data[5]` and
         `timestamp, value = interface_data[2:5]` syntax
         """
+
         return (self.timestamps[index], self.values[index])
+
+        # if isinstance(index, int):
+        #     return (self.timestamps[index], self.values[index])
+        # elif isinstance(index, float):
+        #     _index = self.get_index(index)
+        #     return (self.timestamps[_index], self.values[_index])
+
         # # Provides data["timestamps"] as well
         # if index == self.__slots__[0]:
         #     return self.timestamps
@@ -140,6 +148,45 @@ class InterfaceData(object):
             end_index += 1
 
         return (self.timestamps[start_time:end_time], self.values[start_time:end_time])
+
+    def get_select_in_value(self, begin=0, end=None, start_time=None, end_time=None):
+        """get_select_in_value."""
+
+        if end is None:
+            if start_time is None and end_time is None:
+                return [value[begin] for value in self.values]
+
+            start_index = 0
+            end_index = len(self.timestamps) - 1
+            # Get the index of the first sample after the start_time
+            if start_time is not None:
+                start_index = self.get_index(start_time)
+            if end_time is not None:
+                end_index = self.get_index(end_time, start_index)
+
+            return [value[begin] for value in self.values[start_index:end_index]]
+
+        else:
+            end = begin + 1
+            if start_time is None and end_time is None:
+                return [value[begin:end] for value in self.values]
+
+            start_index = 0
+            end_index = len(self.timestamps) - 1
+            # Get the index of the first sample after the start_time
+            if start_time is not None:
+                start_index = self.get_index(start_time)
+            if end_time is not None:
+                end_index = self.get_index(end_time, start_index)
+
+            return [value[begin:end] for value in self.values[start_index:end_index]]
+
+    def get_index(self, timestamp, start_index=0):
+        """Get the index of the first sample after the timestamp."""
+        index = start_index  # Start at start_index (can speed up search)
+        while self.timestamps[index] < timestamp and index < len(self):
+            index += 1
+        return index
 
 
 class LoggerData(dict):
