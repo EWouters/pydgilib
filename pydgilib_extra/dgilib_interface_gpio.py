@@ -3,6 +3,7 @@
 from pydgilib.dgilib_config import INTERFACE_GPIO
 from pydgilib_extra.dgilib_extra_config import NUM_PINS
 from pydgilib_extra.dgilib_interface import DGILibInterface
+from pydgilib_extra.dgilib_calculations import gpio_augment_edges
 from pydgilib_extra.dgilib_data import InterfaceData
 
 
@@ -171,58 +172,3 @@ class DGILibInterfaceGPIO(DGILibInterface):
         self.csv_writer.writerows(
             zip(interdace_data.timestamps,
                 *map(iter, zip(*interdace_data.values))))
-
-
-def gpio_augment_edges(
-        interface_data, delay_time=0, switch_time=0, extend_to=None):
-    """GPIO Augment Edges.
-
-    Augments the edges of the GPIO data by inserting an extra sample of the
-    previous pin values at moment before a switch occurs (minus switch_time).
-    The switch time is measured to be around 0.3 ms.
-
-    Also delays all time stamps by delay_time. The delay time seems to vary
-    a lot between different projects and should be manually specified for the
-    best accuracy.
-
-    Can insert the last datapoint again at the time specified (has to be after
-    last sample).
-
-    :param interface_data: InterfaceData object of GPIO data.
-    :type interface_data: InterfaceData
-    :param delay_time: Switch time of GPIO pin.
-    :type delay_time: float
-    :param switch_time: Switch time of GPIO pin.
-    :type switch_time: float
-    :param extend_to: Inserts the last pin values again at the time specified
-        (only used if time is after last sample).
-    :type extend_to: float
-    :return: InterfaceData object of augmented GPIO data.
-    :rtype: InterfaceData
-    """
-    pin_states = [False] * NUM_PINS
-
-    # iterate over the list and insert items at the same time:
-    i = 0
-    while i < len(interface_data.timestamps):
-        if interface_data.values[i] != pin_states:
-            # This inserts a time sample at time + switch time (so moves the
-            # time stamp into the future)
-            interface_data.timestamps.insert(
-                i, interface_data.timestamps[i] - switch_time)
-            # This inserts the last datapoint again at the time the next
-            # switch actually arrived (without switch time)
-            interface_data.values.insert(i, pin_states)
-            i += 1
-            pin_states = interface_data.values[i]
-        i += 1
-
-    # Delay all time stamps by delay_time
-    interface_data.timestamps = [
-        t + delay_time for t in interface_data.timestamps]
-
-    if extend_to is not None:
-        if extend_to >= interface_data.timestamps[-1]:
-            interface_data.timestamps.append(extend_to)
-            interface_data.values.append(pin_states)
-    return interface_data
