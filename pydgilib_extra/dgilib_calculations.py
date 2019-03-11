@@ -193,15 +193,14 @@ def what_value_is_at_time_t_for_pin(data, pin, t):
 
 class HoldTimes(StreamingCalculation):
 
+    def __init__(self):
+        StreamingCalculation.__init__(self)
+
     def identify_toggle_times(self, pin, data_gpio=None, start_index=None):
         if data_gpio is None:
             data_gpio = self.data
         if start_index == None:
              start_index = self.index
-
-        debug = True
-        df = None
-        if debug: df = open("debug_plot.txt", "w")
 
         if len(data_gpio.timestamps) <= 1:
             return []  # We can't identify intervals with only one value
@@ -215,13 +214,11 @@ class HoldTimes(StreamingCalculation):
         #last_toggle_timestamp = data_gpio.timestamps[start_index]
         last_toggle_value = data_gpio.values[start_index][pin]
 
-        df.write("New data, starting on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[start_index]) + " of value " + str(last_toggle_value) + ". Index is: " + str(start_index))
-        print("New data, starting on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[start_index]) + " of value " + str(last_toggle_value) + ". Index is: " + str(start_index))
+        #print("New data, starting on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[start_index]) + " of value " + str(last_toggle_value) + ". Index is: " + str(start_index))
 
         for i in range(start_index, len(data_gpio)):
             if last_toggle_value != data_gpio.values[i][pin]:
-                df.write("Detected toggle on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[i]) + " of value " + str(data_gpio.values[i][pin]) + ". Index is: " + str(i))
-                print("Detected toggle on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[i]) + " of value " + str(data_gpio.values[i][pin]) + ". Index is: " + str(i))
+                #print("Detected toggle on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[i]) + " of value " + str(data_gpio.values[i][pin]) + ". Index is: " + str(i))
                 toggle_times.append(data_gpio.timestamps[i])
                 if last_toggle_value == True:
                     true_to_false_toggle_times.append(data_gpio.timestamps[i])
@@ -259,10 +256,22 @@ class HoldTimes(StreamingCalculation):
 
         (_, true_to_false_times, false_to_true_times) = self.identify_toggle_times(pin, data_gpio, self.index)
 
+        #print("T2F: " + str(true_to_false_times))
+        #print("F2T: " + str(false_to_true_times))
+
+        if len(false_to_true_times) == 0: return
+        if len(true_to_false_times) == 0: return
+
         if (pin_value == True):
+            # A fix
+            if false_to_true_times[0] > true_to_false_times[0]:
+                true_to_false_times.pop(0)
             hold_times = zip(false_to_true_times, true_to_false_times)
         elif (pin_value == False):
-            hold_times = zip(true_to_false_times, false_to_true_times)
+            # A fix
+            if true_to_false_times[0] > false_to_true_times[0]:
+                false_to_true_times.pop(0)
+            hold_times = zip(true_to_false_times, false_to_true_times)         
 
         # A smart printing for debugging this function
         # Either leave 'debug = False' or comment it, but don't lose it
@@ -286,6 +295,7 @@ class HoldTimes(StreamingCalculation):
             # If you remove this, you get an error
             pass
 
+        #print(str(hold_times_l))
         return hold_times_l
 
 ###############################

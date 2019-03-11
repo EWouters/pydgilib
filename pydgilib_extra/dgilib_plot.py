@@ -315,23 +315,14 @@ class DGILibPlot(object):
             for pin_idx in range(no_of_pins): # For every pin number (0,1,2,3)
 
                 if plot_pins[pin_idx] == True: # If we want them plotted
-                    
-                    # if len(self.hold_times_already_drawn) > 0:
-                    #     last_processed_index = data.gpio.timestamps.index(self.hold_times_already_drawn[-1][-1])
-                    # else:
-                    #     last_processed_index = 0
                         
                     hold_times = self.hold_times_obj.identify_hold_times(pin_idx, plot_pins_values[pin_idx], data.gpio)
-                    #print(str(hold_times))
 
-                    for ht in hold_times:
-                        axvsp = ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.5)
-                        self.axvspans.append(axvsp)
-                        # if ht not in self.hold_times_already_drawn:
-                        #     self.hold_times_already_drawn.append(ht)
-            #self.hold_times_next_index = len(data.gpio.timestamps)
-            #hold_times.append((hold_times[0], hold_times[1]))
-            #hold_times_sum += hold_times[1] - hold_times[0]
+                    if hold_times is not None:
+                        for ht in hold_times:
+                            axvsp = ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.5)
+                            self.axvspans.append(axvsp)
+
         elif self.plot_pins_method == "line":
             for pin, plot_pin in enumerate(self.plot_pins):
                 if plot_pin:
