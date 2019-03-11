@@ -2,7 +2,7 @@ from time import sleep
 import csv
 
 from pydgilib_extra.dgilib_extra_config import *
-from pydgilib_extra.dgilib_calculations import HoldTimes
+from pydgilib_extra.dgilib_calculations import HoldTimes, calculate_average_leftpoint_single_interval, calculate_average_midpoint_multiple_intervals
 
 import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox
@@ -65,6 +65,9 @@ class DGILibPlot(object):
         self.plot_pins_colors =  kwargs.get("plot_pins_colors", ["red", "orange", "blue", "green"])
         self.average_function =  kwargs.get("average_function", "leftpoint")
         self.axvspans = []
+        self.annotations = []
+        self.averages = []
+        self.iterations = 0
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
         self.plot_pins_correction_forward = kwargs.get("plot_pins_correction_forward", 0.00075)
@@ -337,6 +340,16 @@ class DGILibPlot(object):
                             axvsp = ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.5)
                             self.axvspans.append(axvsp)
 
+                            x_halfway = (ht[1] - ht[0]) / 4 + ht[0]
+                            y_halfway = (self.plot_ymax - self.plot_ymin) / 2 + self.plot_ymin
+                            annon = ax.annotate(str(self.iterations + 1), xy=(x_halfway, y_halfway))
+                            self.annotations.append(annon)
+                            
+                            average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1])
+                            self.averages.append((ht, average*1000))
+
+                            self.iterations += 1
+
         elif self.plot_pins_method == "line":
             for pin, plot_pin in enumerate(self.plot_pins):
                 if plot_pin:
@@ -346,6 +359,11 @@ class DGILibPlot(object):
             self.fig.show()
         else:
             raise ValueError(f"Unrecognized plot_pins_method: {self.plot_pins_method}")
+
+    def print_averages(self):
+        print("Averages shown: ")
+        for i in range(len(self.averages)):
+            print(str(i+1) + ": " + str(self.averages[i][0]) + "\t\t" + str(self.averages[i][1]) + "mA")
 
     def plot_still_exists(self):
         return plt.fignum_exists(self.fig.number)

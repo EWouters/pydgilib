@@ -321,7 +321,39 @@ class HoldTimes(StreamingCalculation):
 # Calculate average leftpoint #
 ###############################
 
-# TODO: To be included here?
+def calculate_average_leftpoint_single_interval(data_power, start_time=None, end_time=None):
+    """Calculate average value of the power_data using the left Riemann sum."""
+    if start_time is None:
+        start_time = data_power.timestamps[0]
+
+    if end_time is None:
+        end_time = data_power.timestamps[-1]
+
+    last_time = start_time
+
+    sum = 0
+
+    for i in range(len(data_power.timestamps)):
+        timestamp = data_power.timestamps[i]
+        power_value = data_power.values[i]
+
+        sum += power_value * (timestamp - last_time)
+        last_time = timestamp
+    
+    return sum
+
+def calculate_average_leftpoint_multiple_intervals(data_power, intervals, start_time=None, end_time=None):
+    # Calculate average value using midpoint Riemann sum
+    sum = 0
+    to_divide = 0
+
+    for intv in intervals:
+        if ((intv[0] >= start_time) and (intv[0] <= end_time) and (intv[1] >= start_time) and (intv[1] <= end_time)):
+            sum += calculate_average_leftpoint_single_interval( 
+                data_power, intv[0], intv[1])
+            to_divide += 1
+
+    return sum / to_divide
 
 ##############################
 # Calculate average midpoint #
