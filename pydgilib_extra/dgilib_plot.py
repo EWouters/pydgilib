@@ -301,7 +301,6 @@ class DGILibPlot(object):
         for axvsp in self.axvspans:
             axvsp.remove()
 
-
     def draw_pins(self, data):
         # Here we set defaults (with or ...)
         ax = self.ax
@@ -335,6 +334,9 @@ class DGILibPlot(object):
                         
                     hold_times = self.hold_times_obj.identify_hold_times(pin_idx, plot_pins_values[pin_idx], data.gpio)
 
+                    # print("Hold times:" + str(hold_times))
+                    # print("Power: " + str(data.power.timestamps))
+
                     if hold_times is not None:
                         for ht in hold_times:
                             axvsp = ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.5)
@@ -346,8 +348,9 @@ class DGILibPlot(object):
                             self.annotations.append(annon)
                             
                             average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1])
-                            self.averages.append((ht, average*1000))
-
+                            if average is not None:
+                                self.averages.append((ht, average*1000))
+                            
                             self.iterations += 1
 
         elif self.plot_pins_method == "line":
@@ -363,7 +366,7 @@ class DGILibPlot(object):
     def print_averages(self):
         print("Averages shown: ")
         for i in range(len(self.averages)):
-            print(str(i+1) + ": " + str(self.averages[i][0]) + "\t\t" + str(self.averages[i][1]) + "mA")
+            print(str(i+1) + ": " + str(self.averages[i][0]) + "\t\t" + str(self.averages[i][1]) + " mA")
 
     def plot_still_exists(self):
         return plt.fignum_exists(self.fig.number)

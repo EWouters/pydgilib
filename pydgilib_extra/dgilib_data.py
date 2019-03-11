@@ -191,9 +191,20 @@ class InterfaceData(object):
     def get_index(self, timestamp, start_index=0):
         """Get the index of the first sample after the timestamp."""
         index = start_index  # Start at start_index (can speed up search)
-        while self.timestamps[index] < timestamp and index < len(self):
+        while index < (len(self) - 1) and self.timestamps[index] < timestamp:
             index += 1
         return index
+
+    def get_next_available_timestamps(self, timestamp_to_compare, start_index=0):
+        index = self.get_index(timestamp_to_compare, start_index)
+
+        if self.timestamps[index] >= timestamp_to_compare:
+            if index == 0:
+                return (None, self.timestamps[index])
+            else:
+                return (self.timestamps[index-1], self.timestamps[index])
+        else:
+            return (None, None)
 
 
 class LoggerData(dict):
