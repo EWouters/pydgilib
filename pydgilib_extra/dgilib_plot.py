@@ -19,6 +19,9 @@ class DGILibPlot(object):
         self.fig = kwargs.get("fig")
         if self.fig is None:
             self.fig = plt.figure(figsize=(8, 6))
+        # Set window title if supplied
+        if "window_title" in kwargs:
+            self.fig.canvas.set_window_title(kwargs["window_title"])
         # if "ax" in kwargs: # It seems the second argument of kwargs.get
             # always gets called, so this check prevents an extra axis from
             # being created

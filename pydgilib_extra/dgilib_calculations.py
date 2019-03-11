@@ -138,7 +138,8 @@ def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
     return gpio_data
 
 
-def power_and_time_per_pulse(logger_data, pin, pulse_direction=True):
+def power_and_time_per_pulse(logger_data, pin, start_time=None, end_time=None,
+                             pulse_direction=True):
     """Calculate power and time per pulse.
 
     Takes the data and a pin and returns a list of power and time sums for
@@ -148,16 +149,25 @@ def power_and_time_per_pulse(logger_data, pin, pulse_direction=True):
     :type data: LoggerData
     :param pin: Number of the GPIO pin to be used.
     :type pin: int
+    :param start_time: First timestamp to consider.
+    :type start_time: float
+    :param end_time: Last timestamp to consider.
+    :type end_time: float
     :param pulse_direction: If True: detect pulse as False -> True -> False,
         else detect pulse as True -> False -> True
     :type pulse_direction: bool
     :return: List of list of power and time sums.
     :rtype: tuple(list(float), list(float))
     """
+    if start_time is None:
+        start_time = 0
+    if end_time is None:
+        end_time = float("Inf")
+
     pin_value = not pulse_direction
 
-    start_time = 0
-    end_time = 0
+    pulse_start_time = 0
+    pulse_end_time = 0
 
     charges = []
     times = []
@@ -166,36 +176,41 @@ def power_and_time_per_pulse(logger_data, pin, pulse_direction=True):
 
     # Loop over all gpio samples
     for timestamp, pin_values in logger_data.gpio:
-        # Detect rising edge
-        if not pin_value and pin_values[pin]:
-            pin_value = pulse_direction
-            start_time = timestamp
-        # Detect falling edge
-        if pin_value and not pin_values[pin]:
-            pin_value = not pulse_direction
-            end_time = timestamp
+        # Detect inside start and end time
+        if timestamp > start_time and timestamp <= end_time:
+            # Detect rising edge
+            if not pin_value and pin_values[pin]:
+                pin_value = pulse_direction
+                pulse_start_time = timestamp
+            # Detect falling edge
+            if pin_value and not pin_values[pin]:
+                pin_value = not pulse_direction
+                pulse_end_time = timestamp
 
-            # Get the index of the power sample corresponding to the rising edge
-            power_index = start_index = logger_data.power.get_index(
-                start_time, power_index)
-            # Get the index of the power sample corresponding to the falling edge
-            power_index = end_index = logger_data.power.get_index(
-                end_time, power_index)
-            # Make sure the start index is larger than 0
-            if start_index < 1:
-                start_index = 1
-                warnings.warn(
-                    "Corrected a start_index of 0 in power_and_time_per_pulse.")
+                # Get the index of the power sample corresponding to the
+                # rising edge
+                power_index = start_index = logger_data.power.get_index(
+                    pulse_start_time, power_index)
+                # Get the index of the power sample corresponding to the
+                # falling edge
+                power_index = end_index = logger_data.power.get_index(
+                    pulse_end_time, power_index)
+                # Make sure the start index is larger than 0
+                if start_index < 1:
+                    start_index = 1
+                    warnings.warn(
+                        "Corrected a start_index of 0 in " +
+                        "power_and_time_per_pulse.")
 
-            # Sum charges and append to charges array
-            charges.append(sum(logger_data.power.values[i] *
-                               (logger_data.power.timestamps[i] -
-                                logger_data.power.timestamps[i-1])
-                               for i in range(start_index, end_index)))
-            times.append(logger_data.power.timestamps[end_index] -
-                         logger_data.power.timestamps[start_index])
+                # Sum charges and append to charges array
+                charges.append(sum(logger_data.power.values[i] *
+                                   (logger_data.power.timestamps[i] -
+                                    logger_data.power.timestamps[i-1])
+                                   for i in range(start_index, end_index)))
+                times.append(logger_data.power.timestamps[end_index] -
+                             logger_data.power.timestamps[start_index])
 
-            # TODO: Check for off-by-one errors using a pytest testcases
+                # TODO: Check for off-by-one errors using a pytest testcases
 
     return charges, times
 
