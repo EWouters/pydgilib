@@ -2,7 +2,7 @@ from time import sleep
 import csv
 
 from pydgilib_extra.dgilib_extra_config import *
-from pydgilib_extra.dgilib_calculations import identify_hold_times
+from pydgilib_extra.dgilib_calculations import HoldTimes
 
 import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox
@@ -62,6 +62,9 @@ class DGILibPlot(object):
         self.plot_pins_correction_forward = kwargs.get("plot_pins_correction_forward", 0.00075)
         self.plot_pins_interval_shrink = kwargs.get("plot_pins_interval_shrink", 0.0010)
         self.refresh_plot_pause_secs = kwargs.get("refresh_plot_pause_secs", 0.00000001)
+
+        if self.plot_pins_method == "highlight":
+            self.hold_times_obj = HoldTimes()
 
         if self.plot_pins_method == "line":
             self.ax_pins = self.ax.twinx()
@@ -313,21 +316,19 @@ class DGILibPlot(object):
 
                 if plot_pins[pin_idx] == True: # If we want them plotted
                     
-                    if len(self.hold_times_already_drawn) > 0:
-                        last_processed_index = data.gpio.timestamps.index(self.hold_times_already_drawn[-1][-1])
-                    else:
-                        last_processed_index = 0
+                    # if len(self.hold_times_already_drawn) > 0:
+                    #     last_processed_index = data.gpio.timestamps.index(self.hold_times_already_drawn[-1][-1])
+                    # else:
+                    #     last_processed_index = 0
                         
-                    hold_times = identify_hold_times(data,
-                                                    pin_idx,
-                                                    plot_pins_values[pin_idx],
-                                                    start_index=(last_processed_index + 1))
+                    hold_times = self.hold_times_obj.identify_hold_times(pin_idx, plot_pins_values[pin_idx], data.gpio)
+                    #print(str(hold_times))
 
                     for ht in hold_times:
                         axvsp = ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.5)
                         self.axvspans.append(axvsp)
-                        if ht not in self.hold_times_already_drawn:
-                            self.hold_times_already_drawn.append(ht)
+                        # if ht not in self.hold_times_already_drawn:
+                        #     self.hold_times_already_drawn.append(ht)
             #self.hold_times_next_index = len(data.gpio.timestamps)
             #hold_times.append((hold_times[0], hold_times[1]))
             #hold_times_sum += hold_times[1] - hold_times[0]
