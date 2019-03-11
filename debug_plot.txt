@@ -1,0 +1,1 @@
+New data, starting on pin 2 at timestamp 9.653494933333334 of value True. Index is: 41Detected toggle on pin 2 at timestamp 10.153496 of value False. Index is: 43

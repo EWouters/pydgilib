@@ -15,6 +15,7 @@ config_dict = {
     "plot_pins": [False, False, True, False],
     "plot_pins_values": [False, False, False, False],
     "plot_pins_method": "highlight",  # or wave
+    "gpio_delay_time": 0.001,
 }
 
 # import pydgilib_extra.dgilib_logger
