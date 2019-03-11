@@ -91,7 +91,7 @@ class DGILibPlot(object):
         # Leave space for sliders at the bottom
         plt.subplots_adjust(bottom=0.3)
         # Show grid
-        plt.grid()
+        self.ax.grid()
 
         # Slider color
         self.axcolor = 'lightgoldenrodyellow'
