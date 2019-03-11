@@ -125,6 +125,7 @@ class DGILibLogger(object):
                 interface.close_csv_writer()
 
         if LOGGER_PLOT in self.loggers:
+            self.plotobj.ax.set_title("Logged Data")
             pass  # TODO
 
         if LOGGER_OBJECT in self.loggers:
