@@ -8,8 +8,7 @@ from pydgilib_extra.dgilib_extra_config import *
 # from pydgilib_extra.dgilib_extra_exceptions import *
 from pydgilib_extra.dgilib_extra import DGILibExtra
 from pydgilib_extra.dgilib_logger import DGILibLogger
-from pydgilib_extra.dgilib_interface_gpio import (
-    DGILibInterfaceGPIO, gpio_augment_edges)
+from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO
 from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 from pydgilib_extra.dgilib_data import (
     LoggerData, InterfaceData, valid_interface_data)

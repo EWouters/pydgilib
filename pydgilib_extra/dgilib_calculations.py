@@ -28,9 +28,64 @@ class HoldTimes(StreamingCalculation):
 #################################################
 
 
-def gpio_augment_edges(
-        gpio_data, delay_time=0, switch_time=0, extend_to=None):
-    """GPIO Augment Edges.
+class GPIOAugmentEdges(StreamingCalculation):
+    """GPIO Augment Edges."""
+
+    def gpio_augment_edges(self, gpio_data, delay_time=0, switch_time=0):
+        """GPIO Augment Edges (streaming).
+
+        Augments the edges of the GPIO data by inserting an extra sample of the
+        previous pin values at moment before a switch occurs (minus switch_time
+        ).
+        The switch time is measured to be around 0.3 ms.
+
+        Also delays all time stamps by delay_time. The delay time seems to vary
+        a lot between different projects and should be manually specified for
+        the best accuracy.
+
+        Can insert the last datapoint again at the time specified (has to be
+        after last sample).
+
+        :param gpio_data: InterfaceData object of GPIO data.
+        :type gpio_data: InterfaceData
+        :param delay_time: Switch time of GPIO pin.
+        :type delay_time: float
+        :param switch_time: Switch time of GPIO pin.
+        :type switch_time: float
+        :return: InterfaceData object of augmented GPIO data.
+        :rtype: InterfaceData
+        """
+        if not len(self.data):
+            self.data = [False] * NUM_PINS
+        pin_states = self.data
+
+        # iterate over the list and insert items at the same time:
+        i = 0
+        while i < len(gpio_data):
+            print(gpio_data.timestamps[i], gpio_data.values[i])
+            if gpio_data.values[i] != pin_states:
+                # This inserts a time sample at time + switch time (so moves
+                # the time stamp into the future)
+                gpio_data.timestamps.insert(
+                    i, gpio_data.timestamps[i] - switch_time)
+                # This inserts the last datapoint again at the time the next
+                # switch actually arrived (without switch time)
+                gpio_data.values.insert(i, pin_states)
+                i += 1
+                pin_states = gpio_data.values[i]
+            i += 1
+
+        self.data = pin_states
+
+        # Delay all time stamps by delay_time
+        gpio_data.timestamps = [
+            t + delay_time for t in gpio_data.timestamps]
+
+        return gpio_data
+
+
+def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
+    """GPIO Augment Edges (standalone).
 
     Augments the edges of the GPIO data by inserting an extra sample of the
     previous pin values at moment before a switch occurs (minus switch_time).

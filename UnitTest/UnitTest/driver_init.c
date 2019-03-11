@@ -29,8 +29,8 @@ void TARGET_IO_PORT_init(void)
 	gpio_set_pin_function(PA24, PINMUX_PA24C_SERCOM0_PAD2);
 
 	gpio_set_pin_function(PA25, PINMUX_PA25C_SERCOM0_PAD3);
-	
-	
+
+
 	gpio_set_pin_level(DGI_GPIO0, GPIO_LOW);
 	gpio_set_pin_level(DGI_GPIO1, GPIO_LOW);
 	gpio_set_pin_level(DGI_GPIO2, GPIO_LOW);

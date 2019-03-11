@@ -2,7 +2,6 @@ from time import sleep
 import csv
 
 from pydgilib_extra.dgilib_extra_config import *
-from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
 from pydgilib_extra.dgilib_calculations import identify_hold_times
 
 import matplotlib.pyplot as plt; plt.ion()

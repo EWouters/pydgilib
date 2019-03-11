@@ -3,13 +3,14 @@
 from pydgilib.dgilib_config import INTERFACE_GPIO
 from pydgilib_extra.dgilib_extra_config import NUM_PINS
 from pydgilib_extra.dgilib_interface import DGILibInterface
-from pydgilib_extra.dgilib_calculations import gpio_augment_edges
+from pydgilib_extra.dgilib_calculations import GPIOAugmentEdges
 from pydgilib_extra.dgilib_data import InterfaceData
 
 
 # TODO: make these functions faster/better?
 def int2bool(i):
     """Convert int to list of bool."""
+    print("int2bool: ", i, [bit is '1' for bit in bin(i)[2:].zfill(NUM_PINS)])
     return [bit is '1' for bit in bin(i)[2:].zfill(NUM_PINS)]
 
 
@@ -40,6 +41,10 @@ class DGILibInterfaceGPIO(DGILibInterface):
         self.augment_gpio = kwargs.get("augment_gpio", True)
         self.gpio_delay_time = kwargs.get("gpio_delay_time", 0)
         self.gpio_switch_time = kwargs.get("gpio_switch_time", 0)
+        if self.augment_gpio or self.gpio_delay_time or self.gpio_switch_time:
+            self.augment_gpio = True
+            self.gpio_augment_edges_streaming = GPIOAugmentEdges()
+            self.gpio_augment_edges = self.gpio_augment_edges_streaming.gpio_augment_edges
 
         # NOTE: Might not be the best place to do this
         if self.dgilib_extra is not None and \
@@ -140,7 +145,7 @@ class DGILibInterfaceGPIO(DGILibInterface):
 
         if self.augment_gpio:
             interface_data = InterfaceData(timestamps, pin_values)
-            gpio_augment_edges(
+            self.gpio_augment_edges(
                 interface_data, self.gpio_delay_time, self.gpio_switch_time)
             return interface_data
         else:

@@ -9,9 +9,10 @@ int main(void)
 	while (1) {
 		delay_ms(100);
 		gpio_toggle_pin_level(DGI_GPIO2);
-		delay_ms(10);
+		delay_ms(100);
 		gpio_set_pin_level(DGI_GPIO3, GPIO_HIGH);
 		gpio_toggle_pin_level(LED0);
+		delay_ms(10);
 		gpio_set_pin_level(DGI_GPIO3, GPIO_LOW);
 	}
 }
