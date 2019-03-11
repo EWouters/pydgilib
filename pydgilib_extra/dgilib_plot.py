@@ -7,6 +7,11 @@ from pydgilib_extra.dgilib_calculations import identify_hold_times
 import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox
 
+# TODO:
+# - Make the plot scrolling in a frame of plot_xmax, as the data comes along
+#   - Either the frame is fixed, moving 1 second at a time, or it scrolls 0.1 or less seconds, having the latest data always on the right side
+# - Buttons lose sync with tools
+
 class DGILibPlot(object):
 
     def __init__(self, dgilib_extra, *args, **kwargs):
@@ -122,6 +127,7 @@ class DGILibPlot(object):
         self.swidth = Slider(self.axwidth, 'xmax', 0, self.plot_xmax, valinit=self.plot_xdiv, valstep=self.plot_xstep)
         self.resetbtn = Button(self.resetax, 'Reset', color=self.axcolor, hovercolor='0.975')
 
+        #TODO: Change to pixel sizes
         self.xleftax = plt.axes([0.4, 0.025, 0.095, 0.04])  # x_pos, y_pos, width, height
         self.xrightax = plt.axes([0.5, 0.025, 0.095, 0.04])
         self.xmaxleftax = plt.axes([0.6, 0.025, 0.095, 0.04])
@@ -264,6 +270,7 @@ class DGILibPlot(object):
             plt.draw()
             self.refresh_plot(0.00000001)
 
+        #TODO: ln might have an update_callback and then it can listen to the data being updated instead of updating data here
         self.ln.set_xdata(data.power.timestamps)
         self.ln.set_ydata(data.power.values)
 
