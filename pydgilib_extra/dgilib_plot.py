@@ -154,9 +154,9 @@ class DGILibPlot(object):
                 update_pos(self.spos.val)
 
         def increase_xmax(event):
-            #if ((self.swidth.val + self.plot_xstep) <= self.plot_xmax):
-            self.swidth.set_val(self.swidth.val + self.plot_xstep)
-            update_width(self.swidth.val)
+            if ((self.swidth.val + self.plot_xstep) <= self.plot_xmax):
+                self.swidth.set_val(self.swidth.val + self.plot_xstep)
+                update_width(self.swidth.val)
 
         def decrease_xmax(event):
             if ((self.swidth.val - self.plot_xstep) >= (self.plot_xmin + 0.000001)):
