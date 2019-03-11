@@ -7,6 +7,11 @@ from pydgilib_extra.dgilib_calculations import identify_hold_times
 import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox
 
+# TODO:
+# - Make the plot scrolling in a frame of plot_xmax, as the data comes along
+#   - Either the frame is fixed, moving 1 second at a time, or it scrolls 0.1 or less seconds, having the latest data always on the right side
+# - Buttons lose sync with tools
+
 class DGILibPlot(object):
 
     def __init__(self, dgilib_extra, *args, **kwargs):
@@ -87,6 +92,7 @@ class DGILibPlot(object):
         # TODO: Are they really needed though?
         self.plot_xdiv = kwargs.get("plot_xdiv", min(5, self.plot_xmax))
         self.plot_xstep = kwargs.get("plot_xstep", 0.5)
+        self.plot_xstep_default = self.plot_xstep
         # self.duration = kwargs.get("duration", max(self.plot_xmax, 5))
 
         # We'll have some sliders to zoom in and out of the plot, as well as a cursor to move around when zoomed in
@@ -124,6 +130,7 @@ class DGILibPlot(object):
         self.swidth = Slider(self.axwidth, 'xmax', 0, self.plot_xmax, valinit=self.plot_xdiv, valstep=self.plot_xstep)
         self.resetbtn = Button(self.resetax, 'Reset', color=self.axcolor, hovercolor='0.975')
 
+        #TODO: Change to pixel sizes
         self.xleftax = plt.axes([0.4, 0.025, 0.095, 0.04])  # x_pos, y_pos, width, height
         self.xrightax = plt.axes([0.5, 0.025, 0.095, 0.04])
         self.xmaxleftax = plt.axes([0.6, 0.025, 0.095, 0.04])
@@ -147,14 +154,14 @@ class DGILibPlot(object):
         self.xsteptb.on_submit(xstep_submit)
 
         def increase_x(event):
-            if ((self.spos.val + self.plot_xstep) <= (self.plot_xmax - self.swidth.val)):
-                self.spos.set_val(self.spos.val + self.plot_xstep)
-                update_pos(self.spos.val)
+            #if ((self.spos.val + self.plot_xstep) <= (self.plot_xmax - self.swidth.val)):
+            self.spos.set_val(self.spos.val + self.plot_xstep)
+            update_pos(self.spos.val)
 
         def decrease_x(event):
-            if ((self.spos.val - self.plot_xstep) >= (self.plot_xmin)):
-                self.spos.set_val(self.spos.val - self.plot_xstep)
-                update_pos(self.spos.val)
+            #if ((self.spos.val - self.plot_xstep) >= (self.plot_xmin)):
+            self.spos.set_val(self.spos.val - self.plot_xstep)
+            update_pos(self.spos.val)
 
         def increase_xmax(event):
             #if ((self.swidth.val + self.plot_xstep) <= self.plot_xmax):
@@ -196,12 +203,13 @@ class DGILibPlot(object):
             pos = self.spos.val
             width = self.swidth.val
 
-            if pos > (self.plot_xmax - width):
-                pos = self.plot_xmax - width
+            # if pos > width:
+            #     pos = width
 
             self.axpos.clear()
-            self.spos.__init__(self.axpos, 'x', 0, self.plot_xmax - width, valinit=pos, valstep=0.5)
+            self.spos.__init__(self.axpos, 'x', 0, width, valinit=pos, valstep=self.plot_xstep)
             self.spos.on_changed(update_pos)
+            self.spos.set_val(pos)
 
             self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
 
@@ -221,8 +229,10 @@ class DGILibPlot(object):
 
             #width = self.plot_xmax
             self.axpos.clear()
-            self.spos.__init__(self.axpos, 'x', 0, self.plot_xmax, valinit=0, valstep=self.plot_xstep)
+            self.spos.__init__(self.axpos, 'x', 0, self.plot_xmax, valinit=0, valstep=self.plot_xstep_default)
             self.spos.on_changed(update_pos)
+            
+            self.xsteptb.set_val(str(self.plot_xstep_default))
             #self.spos.reset()
 
 
@@ -263,6 +273,7 @@ class DGILibPlot(object):
             plt.draw()
             self.refresh_plot(0.00000001)
 
+        #TODO: ln might have an update_callback and then it can listen to the data being updated instead of updating data here
         self.ln.set_xdata(data.power.timestamps)
         self.ln.set_ydata(data.power.values)
 
