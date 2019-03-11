@@ -138,7 +138,7 @@ def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
     return gpio_data
 
 
-def power_and_time_per_pulse(logger_data, pin, start_time=None, end_time=None,
+def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
                              pulse_direction=True):
     """Calculate power and time per pulse.
 
@@ -149,7 +149,8 @@ def power_and_time_per_pulse(logger_data, pin, start_time=None, end_time=None,
     :type data: LoggerData
     :param pin: Number of the GPIO pin to be used.
     :type pin: int
-    :param start_time: First timestamp to consider.
+    :param start_time: First timestamp to consider (defaults to 0.01 to skip
+        GPIO initialization).
     :type start_time: float
     :param end_time: Last timestamp to consider.
     :type end_time: float
@@ -399,3 +400,45 @@ def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_t
 #             pin_value = pin_values[pin]
 
 #     return power_data
+
+# def pin_duty_cycle(self, pin=0, data=None):
+#     pass
+
+
+# def calculate_average_by_pin(data, pin=0, start_time=None, end_time=None):
+#     """calculate_average_by_pin.
+
+#     NOTE: NEEDS TO BE REWRITTEN!
+
+#     Calculate average value of the data while pin is high, using the left
+#     Riemann sum.
+#     """
+#     if start_time is None:
+#         start_time = data[INTERFACE_POWER].get_as_lists()[0][0]
+#     if end_time is None:
+#         end_time = data[INTERFACE_POWER].get_as_lists()[0][-1]
+
+#     last_time = start_time
+
+#     power_sum = 0
+#     time_sum = 0
+
+#     power_index = 0
+
+#     for timestamp, pin_values in data[INTERFACE_GPIO]:
+#         while (pin_values[pin] and
+#                power_index < len(data[INTERFACE_POWER].get_as_lists()[0]) and
+#                data[INTERFACE_POWER].get_as_lists()[0][power_index] <= timestamp):
+#             if (data[INTERFACE_POWER].get_as_lists()[0][power_index] >= start_time and
+#                     data[INTERFACE_POWER].get_as_lists()[0][power_index] <= end_time):
+#                 power_sum += data[INTERFACE_POWER].get_as_lists()[1][power_index] * \
+#                     (data[INTERFACE_POWER].get_as_lists()
+#                      [0][power_index] - last_time)
+#                 time_sum += (data[INTERFACE_POWER].get_as_lists()
+#                              [0][power_index] - last_time)
+#             last_time = data[INTERFACE_POWER].get_as_lists()[0][power_index]
+#             power_index += 1
+
+#     if time_sum == 0:
+#         return 0
+#     return power_sum / time_sum
