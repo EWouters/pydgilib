@@ -158,10 +158,14 @@ class DGILibLogger(object):
         if stop_function is None:
             while time() < end_time:
                 self.update_callback()
+        elif LOGGER_OBJECT in self.loggers:
+            while time() < end_time:
+                self.update_callback()
+                if stop_function(self.dgilib_extra.data):
+                    break
         else:
             while time() < end_time:
-                data = self.update_callback(True)
-                if not stop_function(data):
+                if stop_function(self.update_callback(True)):
                     break
 
         self.stop()

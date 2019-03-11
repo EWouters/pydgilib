@@ -62,7 +62,6 @@ class GPIOAugmentEdges(StreamingCalculation):
         # iterate over the list and insert items at the same time:
         i = 0
         while i < len(gpio_data):
-            print(gpio_data.timestamps[i], gpio_data.values[i])
             if gpio_data.values[i] != pin_states:
                 # This inserts a time sample at time + switch time (so moves
                 # the time stamp into the future)
