@@ -35,9 +35,8 @@ class DGILibLogger(object):
 
         # Enable the csv logger if file_name_base or log_folder has been
         # specified.
-        if LOGGER_CSV not in self.loggers and (
-            "file_name_base" in kwargs or "log_folder" in kwargs
-        ):
+        if LOGGER_CSV not in self.loggers and ("file_name_base" in kwargs or
+                                               "log_folder" in kwargs):
             self.loggers.append(LOGGER_CSV)
 
         # file_name_base - merely the optional base of the filename
@@ -110,7 +109,6 @@ class DGILibLogger(object):
 
     def stop(self, return_data=False):
         """Call to stop logging."""
-
         # Stop the data polling
         self.stop_polling()
 
@@ -363,6 +361,3 @@ def calculate_average_by_pin(data, pin=0, start_time=None, end_time=None):
 #         fig.pause(1)
 
 #     return fig, ax
-
-
-

@@ -58,7 +58,8 @@
     "wouters",
     "xfail",
     "xlabel",
-    "ylabel"
+    "ylabel",
+    "zfill"
   ],
   "terminal.integrated.env.windows": {
     "CONDA_FORCE_32BIT": 1

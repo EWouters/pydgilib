@@ -7,6 +7,8 @@ from pydgilib_extra.dgilib_extra_config import NUM_PINS
 #####################
 # Streaming Classes #
 #####################
+
+
 class StreamingCalculation(object):
     def __init__(self):
         self.data = []
@@ -15,7 +17,7 @@ class StreamingCalculation(object):
 
 class HoldTimes(StreamingCalculation):
     def get_hold_times(self, gpio_data):
-        """Calculate new hold times for data after get_hold_times.index"""
+        """Calculate new hold times for data after get_hold_times.index."""
         self.data += gpio_data.timestamps  # TODO
         self.index = len(gpio_data)
         print("Calculate and return hold times")
@@ -24,6 +26,7 @@ class HoldTimes(StreamingCalculation):
 #################################################
 # GPIO Augment Edges + Power and time per pulse #
 #################################################
+
 
 def gpio_augment_edges(
         gpio_data, delay_time=0, switch_time=0, extend_to=None):
@@ -78,6 +81,7 @@ def gpio_augment_edges(
             gpio_data.timestamps.append(extend_to)
             gpio_data.values.append(pin_states)
     return gpio_data
+
 
 def power_and_time_per_pulse(data, pin, verbose=0, power_factor=1e3):
     """Calculate power and time per pulse.
@@ -141,13 +145,17 @@ def power_and_time_per_pulse(data, pin, verbose=0, power_factor=1e3):
 # Identify toggle/hold times #
 ##############################
 
+
 def what_value_is_at_time_t_for_pin(data, pin, t):
     index_of_timestamp = data.gpio.timestamps.index(t)
     return data.gpio.values[index_of_timestamp]
 
+
 def identify_toggle_times(data, pin, start_index=0):
-    if len(data.gpio.timestamps) <= 1: return [] # We can't identify intervals with only one value
-    if start_index > (len(data.gpio.timestamps) - 1): return [] # We're being asked to do an index that does not exist yet, so just skip
+    if len(data.gpio.timestamps) <= 1:
+        return []  # We can't identify intervals with only one value
+    if start_index > (len(data.gpio.timestamps) - 1):
+        return []  # We're being asked to do an index that does not exist yet, so just skip
 
     toggle_times = []
     true_to_false_toggle_times = []
@@ -166,48 +174,53 @@ def identify_toggle_times(data, pin, start_index=0):
 
             last_toggle_timestamp = data.gpio.timestamps[i]
             last_toggle_value = data.gpio.values[i][pin]
-    
+
     # A smart printing for debugging this function
     # Either leave 'debug = False' or comment it, but don't lose it
     debug = False
     if debug:
         for (t, v) in data.gpio:
-            #print(str((t,v)))
+            # print(str((t,v)))
             if t in toggle_times:
                 print("\t" + str(t) + "\t\t" + str(v) + "\t <-- toggled")
             else:
                 print("\t" + str(t) + "\t\t" + str(v))
-    
-    return toggle_times, true_to_false_toggle_times, false_to_true_toggle_times#, last_toggle_index
+
+    # , last_toggle_index
+    return toggle_times, true_to_false_toggle_times, false_to_true_toggle_times
+
 
 def identify_hold_times(data, pin, pin_value, start_index):
-    if len(data.gpio.timestamps) <= 1: return [] # We can't identify intervals with only one value
-    if start_index > (len(data.gpio.timestamps) - 1): return [] # We're being asked to do an index that does not exist yet, so just skip
+    if len(data.gpio.timestamps) <= 1:
+        return []  # We can't identify intervals with only one value
+    if start_index > (len(data.gpio.timestamps) - 1):
+        return []  # We're being asked to do an index that does not exist yet, so just skip
 
     hold_times = []
 
-    (_, true_to_false_times, false_to_true_times) = identify_toggle_times(data, pin, start_index)
+    (_, true_to_false_times, false_to_true_times) = identify_toggle_times(
+        data, pin, start_index)
 
     if (pin_value == True):
         hold_times = zip(false_to_true_times, true_to_false_times)
     elif (pin_value == False):
         hold_times = zip(true_to_false_times, false_to_true_times)
-    
+
     # A smart printing for debugging this function
     # Either leave 'debug = False' or comment it, but don't lose it
     debug = False
     if debug:
         ht_zip = list(zip(*hold_times))
         for (t, v) in data.gpio:
-            #print(str((t,v)))
+            # print(str((t,v)))
             if t in ht_zip[0]:
                 print("\t" + str(t) + "\t\t" + str(v) + "\t <-- start")
             elif t in ht_zip[1]:
                 print("\t" + str(t) + "\t\t" + str(v) + "\t <-- stop")
             else:
                 print("\t" + str(t) + "\t\t" + str(v))
-    
-    #print(str(hold_times))
+
+    # print(str(hold_times))
 
     return list(hold_times)
 
@@ -220,6 +233,8 @@ def identify_hold_times(data, pin, pin_value, start_index):
 ##############################
 # Calculate average midpoint #
 ##############################
+
+
 def calculate_average_midpoint_single_interval(power_data, start_time=None, end_time=None):
     # Calculate average value using midpoint Riemann sum
     sum = 0
@@ -234,10 +249,12 @@ def calculate_average_midpoint_single_interval(power_data, start_time=None, end_
         last_time = power_data[0][i]
 
         if ((last_time >= start_time) and (last_time < end_time)):
-            sum += ((first_current_value + second_current_value) / 2) * (timestamp - last_time)
+            sum += ((first_current_value + second_current_value) / 2) * \
+                (timestamp - last_time)
 
-            # We have to select the actual start time and the actual 
-            if (actual_start_time == -1): actual_start_time = power_data[0][i]
+            # We have to select the actual start time and the actual
+            if (actual_start_time == -1):
+                actual_start_time = power_data[0][i]
 
         if (timestamp >= end_time):
             actual_end_time = power_data[0][i - 1]
@@ -253,7 +270,8 @@ def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_t
 
     for intv in intervals:
         if ((intv[0] >= start_time) and (intv[0] <= end_time) and (intv[1] >= start_time) and (intv[1] <= end_time)):
-            sum += calculate_average_midpoint_single_interval(power_data, intv[0], intv[1])
+            sum += calculate_average_midpoint_single_interval(
+                power_data, intv[0], intv[1])
             to_divide += 1
 
     return sum / to_divide

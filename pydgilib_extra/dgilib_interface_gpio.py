@@ -15,7 +15,7 @@ def int2bool(i):
 
 def bool2int(b):
     """Convert list of bool to int."""
-    return int("".join("1" if d else "0" for d in b), 2)
+    return int(''.join('1' if d else '0' for d in b), 2)
 
 
 class DGILibInterfaceGPIO(DGILibInterface):

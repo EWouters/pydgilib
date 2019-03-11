@@ -31,7 +31,7 @@ class DGILibPlot(object):
 
         # We need the Line2D object as well, to update it
         if (len(self.ax.lines) == 0):
-            self.ln, = self.ax.plot([], [], 'r-')
+            self.ln, = self.ax.plot([], [], 'r-', label="Power")
         else:
             self.ln = self.ax.lines[0]
             self.ln.set_xdata([])
@@ -48,7 +48,7 @@ class DGILibPlot(object):
         self.plot_ymax = kwargs.get("plot_ymax", None)
         if self.plot_ymax is None:
             self.plot_yauto = True
-            self.plot_ymax = 0.0035
+            self.plot_ymax = 0.005
         else:
             self.plot_yauto = False
 
@@ -67,12 +67,15 @@ class DGILibPlot(object):
         if self.plot_pins_method == "line":
             self.ax_pins = self.ax.twinx()
             self.ax_pins.set_ylabel('Pin Value')
-            self.ln_pins = self.plot_pins
+            self.ax_pins.set_ylim([-0.1, 1.1])
+            self.ax_pins.set_yticks([0,1])
+            self.ax_pins.set_yticklabels(["Low", "High"])
+            self.ln_pins = list(self.plot_pins) # Instantiate as copy of plot_pins
             for pin, plot_pin in enumerate(self.plot_pins):
                 if plot_pin:
-                    self.ln_pins[pin] = self.ax_pins.plot([], [])[0]
-                    # self.ln_pins[pin].set_xdata([])
-                    # self.ln_pins[pin].set_ydata([])
+                    self.ln_pins[pin] = self.ax_pins.plot([], [], label=f"gpio{pin}")[0]
+            self.ax_pins.legend(handles=[ln_pin for ln_pin in self.ln_pins if not isinstance(
+                ln_pin, bool)] + [self.ln])  # Should actually check if it is a lines instance
 
         # Hardwiring these values to 0
         self.plot_xmin = 0
@@ -335,8 +338,7 @@ class DGILibPlot(object):
                     self.ln_pins[pin].set_xdata(data.gpio.timestamps)
                     self.ln_pins[pin].set_ydata(
                         data.gpio.get_select_in_value(pin))
-            plt.draw()
-            self.refresh_plot(0.00000001)
+            self.fig.show()
         else:
             raise ValueError(f"Unrecognized plot_pins_method: {self.plot_pins_method}")
 
