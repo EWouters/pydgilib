@@ -301,7 +301,29 @@ def identify_hold_times(data, pin, pin_value, start_index):
 # Calculate average leftpoint #
 ###############################
 
-# TODO: To be included here?
+
+def calculate_average(power_data, start_time=None, end_time=None):
+    """Calculate average value of the power_data using the left Riemann sum."""
+    if start_time is None:
+        start_index = 0
+    else:
+        start_index = power_data.get_index(start_time)
+    if end_time is None:
+        end_index = len(power_data)
+    else:
+        end_index = power_data.get_index(end_time, start_index)
+
+    # Make sure the start index is larger than 0
+    if start_index < 1:
+        start_index = 1
+        warnings.warn(
+            "Corrected a start_index of 0 in calculate_average.")
+
+    return (sum(power_data.values[i] * (power_data.timestamps[i] -
+                                        power_data.timestamps[i - 1])
+                for i in range(start_index, end_index)) /
+            (power_data.timestamps[end_index] -
+             power_data.timestamps[start_index]))
 
 ##############################
 # Calculate average midpoint #
