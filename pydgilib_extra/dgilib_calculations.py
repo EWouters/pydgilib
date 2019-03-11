@@ -5,30 +5,17 @@ import warnings
 
 from pydgilib_extra.dgilib_extra_config import NUM_PINS
 
-#####################
-# Streaming Classes #
-#####################
-
-
+###############################
+# Streaming Calculation Class #
+###############################
 class StreamingCalculation(object):
     def __init__(self):
         self.data = []
         self.index = 0
 
-
-class HoldTimes(StreamingCalculation):
-    def get_hold_times(self, gpio_data):
-        """Calculate new hold times for data after get_hold_times.index."""
-        self.data += gpio_data.timestamps  # TODO
-        self.index = len(gpio_data)
-        print("Calculate and return hold times")
-        return self.data
-
 #################################################
 # GPIO Augment Edges + Power and time per pulse #
 #################################################
-
-
 class GPIOAugmentEdges(StreamingCalculation):
     """GPIO Augment Edges."""
 
@@ -63,6 +50,7 @@ class GPIOAugmentEdges(StreamingCalculation):
         # iterate over the list and insert items at the same time:
         i = 0
         while i < len(gpio_data):
+            #print(gpio_data.timestamps[i], gpio_data.values[i])
             if gpio_data.values[i] != pin_states:
                 # This inserts a time sample at time + switch time (so moves
                 # the time stamp into the future)
@@ -84,58 +72,58 @@ class GPIOAugmentEdges(StreamingCalculation):
         return gpio_data
 
 
-def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
-    """GPIO Augment Edges (standalone).
+# def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
+#     """GPIO Augment Edges (standalone).
 
-    Augments the edges of the GPIO data by inserting an extra sample of the
-    previous pin values at moment before a switch occurs (minus switch_time).
-    The switch time is measured to be around 0.3 ms.
+#     Augments the edges of the GPIO data by inserting an extra sample of the
+#     previous pin values at moment before a switch occurs (minus switch_time).
+#     The switch time is measured to be around 0.3 ms.
 
-    Also delays all time stamps by delay_time. The delay time seems to vary
-    a lot between different projects and should be manually specified for the
-    best accuracy.
+#     Also delays all time stamps by delay_time. The delay time seems to vary
+#     a lot between different projects and should be manually specified for the
+#     best accuracy.
 
-    Can insert the last datapoint again at the time specified (has to be after
-    last sample).
+#     Can insert the last datapoint again at the time specified (has to be after
+#     last sample).
 
-    :param gpio_data: InterfaceData object of GPIO data.
-    :type gpio_data: InterfaceData
-    :param delay_time: Switch time of GPIO pin.
-    :type delay_time: float
-    :param switch_time: Switch time of GPIO pin.
-    :type switch_time: float
-    :param extend_to: Inserts the last pin values again at the time specified
-        (only used if time is after last sample).
-    :type extend_to: float
-    :return: InterfaceData object of augmented GPIO data.
-    :rtype: InterfaceData
-    """
-    pin_states = [False] * NUM_PINS
+#     :param gpio_data: InterfaceData object of GPIO data.
+#     :type gpio_data: InterfaceData
+#     :param delay_time: Switch time of GPIO pin.
+#     :type delay_time: float
+#     :param switch_time: Switch time of GPIO pin.
+#     :type switch_time: float
+#     :param extend_to: Inserts the last pin values again at the time specified
+#         (only used if time is after last sample).
+#     :type extend_to: float
+#     :return: InterfaceData object of augmented GPIO data.
+#     :rtype: InterfaceData
+#     """
+#     pin_states = [False] * NUM_PINS
 
-    # iterate over the list and insert items at the same time:
-    i = 0
-    while i < len(gpio_data.timestamps):
-        if gpio_data.values[i] != pin_states:
-            # This inserts a time sample at time + switch time (so moves the
-            # time stamp into the future)
-            gpio_data.timestamps.insert(
-                i, gpio_data.timestamps[i] - switch_time)
-            # This inserts the last datapoint again at the time the next
-            # switch actually arrived (without switch time)
-            gpio_data.values.insert(i, pin_states)
-            i += 1
-            pin_states = gpio_data.values[i]
-        i += 1
+#     # iterate over the list and insert items at the same time:
+#     i = 0
+#     while i < len(gpio_data.timestamps):
+#         if gpio_data.values[i] != pin_states:
+#             # This inserts a time sample at time + switch time (so moves the
+#             # time stamp into the future)
+#             gpio_data.timestamps.insert(
+#                 i, gpio_data.timestamps[i] - switch_time)
+#             # This inserts the last datapoint again at the time the next
+#             # switch actually arrived (without switch time)
+#             gpio_data.values.insert(i, pin_states)
+#             i += 1
+#             pin_states = gpio_data.values[i]
+#         i += 1
 
-    # Delay all time stamps by delay_time
-    gpio_data.timestamps = [
-        t + delay_time for t in gpio_data.timestamps]
+#     # Delay all time stamps by delay_time
+#     gpio_data.timestamps = [
+#         t + delay_time for t in gpio_data.timestamps]
 
-    if extend_to is not None:
-        if extend_to >= gpio_data.timestamps[-1]:
-            gpio_data.timestamps.append(extend_to)
-            gpio_data.values.append(pin_states)
-    return gpio_data
+#     if extend_to is not None:
+#         if extend_to >= gpio_data.timestamps[-1]:
+#             gpio_data.timestamps.append(extend_to)
+#             gpio_data.values.append(pin_states)
+#     return gpio_data
 
 
 def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
@@ -219,84 +207,116 @@ def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
 # Identify toggle/hold times #
 ##############################
 
-
 def what_value_is_at_time_t_for_pin(data, pin, t):
     index_of_timestamp = data.gpio.timestamps.index(t)
     return data.gpio.values[index_of_timestamp]
 
+class HoldTimes(StreamingCalculation):
 
-def identify_toggle_times(data, pin, start_index=0):
-    if len(data.gpio.timestamps) <= 1:
-        return []  # We can't identify intervals with only one value
-    if start_index > (len(data.gpio.timestamps) - 1):
-        return []  # We're being asked to do an index that does not exist yet, so just skip
+    def __init__(self):
+        StreamingCalculation.__init__(self)
 
-    toggle_times = []
-    true_to_false_toggle_times = []
-    false_to_true_toggle_times = []
+    def identify_toggle_times(self, pin, data_gpio=None, start_index=None):
+        if data_gpio is None:
+            data_gpio = self.data
+        if start_index == None:
+             start_index = self.index
 
-    last_toggle_timestamp = data.gpio.timestamps[start_index]
-    last_toggle_value = data.gpio.values[start_index][pin]
+        if len(data_gpio.timestamps) <= 1:
+            return []  # We can't identify intervals with only one value
+        if start_index > (len(data_gpio.timestamps) - 1):
+            return []  # We're being asked to do an index that does not exist yet, so just skip
 
-    for i in range(start_index+1, len(data.gpio)):
-        if last_toggle_value != data.gpio.values[i][pin]:
-            toggle_times.append(data.gpio.timestamps[i])
-            if last_toggle_value == True:
-                true_to_false_toggle_times.append(data.gpio.timestamps[i])
-            if last_toggle_value == False:
-                false_to_true_toggle_times.append(data.gpio.timestamps[i])
+        toggle_times = []
+        true_to_false_toggle_times = []
+        false_to_true_toggle_times = []
 
-            last_toggle_timestamp = data.gpio.timestamps[i]
-            last_toggle_value = data.gpio.values[i][pin]
+        #last_toggle_timestamp = data_gpio.timestamps[start_index]
+        last_toggle_value = data_gpio.values[start_index][pin]
 
-    # A smart printing for debugging this function
-    # Either leave 'debug = False' or comment it, but don't lose it
-    debug = False
-    if debug:
-        for (t, v) in data.gpio:
-            # print(str((t,v)))
-            if t in toggle_times:
-                print("\t" + str(t) + "\t\t" + str(v) + "\t <-- toggled")
-            else:
-                print("\t" + str(t) + "\t\t" + str(v))
+        #print("New data, starting on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[start_index]) + " of value " + str(last_toggle_value) + ". Index is: " + str(start_index))
 
-    # , last_toggle_index
-    return toggle_times, true_to_false_toggle_times, false_to_true_toggle_times
+        for i in range(start_index, len(data_gpio)):
+            if last_toggle_value != data_gpio.values[i][pin]:
+                #print("Detected toggle on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[i]) + " of value " + str(data_gpio.values[i][pin]) + ". Index is: " + str(i))
+                toggle_times.append(data_gpio.timestamps[i])
+                if last_toggle_value == True:
+                    true_to_false_toggle_times.append(data_gpio.timestamps[i])
+                if last_toggle_value == False:
+                    false_to_true_toggle_times.append(data_gpio.timestamps[i])
 
+                #last_toggle_timestamp = data_gpio.timestamps[i]
+                last_toggle_value = data_gpio.values[i][pin]
 
-def identify_hold_times(data, pin, pin_value, start_index):
-    if len(data.gpio.timestamps) <= 1:
-        return []  # We can't identify intervals with only one value
-    if start_index > (len(data.gpio.timestamps) - 1):
-        return []  # We're being asked to do an index that does not exist yet, so just skip
+        # A smart printing for debugging this function
+        # Either leave 'debug = False' or comment it, but don't lose it
+        debug = False
+        if debug:
+            for (t, v) in data_gpio:
+                # print(str((t,v)))
+                if t in toggle_times:
+                    print("\t" + str(t) + "\t\t" + str(v) + "\t <-- toggled")
+                else:
+                    print("\t" + str(t) + "\t\t" + str(v))
 
-    hold_times = []
+        # , last_toggle_index
+        return toggle_times, true_to_false_toggle_times, false_to_true_toggle_times
 
-    (_, true_to_false_times, false_to_true_times) = identify_toggle_times(
-        data, pin, start_index)
+    def identify_hold_times(self, pin, pin_value, data_gpio=None):
+        if data_gpio is None:
+            data_gpio = self.data
+        else:
+            self.data = data_gpio
+        if len(data_gpio.timestamps) <= 1:
+            return []  # We can't identify intervals with only one value
+        if self.index > (len(data_gpio.timestamps) - 1):
+            return []  # We're being asked to do an index that does not exist yet, so just skip
 
-    if (pin_value == True):
-        hold_times = zip(false_to_true_times, true_to_false_times)
-    elif (pin_value == False):
-        hold_times = zip(true_to_false_times, false_to_true_times)
+        hold_times = []
 
-    # A smart printing for debugging this function
-    # Either leave 'debug = False' or comment it, but don't lose it
-    debug = False
-    if debug:
-        ht_zip = list(zip(*hold_times))
-        for (t, v) in data.gpio:
-            # print(str((t,v)))
-            if t in ht_zip[0]:
-                print("\t" + str(t) + "\t\t" + str(v) + "\t <-- start")
-            elif t in ht_zip[1]:
-                print("\t" + str(t) + "\t\t" + str(v) + "\t <-- stop")
-            else:
-                print("\t" + str(t) + "\t\t" + str(v))
+        (_, true_to_false_times, false_to_true_times) = self.identify_toggle_times(pin, data_gpio, self.index)
 
-    # print(str(hold_times))
+        #print("T2F: " + str(true_to_false_times))
+        #print("F2T: " + str(false_to_true_times))
 
-    return list(hold_times)
+        if len(false_to_true_times) == 0: return
+        if len(true_to_false_times) == 0: return
+
+        if (pin_value == True):
+            # A fix
+            if false_to_true_times[0] > true_to_false_times[0]:
+                true_to_false_times.pop(0)
+            hold_times = zip(false_to_true_times, true_to_false_times)
+        elif (pin_value == False):
+            # A fix
+            if true_to_false_times[0] > false_to_true_times[0]:
+                false_to_true_times.pop(0)
+            hold_times = zip(true_to_false_times, false_to_true_times)         
+
+        # A smart printing for debugging this function
+        # Either leave 'debug = False' or comment it, but don't lose it
+        debug = False
+        if debug:
+            ht_zip = list(zip(*hold_times))
+            for (t, v) in data_gpio:
+                # print(str((t,v)))
+                if t in ht_zip[0]:
+                    print("\t" + str(t) + "\t\t" + str(v) + "\t <-- start")
+                elif t in ht_zip[1]:
+                    print("\t" + str(t) + "\t\t" + str(v) + "\t <-- stop")
+                else:
+                    print("\t" + str(t) + "\t\t" + str(v))
+
+        hold_times_l = list(hold_times)
+        
+        try:
+            self.index = data_gpio.timestamps.index(hold_times_l[-1][-1]) + 1
+        except IndexError:
+            # If you remove this, you get an error
+            pass
+
+        #print(str(hold_times_l))
+        return hold_times_l
 
 ###############################
 # Calculate average leftpoint #
@@ -329,7 +349,6 @@ def calculate_average(power_data, start_time=None, end_time=None):
 ##############################
 # Calculate average midpoint #
 ##############################
-
 
 def calculate_average_midpoint_single_interval(power_data, start_time=None, end_time=None):
     # Calculate average value using midpoint Riemann sum
