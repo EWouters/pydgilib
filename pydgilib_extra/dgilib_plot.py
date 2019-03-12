@@ -346,12 +346,12 @@ class DGILibPlot(object):
 
                             x_halfway = (ht[1] - ht[0]) / 4 + ht[0]
                             y_halfway = (self.plot_ymax - self.plot_ymin) / 2 + self.plot_ymin
-                            annon = ax.annotate(str(self.iterations + 1), xy=(x_halfway, y_halfway))
+                            annon = ax.annotate(str(self.iterations[pin_idx] + 1), xy=(x_halfway, y_halfway))
                             self.annotations[pin_idx].append(annon)
                             
                             #average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1], start_index)
                             self.iterations[pin_idx] += 1
-                            self.averages[pin_idx].append((self.iterations, ht, start_index, None))
+                            self.averages[pin_idx].append((self.iterations[pin_idx], ht, start_index, None))
 
         elif self.plot_pins_method == "line":
             for pin, plot_pin in enumerate(self.plot_pins):
@@ -363,14 +363,15 @@ class DGILibPlot(object):
         else:
             raise ValueError(f"Unrecognized plot_pins_method: {self.plot_pins_method}")
 
-    def print_averages(self):
+    def print_averages(self, pin_idx):
 
-        for i in range(len(self.averages)):
-            iteration_idx = self.averages[i][0]
-            hold_times_0 = round(self.averages[i][1][0], 5)
-            hold_times_1 = round(self.averages[i][1][1], 5)
+        for i in range(len(self.averages[pin_idx])):
+            iteration_idx = self.averages[pin_idx][i][0]
+            hold_times_0 = round(self.averages[pin_idx][i][1][0], 5)
+            hold_times_1 = round(self.averages[pin_idx][i][1][1], 5)
             #start_index = self.averages[i][2]
-            average = round(self.averages[i][3], 6)
+            average = round(self.averages[pin_idx][i][3], 6)
+            #print(iteration_idx, "|", hold_times_0, "|", hold_times_1, "|", average)
             # '{message:{fill}{align}{width}}'.format(
             #     message='Hi',
             #     fill=' ',
@@ -378,24 +379,24 @@ class DGILibPlot(object):
             #     width=16,
             # )
             print("{0: >5}: ({1: >10}, {2: >10}) {3: >15} mA".format(iteration_idx, hold_times_0, hold_times_1, average))
-        print("Total average: {0} mA".format(round(self.total_average, 6)))
+        print("Total average: {0} mA".format(round(self.total_average[pin_idx], 6)))
 
-    def calculate_averages(self, data=None):
+    def calculate_averages(self, pin_idx, data=None):
+        # TODO: Why does this not work?
         if data is None:
             data = self.dgilib_extra.data
 
-        for i in range(len(self.averages)):
-            iteration_idx = self.averages[i][0]
-            hold_times = self.averages[i][1]
-            start_index = self.averages[i][2]
+        for i in range(len(self.averages[pin_idx])):
+            iteration_idx = self.averages[pin_idx][i][0]
+            hold_times = self.averages[pin_idx][i][1]
+            start_index = self.averages[pin_idx][i][2]
             #print(iteration_idx, start_index, hold_times)
             average = 1000*calculate_average_leftpoint_single_interval(data.power, hold_times[0], hold_times[1], start_index)
-            self.averages[i] = (iteration_idx, hold_times, start_index, average)
+            self.averages[pin_idx][i] = (iteration_idx, hold_times, start_index, average)
 
-
-            self.total_average += average
+            self.total_average[pin_idx] += average
         
-        self.total_average /= self.iterations
+        self.total_average[pin_idx] /= self.iterations[pin_idx]
 
     def plot_still_exists(self):
         return plt.fignum_exists(self.fig.number)
