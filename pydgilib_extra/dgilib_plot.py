@@ -2,7 +2,7 @@ from time import sleep
 import csv
 
 from pydgilib_extra.dgilib_extra_config import *
-from pydgilib_extra.dgilib_calculations import HoldTimes #, calculate_average_leftpoint_single_interval, calculate_average_midpoint_multiple_intervals
+from pydgilib_extra.dgilib_calculations import HoldTimes, calculate_average_leftpoint_single_interval
 
 import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox
