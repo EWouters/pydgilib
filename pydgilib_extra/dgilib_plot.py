@@ -64,11 +64,11 @@ class DGILibPlot(object):
         self.plot_pins_method =  kwargs.get("plot_pins_method", "highlight")
         self.plot_pins_colors =  kwargs.get("plot_pins_colors", ["red", "orange", "blue", "green"])
         self.average_function =  kwargs.get("average_function", "leftpoint")
-        self.axvspans = []
-        self.annotations = []
-        self.averages = []
-        self.total_average = 0
-        self.iterations = 0
+        self.axvspans = [[], [], [], []]
+        self.annotations = [[], [], [], []]
+        self.averages = [[], [], [], []]
+        self.total_average = [0,0,0,0]
+        self.iterations = [0,0,0,0]
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
         self.plot_pins_correction_forward = kwargs.get("plot_pins_correction_forward", 0.00075)
@@ -342,16 +342,16 @@ class DGILibPlot(object):
                     if hold_times is not None:
                         for ht in hold_times:
                             axvsp = ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.5)
-                            self.axvspans.append(axvsp)
+                            self.axvspans[pin_idx].append(axvsp)
 
                             x_halfway = (ht[1] - ht[0]) / 4 + ht[0]
                             y_halfway = (self.plot_ymax - self.plot_ymin) / 2 + self.plot_ymin
                             annon = ax.annotate(str(self.iterations + 1), xy=(x_halfway, y_halfway))
-                            self.annotations.append(annon)
+                            self.annotations[pin_idx].append(annon)
                             
                             #average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1], start_index)
-                            self.iterations += 1
-                            self.averages.append((self.iterations, ht, start_index, None))
+                            self.iterations[pin_idx] += 1
+                            self.averages[pin_idx].append((self.iterations, ht, start_index, None))
 
         elif self.plot_pins_method == "line":
             for pin, plot_pin in enumerate(self.plot_pins):
