@@ -10,7 +10,7 @@ config_dict = {
     "write_mode": [False, False, False, False],
     "loggers": [LOGGER_PLOT, LOGGER_CSV, LOGGER_OBJECT],
     "verbose": 0,
-    "plot_xmax": 10,
+    "plot_xmax": 5,
     "plot_ymax": 0.0040,
     "plot_pins": [False, False, True, False],
     "plot_pins_values": [False, False, False, False],

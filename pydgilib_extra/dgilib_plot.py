@@ -7,6 +7,8 @@ from pydgilib_extra.dgilib_calculations import HoldTimes, calculate_average_left
 import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox
 
+from threading import Lock
+
 # TODO:
 # - Make the plot scrolling in a frame of plot_xmax, as the data comes along
 #   - Either the frame is fixed, moving 1 second at a time, or it scrolls 0.1 or less seconds, having the latest data always on the right side
@@ -69,6 +71,7 @@ class DGILibPlot(object):
         self.averages = [[], [], [], []]
         self.total_average = [0,0,0,0]
         self.iterations = [0,0,0,0]
+        self.xylim_mutex = Lock()
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
         self.plot_pins_correction_forward = kwargs.get("plot_pins_correction_forward", 0.00075)
@@ -201,58 +204,80 @@ class DGILibPlot(object):
 
         # I'm not sure how to detach these without them forgetting their parents (sliders)
         def update_pos(val):
-            pos = self.spos.val
-            width = self.swidth.val
+            if self.xylim_mutex.acquire(False):
+                pos = self.spos.val
+                width = self.swidth.val
 
-            self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
+                self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
+
+                self.xylim_mutex.release()
 
         def update_width(val):
-            pos = self.spos.val
-            width = self.swidth.val
+            if self.xylim_mutex.acquire(False):
+                pos = self.spos.val
+                width = self.swidth.val
 
-            # if pos > width:
-            #     pos = width
+                # if pos > width:
+                #     pos = width
 
-            self.axpos.clear()
-            self.spos.__init__(self.axpos, 'x', 0, width, valinit=pos, valstep=self.plot_xstep)
-            self.spos.on_changed(update_pos)
-            self.spos.set_val(pos)
+                self.axpos.clear()
+                self.spos.__init__(self.axpos, 'x', 0, width, valinit=pos, valstep=self.plot_xstep)
+                self.spos.on_changed(update_pos)
+                self.spos.set_val(pos)
 
-            self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
+                self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
 
-            # TODO: Update
-            # visible_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, i, i+width) * 1000
-            # all_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, min(xdata), max(xdata)) * 1000
+                # TODO: Update
+                # visible_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, i, i+width) * 1000
+                # all_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, min(xdata), max(xdata)) * 1000
 
-            # self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
+                # self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
 
-            # self.fig.canvas.draw_idle()
+                # self.fig.canvas.draw_idle()
+
+                self.xylim_mutex.release()
 
         self.spos.on_changed(update_pos)
         self.swidth.on_changed(update_width)
 
         def reset(event):
-            self.swidth.set_val(self.plot_xmax)
+            if self.xylim_mutex.acquire(False):
+                self.swidth.set_val(self.plot_xmax)
 
-            #width = self.plot_xmax
-            self.axpos.clear()
-            self.spos.__init__(self.axpos, 'x', 0, self.plot_xmax, valinit=0, valstep=self.plot_xstep_default)
-            self.spos.on_changed(update_pos)
+                #width = self.plot_xmax
+                self.axpos.clear()
+                self.spos.__init__(self.axpos, 'x', 0, self.plot_xmax, valinit=0, valstep=self.plot_xstep_default)
+                self.spos.on_changed(update_pos)
             
-            self.xsteptb.set_val(str(self.plot_xstep_default))
-            #self.spos.reset()
+                self.xsteptb.set_val(str(self.plot_xstep_default))
+                #self.spos.reset()
 
-
-            # TODO: Update parameters
-            # visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
-            # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
-
-            # self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
+                self.xylim_mutex.release()
 
         self.resetbtn.on_clicked(reset)
 
         self.spos.set_val(0)
         self.swidth.set_val(self.plot_xmax)
+
+        # Auto-change the sliders/buttons when using plot tools
+        def on_xlims_change(axes):
+            if self.xylim_mutex.acquire(False): # Non-blocking
+                xlim_left = self.ax.get_xlim()[0]
+                xlim_right = self.ax.get_xlim()[1]
+
+                pos = xlim_left
+                width = xlim_right - xlim_left
+
+                self.spos.set_val(pos)
+                self.swidth.set_val(width)
+            
+                self.xylim_mutex.release()
+
+        def on_ylims_change(axes):
+            print(self.ax.get_ylim())
+
+        self.ax.callbacks.connect('xlim_changed', on_xlims_change)
+        #self.ax.callbacks.connect('ylim_changed', on_ylims_change)
 
     def update_plot(self, data):
         verbose = self.verbose
