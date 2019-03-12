@@ -6,7 +6,6 @@ from pydgilib_extra import (DGILibExtra, LOGGER_CSV, LOGGER_OBJECT)
 def test_logger_log():
     """test_logger_log."""
     config_dict = {
-        "interfaces": [INTERFACE_POWER, INTERFACE_GPIO],
         "loggers": [LOGGER_OBJECT, LOGGER_CSV],
         "gpio_delay_time": 0.010795,
     }

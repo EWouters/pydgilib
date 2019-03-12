@@ -49,9 +49,8 @@ class DGILibExtra(DGILib):
             self.available_interfaces.append(INTERFACE_POWER)
 
         # Instantiate interface objects and enable the interfaces
-        interfaces = self.kwargs.get(
-            "interfaces", [INTERFACE_POWER, INTERFACE_GPIO])
-        for interface_id in interfaces:
+        for interface_id in self.kwargs.get(
+                "interfaces", [INTERFACE_GPIO, INTERFACE_POWER]):
             if interface_id in self.interfaces:
                 self.interfaces[interface_id] = self.interfaces[interface_id](
                     self, *self.args, **self.kwargs)
