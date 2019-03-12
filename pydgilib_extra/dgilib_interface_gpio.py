@@ -32,8 +32,14 @@ class DGILibInterfaceGPIO(DGILibInterface):
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibInterfaceGPIO object."""
         # Set default values for attributes
-        self.read_mode = [False] * NUM_PINS
+        self.read_mode = [True] * NUM_PINS
         self.write_mode = [False] * NUM_PINS
+        # Add read and write mode to kwargs so they get set in the super class
+        # constructor
+        if "read_mode" not in kwargs:
+            kwargs["read_mode"] = self.read_mode
+        if "write_mode" not in kwargs:
+            kwargs["write_mode"] = self.write_mode
         # Instantiate base class
         DGILibInterface.__init__(self, *args, **kwargs)
         # Parse arguments
@@ -107,21 +113,15 @@ class DGILibInterfaceGPIO(DGILibInterface):
             is set to output and can be controlled by the send command.
         :type write_mode: list(bool)
         """
-        # Argument parsing
-        self.read_mode = kwargs.get("read_mode", self.read_mode)
-        self.write_mode = kwargs.get("write_mode", self.write_mode)
-
-        # Convert lists of bool to int
-        read_mode = bool2int(self.read_mode)
-        write_mode = bool2int(self.write_mode)
-
         # Set the configuration
         if "read_mode" in kwargs:
+            self.read_mode = kwargs["read_mode"]
             self.dgilib_extra.interface_set_configuration(
-                INTERFACE_GPIO, [0], [read_mode])
+                INTERFACE_GPIO, [0], [bool2int(self.read_mode)])
         if "write_mode" in kwargs:
+            self.write_mode = kwargs["write_mode"]
             self.dgilib_extra.interface_set_configuration(
-                INTERFACE_GPIO, [1], [write_mode])
+                INTERFACE_GPIO, [1], [bool2int(self.write_mode)])
 
     def read(self):
         """Get the state of the GPIO pins.

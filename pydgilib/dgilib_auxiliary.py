@@ -217,8 +217,8 @@ class DGILibAuxiliary(object):
         :return: True if the calibration is valid, False otherwise
         :rtype: bool
         """
-        calibration_is_valid = self.dgilib.auxiliary_power_calibration_is_valid(
-            self.power_hndl)
+        calibration_is_valid = \
+            self.dgilib.auxiliary_power_calibration_is_valid(self.power_hndl)
         if self.verbose:
             print(
                 f"auxiliary_power_calibration_is_valid: {calibration_is_valid}"
