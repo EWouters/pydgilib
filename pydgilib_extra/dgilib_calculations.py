@@ -8,6 +8,8 @@ from pydgilib_extra.dgilib_extra_config import NUM_PINS
 ###############################
 # Streaming Calculation Class #
 ###############################
+
+
 class StreamingCalculation(object):
     def __init__(self):
         self.data = []
@@ -16,6 +18,8 @@ class StreamingCalculation(object):
 #################################################
 # GPIO Augment Edges + Power and time per pulse #
 #################################################
+
+
 class GPIOAugmentEdges(StreamingCalculation):
     """GPIO Augment Edges."""
 
@@ -72,61 +76,61 @@ class GPIOAugmentEdges(StreamingCalculation):
         return gpio_data
 
 
-# def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
-#     """GPIO Augment Edges (standalone).
+def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
+    """GPIO Augment Edges (standalone).
 
-#     Augments the edges of the GPIO data by inserting an extra sample of the
-#     previous pin values at moment before a switch occurs (minus switch_time).
-#     The switch time is measured to be around 0.3 ms.
+    Augments the edges of the GPIO data by inserting an extra sample of the
+    previous pin values at moment before a switch occurs (minus switch_time).
+    The switch time is measured to be around 0.3 ms.
 
-#     Also delays all time stamps by delay_time. The delay time seems to vary
-#     a lot between different projects and should be manually specified for the
-#     best accuracy.
+    Also delays all time stamps by delay_time. The delay time seems to vary
+    a lot between different projects and should be manually specified for the
+    best accuracy.
 
-#     Can insert the last datapoint again at the time specified (has to be after
-#     last sample).
+    Can insert the last datapoint again at the time specified (has to be after
+    last sample).
 
-#     :param gpio_data: InterfaceData object of GPIO data.
-#     :type gpio_data: InterfaceData
-#     :param delay_time: Switch time of GPIO pin.
-#     :type delay_time: float
-#     :param switch_time: Switch time of GPIO pin.
-#     :type switch_time: float
-#     :param extend_to: Inserts the last pin values again at the time specified
-#         (only used if time is after last sample).
-#     :type extend_to: float
-#     :return: InterfaceData object of augmented GPIO data.
-#     :rtype: InterfaceData
-#     """
-#     pin_states = [False] * NUM_PINS
+    :param gpio_data: InterfaceData object of GPIO data.
+    :type gpio_data: InterfaceData
+    :param delay_time: Switch time of GPIO pin.
+    :type delay_time: float
+    :param switch_time: Switch time of GPIO pin.
+    :type switch_time: float
+    :param extend_to: Inserts the last pin values again at the time specified
+        (only used if time is after last sample).
+    :type extend_to: float
+    :return: InterfaceData object of augmented GPIO data.
+    :rtype: InterfaceData
+    """
+    pin_states = [False] * NUM_PINS
 
-#     # iterate over the list and insert items at the same time:
-#     i = 0
-#     while i < len(gpio_data.timestamps):
-#         if gpio_data.values[i] != pin_states:
-#             # This inserts a time sample at time + switch time (so moves the
-#             # time stamp into the future)
-#             gpio_data.timestamps.insert(
-#                 i, gpio_data.timestamps[i] - switch_time)
-#             # This inserts the last datapoint again at the time the next
-#             # switch actually arrived (without switch time)
-#             gpio_data.values.insert(i, pin_states)
-#             i += 1
-#             pin_states = gpio_data.values[i]
-#         i += 1
+    # iterate over the list and insert items at the same time:
+    i = 0
+    while i < len(gpio_data.timestamps):
+        if gpio_data.values[i] != pin_states:
+            # This inserts a time sample at time + switch time (so moves the
+            # time stamp into the future)
+            gpio_data.timestamps.insert(
+                i, gpio_data.timestamps[i] - switch_time)
+            # This inserts the last datapoint again at the time the next
+            # switch actually arrived (without switch time)
+            gpio_data.values.insert(i, pin_states)
+            i += 1
+            pin_states = gpio_data.values[i]
+        i += 1
 
-#     # Delay all time stamps by delay_time
-#     gpio_data.timestamps = [
-#         t + delay_time for t in gpio_data.timestamps]
+    # Delay all time stamps by delay_time
+    gpio_data.timestamps = [
+        t + delay_time for t in gpio_data.timestamps]
 
-#     if extend_to is not None:
-#         if extend_to >= gpio_data.timestamps[-1]:
-#             gpio_data.timestamps.append(extend_to)
-#             gpio_data.values.append(pin_states)
-#     return gpio_data
+    if extend_to is not None:
+        if extend_to >= gpio_data.timestamps[-1]:
+            gpio_data.timestamps.append(extend_to)
+            gpio_data.values.append(pin_states)
+    return gpio_data
 
 
-def power_and_time_per_pulse(logger_data, pin, start_time=None, end_time=None,
+def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
                              pulse_direction=True):
     """Calculate power and time per pulse.
 
@@ -137,7 +141,8 @@ def power_and_time_per_pulse(logger_data, pin, start_time=None, end_time=None,
     :type data: LoggerData
     :param pin: Number of the GPIO pin to be used.
     :type pin: int
-    :param start_time: First timestamp to consider.
+    :param start_time: First timestamp to consider (defaults to 0.01 to skip
+        GPIO initialization).
     :type start_time: float
     :param end_time: Last timestamp to consider.
     :type end_time: float
@@ -206,9 +211,11 @@ def power_and_time_per_pulse(logger_data, pin, start_time=None, end_time=None,
 # Identify toggle/hold times #
 ##############################
 
+
 def what_value_is_at_time_t_for_pin(data, pin, t):
     index_of_timestamp = data.gpio.timestamps.index(t)
     return data.gpio.values[index_of_timestamp]
+
 
 class HoldTimes(StreamingCalculation):
 
@@ -219,7 +226,7 @@ class HoldTimes(StreamingCalculation):
         if data_gpio is None:
             data_gpio = self.data
         if start_index == None:
-             start_index = self.index
+            start_index = self.index
 
         if len(data_gpio.timestamps) <= 1:
             return []  # We can't identify intervals with only one value
@@ -273,13 +280,16 @@ class HoldTimes(StreamingCalculation):
 
         hold_times = []
 
-        (_, true_to_false_times, false_to_true_times) = self.identify_toggle_times(pin, data_gpio, self.index)
+        (_, true_to_false_times, false_to_true_times) = self.identify_toggle_times(
+            pin, data_gpio, self.index)
 
         #print("T2F: " + str(true_to_false_times))
         #print("F2T: " + str(false_to_true_times))
 
-        if len(false_to_true_times) == 0: return
-        if len(true_to_false_times) == 0: return
+        if len(false_to_true_times) == 0:
+            return
+        if len(true_to_false_times) == 0:
+            return
 
         if (pin_value == True):
             # A fix
@@ -290,7 +300,7 @@ class HoldTimes(StreamingCalculation):
             # A fix
             if true_to_false_times[0] > false_to_true_times[0]:
                 false_to_true_times.pop(0)
-            hold_times = zip(true_to_false_times, false_to_true_times)         
+            hold_times = zip(true_to_false_times, false_to_true_times)
 
         # A smart printing for debugging this function
         # Either leave 'debug = False' or comment it, but don't lose it
@@ -307,30 +317,24 @@ class HoldTimes(StreamingCalculation):
                     print("\t" + str(t) + "\t\t" + str(v))
 
         hold_times_l = list(hold_times)
-        
+
         try:
             self.index = data_gpio.timestamps.index(hold_times_l[-1][-1]) + 1
         except IndexError:
             # If you remove this, you get an error
             pass
 
-        #print(str(hold_times_l))
+        # print(str(hold_times_l))
         return hold_times_l
 
 ###############################
 # Calculate average leftpoint #
 ###############################
-
 def calculate_average_leftpoint_single_interval(data_power, start_time=None, end_time=None, start_index=0):
-    """Calculate average value of the power_data using the left Riemann sum."""
-    # print("Start time: " + str(start_time))
-    # print("End time: " + str(end_time))
-    # print("Timestamps: " + str(data_power.timestamps))
     if start_time is None:
         start_time = data_power.timestamps[0]
     else:
         (_, start_time, _, left_index) = data_power.get_next_available_timestamps(start_time, start_index)
- 
 
     if end_time is None:
         end_time = data_power.timestamps[-1]
@@ -368,50 +372,78 @@ def calculate_average_leftpoint_multiple_intervals(data_power, intervals, start_
 
     return sum / to_divide
 
+def calculate_average(power_data, start_time=None, end_time=None):
+
+    """Calculate average value of the power_data using the left Riemann sum."""
+    # print("Start time: " + str(start_time))
+    # print("End time: " + str(end_time))
+    # print("Timestamps: " + str(data_power.timestamps))
+    if start_time is None:
+        start_index = 1
+    else:
+        start_index = power_data.get_index(start_time)
+    if end_time is None:
+        end_index = len(power_data)
+    else:
+        end_index = power_data.get_index(end_time, start_index)
+
+    # Make sure the start index is larger than 0
+    if start_index < 1:
+        start_index = 1
+        warnings.warn(
+            "Corrected a start_index of 0 in calculate_average.")
+
+    return (sum(power_data.values[i] * (power_data.timestamps[i] -
+                                        power_data.timestamps[i - 1])
+                for i in range(start_index, end_index)) /
+            (power_data.timestamps[end_index] -
+             power_data.timestamps[start_index]))
+
 ##############################
 # Calculate average midpoint #
 ##############################
 
-def calculate_average_midpoint_single_interval(power_data, start_time=None, end_time=None):
-    # Calculate average value using midpoint Riemann sum
-    sum = 0
 
-    actual_start_time = -1
-    actual_end_time = -1
+# def calculate_average_midpoint_single_interval(power_data, start_time=None, end_time=None):
+#     # Calculate average value using midpoint Riemann sum
+#     sum = 0
 
-    for i in range(len(power_data[0]) - 1)[1:]:
-        first_current_value = power_data[1][i]
-        second_current_value = power_data[1][i + 1]
-        timestamp = power_data[0][i + 1]
-        last_time = power_data[0][i]
+#     actual_start_time = -1
+#     actual_end_time = -1
 
-        if ((last_time >= start_time) and (last_time < end_time)):
-            sum += ((first_current_value + second_current_value) / 2) * \
-                (timestamp - last_time)
+#     for i in range(len(power_data[0]) - 1)[1:]:
+#         first_current_value = power_data[1][i]
+#         second_current_value = power_data[1][i + 1]
+#         timestamp = power_data[0][i + 1]
+#         last_time = power_data[0][i]
 
-            # We have to select the actual start time and the actual
-            if (actual_start_time == -1):
-                actual_start_time = power_data[0][i]
+#         if ((last_time >= start_time) and (last_time < end_time)):
+#             sum += ((first_current_value + second_current_value) / 2) * \
+#                 (timestamp - last_time)
 
-        if (timestamp >= end_time):
-            actual_end_time = power_data[0][i - 1]
-            break
+#             # We have to select the actual start time and the actual
+#             if (actual_start_time == -1):
+#                 actual_start_time = power_data[0][i]
 
-    return sum / (actual_end_time - actual_start_time)
+#         if (timestamp >= end_time):
+#             actual_end_time = power_data[0][i - 1]
+#             break
+
+#     return sum / (actual_end_time - actual_start_time)
 
 
-def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_time=None, end_time=None):
-    # Calculate average value using midpoint Riemann sum
-    sum = 0
-    to_divide = 0
+# def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_time=None, end_time=None):
+#     # Calculate average value using midpoint Riemann sum
+#     sum = 0
+#     to_divide = 0
 
-    for intv in intervals:
-        if ((intv[0] >= start_time) and (intv[0] <= end_time) and (intv[1] >= start_time) and (intv[1] <= end_time)):
-            sum += calculate_average_midpoint_single_interval(
-                power_data, intv[0], intv[1])
-            to_divide += 1
+#     for intv in intervals:
+#         if ((intv[0] >= start_time) and (intv[0] <= end_time) and (intv[1] >= start_time) and (intv[1] <= end_time)):
+#             sum += calculate_average_midpoint_single_interval(
+#                 power_data, intv[0], intv[1])
+#             to_divide += 1
 
-    return sum / to_divide
+#     return sum / to_divide
 
 ##########################################
 # Obsolete / Possibly obsolete functions #
@@ -441,3 +473,45 @@ def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_t
 #             pin_value = pin_values[pin]
 
 #     return power_data
+
+# def pin_duty_cycle(self, pin=0, data=None):
+#     pass
+
+
+# def calculate_average_by_pin(data, pin=0, start_time=None, end_time=None):
+#     """calculate_average_by_pin.
+
+#     NOTE: NEEDS TO BE REWRITTEN!
+
+#     Calculate average value of the data while pin is high, using the left
+#     Riemann sum.
+#     """
+#     if start_time is None:
+#         start_time = data[INTERFACE_POWER].get_as_lists()[0][0]
+#     if end_time is None:
+#         end_time = data[INTERFACE_POWER].get_as_lists()[0][-1]
+
+#     last_time = start_time
+
+#     power_sum = 0
+#     time_sum = 0
+
+#     power_index = 0
+
+#     for timestamp, pin_values in data[INTERFACE_GPIO]:
+#         while (pin_values[pin] and
+#                power_index < len(data[INTERFACE_POWER].get_as_lists()[0]) and
+#                data[INTERFACE_POWER].get_as_lists()[0][power_index] <= timestamp):
+#             if (data[INTERFACE_POWER].get_as_lists()[0][power_index] >= start_time and
+#                     data[INTERFACE_POWER].get_as_lists()[0][power_index] <= end_time):
+#                 power_sum += data[INTERFACE_POWER].get_as_lists()[1][power_index] * \
+#                     (data[INTERFACE_POWER].get_as_lists()
+#                      [0][power_index] - last_time)
+#                 time_sum += (data[INTERFACE_POWER].get_as_lists()
+#                              [0][power_index] - last_time)
+#             last_time = data[INTERFACE_POWER].get_as_lists()[0][power_index]
+#             power_index += 1
+
+#     if time_sum == 0:
+#         return 0
+#     return power_sum / time_sum

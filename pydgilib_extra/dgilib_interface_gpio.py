@@ -43,7 +43,8 @@ class DGILibInterfaceGPIO(DGILibInterface):
         if self.augment_gpio or self.gpio_delay_time or self.gpio_switch_time:
             self.augment_gpio = True
             self.gpio_augment_edges_streaming = GPIOAugmentEdges()
-            self.gpio_augment_edges = self.gpio_augment_edges_streaming.gpio_augment_edges
+            self.gpio_augment_edges = \
+                self.gpio_augment_edges_streaming.gpio_augment_edges
 
         # NOTE: Might not be the best place to do this
         if self.dgilib_extra is not None and \
@@ -171,8 +172,8 @@ class DGILibInterfaceGPIO(DGILibInterface):
         if self.verbose >= 2:
             print(f"Sent gpio packet")
 
-    def csv_write_rows(self, interdace_data):
+    def csv_write_rows(self, interface_data):
         """csv_write_rows."""
         self.csv_writer.writerows(
-            zip(interdace_data.timestamps,
-                *map(iter, zip(*interdace_data.values))))
+            zip(interface_data.timestamps,
+                *map(iter, zip(*interface_data.values))))

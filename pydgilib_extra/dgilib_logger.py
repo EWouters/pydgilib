@@ -2,7 +2,7 @@
 """This module wraps the logging functionality for DGILibExtra."""
 
 import copy
-from os import curdir
+from os import getcwd
 from time import time
 
 # Todo, remove dependency
@@ -43,7 +43,7 @@ class DGILibLogger(object):
         #     (Preferably leave standard).
         # log_folder - where log files will be saved
         self.file_name_base = kwargs.get("file_name_base", FILE_NAME_BASE)
-        self.log_folder = kwargs.get("log_folder", curdir)
+        self.log_folder = kwargs.get("log_folder", getcwd())
 
         # Enable the plot logger if figure has been specified.
         if (LOGGER_PLOT not in self.loggers and
@@ -66,7 +66,7 @@ class DGILibLogger(object):
         """Call to start logging."""
         if LOGGER_CSV in self.loggers:
             for interface in self.dgilib_extra.interfaces.values():
-                interface.init_csv_writer()
+                interface.init_csv_writer(self.log_folder)
 
         if LOGGER_PLOT in self.loggers:
             pass  # TODO
@@ -230,105 +230,6 @@ class DGILibLogger(object):
             self.dgilib_extra.stop_polling()
         if power:
             self.dgilib_extra.auxiliary_power_stop()
-
-    # def data_add(self, data):
-    #     """TO BE REMOVED."""
-    #     assert(self.data.keys() == data.keys())  # TODO create error
-    #     for interface_id in data.keys():
-    #         for col in range(len(self.data[interface_id])):
-    #             self.data[interface_id][col].extend(data[interface_id][col])
-
-    # def power_filter_by_pin(self, pin=0, data=None):
-    #     """Filter the data to when a specified pin is high."""
-    #     if data is None:
-    #         data = self.data
-
-    #     return power_filter_by_pin(pin, data, self.dgilib_extra.verbose)
-
-    # def calculate_average(self, power_data=None, start_time=None,
-    #                       end_time=None):
-    #     """calculate_average.
-
-    #     Calculate average value of the power_data using the left Riemann sum.
-    #     """
-    #     if power_data is None:
-    #         power_data = self.data[INTERFACE_POWER]
-
-    #     return calculate_average(power_data, start_time, end_time)
-
-    # def pin_duty_cycle(self, pin=0, data=None):
-    #     pass
-
-
-# def mergeData(data1, data2):
-#     """mergeData.
-
-#     Make class for data structure? Or at least make a method to merge that
-#     mutates the list instead of doing multiple copies.
-#     """
-#     assert(data1.keys() == data2.keys())
-#     for interface_id in data1.keys():
-#         for col in range(len(data1[interface_id])):
-#             data1[interface_id][col].extend(data2[interface_id][col])
-#     return data1
-
-def calculate_average(power_data, start_time=None, end_time=None):
-    """Calculate average value of the power_data using the left Riemann sum."""
-    if start_time is None:
-        start_time = power_data[0][0]
-
-    if end_time is None:
-        end_time = power_data[0][-1]
-
-    last_time = start_time
-
-    sum = 0
-
-    for timestamp, power_value in zip(*power_data):
-        sum += power_value * (timestamp - last_time)
-        last_time = timestamp
-
-    return sum / (end_time - start_time)
-
-
-def calculate_average_by_pin(data, pin=0, start_time=None, end_time=None):
-    """calculate_average_by_pin.
-
-    NOTE: NEEDS TO BE REWRITTEN!
-
-    Calculate average value of the data while pin is high, using the left
-    Riemann sum.
-    """
-    if start_time is None:
-        start_time = data[INTERFACE_POWER].get_as_lists()[0][0]
-    if end_time is None:
-        end_time = data[INTERFACE_POWER].get_as_lists()[0][-1]
-
-    last_time = start_time
-
-    power_sum = 0
-    time_sum = 0
-
-    power_index = 0
-
-    for timestamp, pin_values in data[INTERFACE_GPIO]:
-        while (pin_values[pin] and
-               power_index < len(data[INTERFACE_POWER].get_as_lists()[0]) and
-               data[INTERFACE_POWER].get_as_lists()[0][power_index] <= timestamp):
-            if (data[INTERFACE_POWER].get_as_lists()[0][power_index] >= start_time and
-                    data[INTERFACE_POWER].get_as_lists()[0][power_index] <= end_time):
-                power_sum += data[INTERFACE_POWER].get_as_lists()[1][power_index] * \
-                    (data[INTERFACE_POWER].get_as_lists()
-                     [0][power_index] - last_time)
-                time_sum += (data[INTERFACE_POWER].get_as_lists()
-                             [0][power_index] - last_time)
-            last_time = data[INTERFACE_POWER].get_as_lists()[0][power_index]
-            power_index += 1
-
-    if time_sum == 0:
-        return 0
-    return power_sum / time_sum
-
 
 # # Should be removed and updated every time update_callback is called
 # def logger_plot_data(data, plot_pins=[True] * 4, fig=None, ax=None):

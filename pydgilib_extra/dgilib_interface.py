@@ -29,7 +29,8 @@ class DGILibInterface(object):
         self.dgilib_extra = kwargs.get(
             "dgilib_extra", args[0] if args else None)
         self.verbose = kwargs.get("verbose", 0)
-        self.file_name_base = kwargs.get("file_name_base", self.file_name_base)
+        if "file_name_base" in kwargs:
+            self.file_name_base = kwargs["file_name_base"]
         # Set interface configuration
         if self.dgilib_extra is not None:
             self.set_config(*args, **kwargs)
@@ -51,7 +52,8 @@ class DGILibInterface(object):
         """Enable the interface."""
         if self.interface_id not in self.dgilib_extra.available_interfaces:
             raise InterfaceNotAvailableError(
-                f"Interface {self.interface_id} not available. Available interfaces: {self.dgilib_extra.available_interfaces}")
+                f"Interface {self.interface_id} not available. Available " +
+                f"interfaces: {self.dgilib_extra.available_interfaces}")
         if self.interface_id not in self.dgilib_extra.enabled_interfaces:
             self.dgilib_extra.interface_enable(self.interface_id)
             self.dgilib_extra.enabled_interfaces.append(self.interface_id)
@@ -75,13 +77,11 @@ class DGILibInterface(object):
         """Read data from the interface."""
         pass
 
-    def init_csv_writer(
-            self, log_folder=getcwd(), file_name_base="log", newline='',
-            mode='w'):
+    def init_csv_writer(self, log_folder=getcwd(), newline='', mode='w'):
         """init_csv_writer."""
         # Open file handle
         self.file_handle = open(path.join(
-            log_folder, (file_name_base + '_' + self.name + ".csv")),
+            log_folder, (self.file_name_base + '_' + self.name + ".csv")),
             mode, newline=newline)
         # Create csv.writer
         self.csv_writer = csv.writer(self.file_handle)
