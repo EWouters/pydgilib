@@ -15,7 +15,7 @@ config_dict = {
     "plot_pins": [False, False, True, False],
     "plot_pins_values": [False, False, False, False],
     "plot_pins_method": "highlight",
-    "automove_method" : "page",
+    "automove_method" : "cursor",
     "gpio_delay_time": 0.001,
 }
 

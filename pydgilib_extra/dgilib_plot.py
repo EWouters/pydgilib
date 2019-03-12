@@ -309,26 +309,26 @@ class DGILibPlot(object):
             automove = False
 
         if automove and self.xylim_mutex.acquire(False):
-            if self.automove_method == "page":
-                last_timestamp = data.power.timestamps[-1]
-                
-                pos = self.spos.val
-                width = self.swidth.val
+            last_timestamp = data.power.timestamps[-1]
 
-                if (last_timestamp > (pos + width)):
-                    self.spos.set_val(pos + width)
-                    self.swidth.set_val(width)
-
-                    pos = self.spos.val
-                    width = self.swidth.val
-
-                self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
-                self.last_xpos = pos
-
-                self.xylim_mutex.release()
+            pos = self.spos.val
+            width = self.swidth.val
             
-            elif self.automove_method == "cursor":
-                pass
+            if (last_timestamp > (pos + width)):
+                if self.automove_method == "page":
+                    self.spos.set_val(pos + width)
+                elif self.automove_method == "cursor":
+                    arbitrary_amount = 0.15
+                    if last_timestamp > width:
+                        self.spos.set_val(last_timestamp + arbitrary_amount - width)
+
+            pos = self.spos.val
+            width = self.swidth.val
+
+            self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
+            self.last_xpos = pos
+
+            self.xylim_mutex.release()
 
         # visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
         # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
@@ -431,12 +431,19 @@ class DGILibPlot(object):
             hold_times = self.averages[pin_idx][i][1]
             start_index = self.averages[pin_idx][i][2]
             #print(iteration_idx, start_index, hold_times)
-            average = 1000*calculate_average_leftpoint_single_interval(data.power, hold_times[0], hold_times[1], start_index)
-            self.averages[pin_idx][i] = (iteration_idx, hold_times, start_index, average)
 
-            self.total_average[pin_idx] += average
-        
-        self.total_average[pin_idx] /= self.iterations[pin_idx]
+            average = calculate_average_leftpoint_single_interval(data.power, hold_times[0], hold_times[1], start_index)
+
+            if average is not None:
+                average_scaled = 1000 * average
+            else:
+                average_scaled = -1
+            self.averages[pin_idx][i] = (iteration_idx, hold_times, start_index, average_scaled)
+
+            self.total_average[pin_idx] += average_scaled
+
+        if len(self.averages[pin_idx]) > 0: 
+            self.total_average[pin_idx] /= len(self.averages[pin_idx]) #self.iterations[pin_idx]
 
     def plot_still_exists(self):
         return plt.fignum_exists(self.fig.number)
