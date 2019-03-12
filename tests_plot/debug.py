@@ -26,6 +26,7 @@ with DGILibExtra(**config_dict) as dgilib:
     data = dgilib.logger.log(10)
 
     #dgilib.logger.plotobj.draw_pins(data)
+    dgilib.logger.plotobj.calculate_averages(dgilib.data)
     dgilib.logger.plotobj.print_averages()
 
     dgilib.logger.keep_plot_alive()

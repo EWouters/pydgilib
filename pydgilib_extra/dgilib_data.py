@@ -200,11 +200,11 @@ class InterfaceData(object):
 
         if self.timestamps[index] >= timestamp_to_compare:
             if index == 0:
-                return (None, self.timestamps[index])
+                return (None, self.timestamps[index], None, index)
             else:
-                return (self.timestamps[index-1], self.timestamps[index])
+                return (self.timestamps[index-1], self.timestamps[index], index-1, index)
         else:
-            return (None, None)
+            return (None, None, None, None)
 
 
 class LoggerData(dict):

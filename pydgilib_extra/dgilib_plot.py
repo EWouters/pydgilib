@@ -67,6 +67,7 @@ class DGILibPlot(object):
         self.axvspans = []
         self.annotations = []
         self.averages = []
+        self.total_average = 0
         self.iterations = 0
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
@@ -332,6 +333,7 @@ class DGILibPlot(object):
 
                 if plot_pins[pin_idx] == True: # If we want them plotted
                         
+                    start_index = self.hold_times_obj.index
                     hold_times = self.hold_times_obj.identify_hold_times(pin_idx, plot_pins_values[pin_idx], data.gpio)
 
                     # print("Hold times:" + str(hold_times))
@@ -347,11 +349,9 @@ class DGILibPlot(object):
                             annon = ax.annotate(str(self.iterations + 1), xy=(x_halfway, y_halfway))
                             self.annotations.append(annon)
                             
-                            average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1])
-                            if average is not None:
-                                self.averages.append((ht, average*1000))
-                            
+                            #average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1], start_index)
                             self.iterations += 1
+                            self.averages.append((self.iterations, ht, start_index, None))
 
         elif self.plot_pins_method == "line":
             for pin, plot_pin in enumerate(self.plot_pins):
@@ -359,14 +359,43 @@ class DGILibPlot(object):
                     self.ln_pins[pin].set_xdata(data.gpio.timestamps)
                     self.ln_pins[pin].set_ydata(
                         data.gpio.get_select_in_value(pin))
-            self.fig.show()
+            self.fig.show()      
         else:
             raise ValueError(f"Unrecognized plot_pins_method: {self.plot_pins_method}")
 
     def print_averages(self):
-        print("Averages shown: ")
+
         for i in range(len(self.averages)):
-            print(str(i+1) + ": " + str(self.averages[i][0]) + "\t\t" + str(self.averages[i][1]) + " mA")
+            iteration_idx = self.averages[i][0]
+            hold_times_0 = round(self.averages[i][1][0], 5)
+            hold_times_1 = round(self.averages[i][1][1], 5)
+            #start_index = self.averages[i][2]
+            average = round(self.averages[i][3], 6)
+            # '{message:{fill}{align}{width}}'.format(
+            #     message='Hi',
+            #     fill=' ',
+            #     align='<',
+            #     width=16,
+            # )
+            print("{0: >5}: ({1: >10}, {2: >10}) {3: >15} mA".format(iteration_idx, hold_times_0, hold_times_1, average))
+        print("Total average: {0} mA".format(round(self.total_average, 6)))
+
+    def calculate_averages(self, data=None):
+        if data is None:
+            data = self.dgilib_extra.data
+
+        for i in range(len(self.averages)):
+            iteration_idx = self.averages[i][0]
+            hold_times = self.averages[i][1]
+            start_index = self.averages[i][2]
+            #print(iteration_idx, start_index, hold_times)
+            average = 1000*calculate_average_leftpoint_single_interval(data.power, hold_times[0], hold_times[1], start_index)
+            self.averages[i] = (iteration_idx, hold_times, start_index, average)
+
+
+            self.total_average += average
+        
+        self.total_average /= self.iterations
 
     def plot_still_exists(self):
         return plt.fignum_exists(self.fig.number)
