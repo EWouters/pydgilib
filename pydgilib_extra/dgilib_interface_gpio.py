@@ -32,7 +32,7 @@ class DGILibInterfaceGPIO(DGILibInterface):
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibInterfaceGPIO object."""
         # Set default values for attributes
-        self.read_mode = [False] * NUM_PINS
+        self.read_mode = [True] * NUM_PINS
         self.write_mode = [False] * NUM_PINS
         # Instantiate base class
         DGILibInterface.__init__(self, *args, **kwargs)

@@ -3,7 +3,8 @@
 from time import sleep
 
 from pydgilib.dgilib_config import (
-    CALIBRATING, DONE, IDLE, OVERFLOWED, RUNNING, XAM)
+    CALIBRATING, DONE, IDLE, OVERFLOWED, RUNNING, XAM, CHANNEL_A,
+    POWER_CURRENT)
 from pydgilib_extra.dgilib_extra_config import (INTERFACE_POWER, POWER)
 from pydgilib_extra.dgilib_extra_exceptions import (
     PowerReadError, PowerStatusError, InterfaceNotAvailableError)
@@ -52,7 +53,9 @@ class DGILibInterfacePower(DGILibInterface):
         :type power_buffers: list(dict())
         """
         # Parse arguments
-        power_buffers = kwargs.get("power_buffers", [])
+        power_buffers = kwargs.get(
+            "power_buffers", [{"channel": CHANNEL_A,
+                               "power_type": POWER_CURRENT}],)
 
         # Initialize the power handle if it is None
         if self.dgilib_extra.power_hndl is None:
@@ -61,6 +64,7 @@ class DGILibInterfacePower(DGILibInterface):
 
         # Enable the configurations that are in the new config and not in
         # self.power_buffers
+        # BUG: This probably needs multiple power handles
         for power_buffer in power_buffers:
             if power_buffer not in self.power_buffers:
                 self.dgilib_extra.auxiliary_power_register_buffer_pointers(

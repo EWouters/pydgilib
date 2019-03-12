@@ -316,12 +316,12 @@ class DGILibPlot(object):
         # Here we do checks and stop drawing pins if something is unset
         if ax is None:                                      return
         if plot_pins is None:                               return
-        if plot_pins_values is None:                        return
-        if plot_pins_method is None:                        return
-        if plot_pins_correction_forward is None:            return
-        if plot_pins_interval_shrink is None:               return
-        if plot_pins_colors is None:                        return
-        if average_function is None:                        return
+        # if plot_pins_values is None:                        return
+        # if plot_pins_method is None:                        return
+        # if plot_pins_correction_forward is None:            return
+        # if plot_pins_interval_shrink is None:               return
+        # if plot_pins_colors is None:                        return
+        # if average_function is None:                        return
             
         verbose=self.verbose
 
