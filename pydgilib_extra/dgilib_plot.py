@@ -65,7 +65,7 @@ class DGILibPlot(object):
         self.plot_pins_values = kwargs.get("plot_pins_values", None)
         self.plot_pins_method = kwargs.get("plot_pins_method", "highlight") # or "line"
         self.plot_pins_colors = kwargs.get("plot_pins_colors", ["red", "orange", "blue", "green"])
-        self.automove_method = kwargs.get("automove_method", "cursor") # or "page"
+        self.automove_method = kwargs.get("automove_method", "latest_data") # or "page"
         self.average_function = kwargs.get("average_function", "leftpoint")
         self.axvspans = [[], [], [], []]
         self.annotations = [[], [], [], []]
@@ -231,6 +231,15 @@ class DGILibPlot(object):
         self.spos.on_changed(update_pos)
         self.swidth.on_changed(update_width)
 
+        def see_all(event):
+            if self.xylim_mutex.acquire(False):
+
+                self.ax.axis([0, self.last_timestamp, self.plot_ymin, self.plot_ymax])
+                self.last_xpos = -1
+
+                self.xylim_mutex.release()
+
+
         def reset(event):
             if self.xylim_mutex.acquire(False):
                 self.swidth.set_val(self.plot_xmax)
@@ -317,7 +326,7 @@ class DGILibPlot(object):
             if (last_timestamp > (pos + width)):
                 if self.automove_method == "page":
                     self.spos.set_val(pos + width)
-                elif self.automove_method == "cursor":
+                elif self.automove_method == "latest_data":
                     arbitrary_amount = 0.15
                     if last_timestamp > width:
                         self.spos.set_val(last_timestamp + arbitrary_amount - width)
