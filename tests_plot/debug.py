@@ -14,7 +14,8 @@ config_dict = {
     "plot_ymax": 0.0040,
     "plot_pins": [False, False, True, False],
     "plot_pins_values": [False, False, False, False],
-    "plot_pins_method": "highlight",  # or wave
+    "plot_pins_method": "highlight",
+    "automove_method" : "page",
     "gpio_delay_time": 0.001,
 }
 

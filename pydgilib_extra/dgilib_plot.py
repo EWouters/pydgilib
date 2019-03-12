@@ -63,14 +63,16 @@ class DGILibPlot(object):
 
         self.plot_pins = kwargs.get("plot_pins", None)
         self.plot_pins_values = kwargs.get("plot_pins_values", None)
-        self.plot_pins_method =  kwargs.get("plot_pins_method", "highlight")
-        self.plot_pins_colors =  kwargs.get("plot_pins_colors", ["red", "orange", "blue", "green"])
-        self.average_function =  kwargs.get("average_function", "leftpoint")
+        self.plot_pins_method = kwargs.get("plot_pins_method", "highlight") # or "line"
+        self.plot_pins_colors = kwargs.get("plot_pins_colors", ["red", "orange", "blue", "green"])
+        self.automove_method = kwargs.get("automove_method", "cursor") # or "page"
+        self.average_function = kwargs.get("average_function", "leftpoint")
         self.axvspans = [[], [], [], []]
         self.annotations = [[], [], [], []]
         self.averages = [[], [], [], []]
         self.total_average = [0,0,0,0]
         self.iterations = [0,0,0,0]
+        self.last_xpos = 0
         self.xylim_mutex = Lock()
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
@@ -217,23 +219,12 @@ class DGILibPlot(object):
                 pos = self.spos.val
                 width = self.swidth.val
 
-                # if pos > width:
-                #     pos = width
-
                 self.axpos.clear()
                 self.spos.__init__(self.axpos, 'x', 0, width, valinit=pos, valstep=self.plot_xstep)
                 self.spos.on_changed(update_pos)
                 self.spos.set_val(pos)
 
                 self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
-
-                # TODO: Update
-                # visible_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, i, i+width) * 1000
-                # all_average = calculate_average_midpoint_multiple_intervals(self.data, all_hold_times, min(xdata), max(xdata)) * 1000
-
-                # self.axes.set_title("Visible average: %.6f mA;\n Total average: %.6f mA." % (visible_average, all_average))
-
-                # self.fig.canvas.draw_idle()
 
                 self.xylim_mutex.release()
 
@@ -243,16 +234,17 @@ class DGILibPlot(object):
         def reset(event):
             if self.xylim_mutex.acquire(False):
                 self.swidth.set_val(self.plot_xmax)
-
-                #width = self.plot_xmax
+                
                 self.axpos.clear()
                 self.spos.__init__(self.axpos, 'x', 0, self.plot_xmax, valinit=0, valstep=self.plot_xstep_default)
                 self.spos.on_changed(update_pos)
-            
+        
                 self.xsteptb.set_val(str(self.plot_xstep_default))
-                #self.spos.reset()
 
-                self.xylim_mutex.release()
+                self.ax.axis([self.plot_xmin, self.plot_xmax, self.plot_ymin, self.plot_ymax])
+                self.last_xpos = -1
+
+                self.xylim_mutex.release()                
 
         self.resetbtn.on_clicked(reset)
 
@@ -270,6 +262,7 @@ class DGILibPlot(object):
 
                 self.spos.set_val(pos)
                 self.swidth.set_val(width)
+                self.last_xpos = -1
             
                 self.xylim_mutex.release()
 
@@ -309,11 +302,33 @@ class DGILibPlot(object):
         self.ln.set_xdata(data.power.timestamps)
         self.ln.set_ydata(data.power.values)
 
-        pos = self.spos.val
-        width = self.swidth.val
+        automove = True
+        current_xpos = self.ax.get_xlim()[0]
 
-        #print("Scaling: " + str([pos, pos + width, self.plot_ymin, self.plot_ymax]))
-        self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
+        if self.last_xpos != current_xpos:
+            automove = False
+
+        if automove and self.xylim_mutex.acquire(False):
+            if self.automove_method == "page":
+                last_timestamp = data.power.timestamps[-1]
+                
+                pos = self.spos.val
+                width = self.swidth.val
+
+                if (last_timestamp > (pos + width)):
+                    self.spos.set_val(pos + width)
+                    self.swidth.set_val(width)
+
+                    pos = self.spos.val
+                    width = self.swidth.val
+
+                self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
+                self.last_xpos = pos
+
+                self.xylim_mutex.release()
+            
+            elif self.automove_method == "cursor":
+                pass
 
         # visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
         # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
