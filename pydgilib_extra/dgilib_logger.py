@@ -2,7 +2,7 @@
 """This module wraps the logging functionality for DGILibExtra."""
 
 import copy
-from os import curdir
+from os import getcwd
 from time import time
 
 # Todo, remove dependency
@@ -43,7 +43,7 @@ class DGILibLogger(object):
         #     (Preferably leave standard).
         # log_folder - where log files will be saved
         self.file_name_base = kwargs.get("file_name_base", FILE_NAME_BASE)
-        self.log_folder = kwargs.get("log_folder", curdir)
+        self.log_folder = kwargs.get("log_folder", getcwd())
 
         # Enable the plot logger if figure has been specified.
         if (LOGGER_PLOT not in self.loggers and
@@ -66,7 +66,7 @@ class DGILibLogger(object):
         """Call to start logging."""
         if LOGGER_CSV in self.loggers:
             for interface in self.dgilib_extra.interfaces.values():
-                interface.init_csv_writer()
+                interface.init_csv_writer(self.log_folder)
 
         if LOGGER_PLOT in self.loggers:
             pass  # TODO
