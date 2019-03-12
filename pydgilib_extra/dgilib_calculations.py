@@ -8,6 +8,8 @@ from pydgilib_extra.dgilib_extra_config import NUM_PINS
 ###############################
 # Streaming Calculation Class #
 ###############################
+
+
 class StreamingCalculation(object):
     def __init__(self):
         self.data = []
@@ -16,6 +18,8 @@ class StreamingCalculation(object):
 #################################################
 # GPIO Augment Edges + Power and time per pulse #
 #################################################
+
+
 class GPIOAugmentEdges(StreamingCalculation):
     """GPIO Augment Edges."""
 
@@ -207,9 +211,11 @@ def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
 # Identify toggle/hold times #
 ##############################
 
+
 def what_value_is_at_time_t_for_pin(data, pin, t):
     index_of_timestamp = data.gpio.timestamps.index(t)
     return data.gpio.values[index_of_timestamp]
+
 
 class HoldTimes(StreamingCalculation):
 
@@ -220,7 +226,7 @@ class HoldTimes(StreamingCalculation):
         if data_gpio is None:
             data_gpio = self.data
         if start_index == None:
-             start_index = self.index
+            start_index = self.index
 
         if len(data_gpio.timestamps) <= 1:
             return []  # We can't identify intervals with only one value
@@ -274,13 +280,16 @@ class HoldTimes(StreamingCalculation):
 
         hold_times = []
 
-        (_, true_to_false_times, false_to_true_times) = self.identify_toggle_times(pin, data_gpio, self.index)
+        (_, true_to_false_times, false_to_true_times) = self.identify_toggle_times(
+            pin, data_gpio, self.index)
 
         #print("T2F: " + str(true_to_false_times))
         #print("F2T: " + str(false_to_true_times))
 
-        if len(false_to_true_times) == 0: return
-        if len(true_to_false_times) == 0: return
+        if len(false_to_true_times) == 0:
+            return
+        if len(true_to_false_times) == 0:
+            return
 
         if (pin_value == True):
             # A fix
@@ -291,7 +300,7 @@ class HoldTimes(StreamingCalculation):
             # A fix
             if true_to_false_times[0] > false_to_true_times[0]:
                 false_to_true_times.pop(0)
-            hold_times = zip(true_to_false_times, false_to_true_times)         
+            hold_times = zip(true_to_false_times, false_to_true_times)
 
         # A smart printing for debugging this function
         # Either leave 'debug = False' or comment it, but don't lose it
@@ -308,14 +317,14 @@ class HoldTimes(StreamingCalculation):
                     print("\t" + str(t) + "\t\t" + str(v))
 
         hold_times_l = list(hold_times)
-        
+
         try:
             self.index = data_gpio.timestamps.index(hold_times_l[-1][-1]) + 1
         except IndexError:
             # If you remove this, you get an error
             pass
 
-        #print(str(hold_times_l))
+        # print(str(hold_times_l))
         return hold_times_l
 
 ###############################
@@ -326,7 +335,7 @@ class HoldTimes(StreamingCalculation):
 def calculate_average(power_data, start_time=None, end_time=None):
     """Calculate average value of the power_data using the left Riemann sum."""
     if start_time is None:
-        start_index = 0
+        start_index = 1
     else:
         start_index = power_data.get_index(start_time)
     if end_time is None:
@@ -350,46 +359,47 @@ def calculate_average(power_data, start_time=None, end_time=None):
 # Calculate average midpoint #
 ##############################
 
-def calculate_average_midpoint_single_interval(power_data, start_time=None, end_time=None):
-    # Calculate average value using midpoint Riemann sum
-    sum = 0
 
-    actual_start_time = -1
-    actual_end_time = -1
+# def calculate_average_midpoint_single_interval(power_data, start_time=None, end_time=None):
+#     # Calculate average value using midpoint Riemann sum
+#     sum = 0
 
-    for i in range(len(power_data[0]) - 1)[1:]:
-        first_current_value = power_data[1][i]
-        second_current_value = power_data[1][i + 1]
-        timestamp = power_data[0][i + 1]
-        last_time = power_data[0][i]
+#     actual_start_time = -1
+#     actual_end_time = -1
 
-        if ((last_time >= start_time) and (last_time < end_time)):
-            sum += ((first_current_value + second_current_value) / 2) * \
-                (timestamp - last_time)
+#     for i in range(len(power_data[0]) - 1)[1:]:
+#         first_current_value = power_data[1][i]
+#         second_current_value = power_data[1][i + 1]
+#         timestamp = power_data[0][i + 1]
+#         last_time = power_data[0][i]
 
-            # We have to select the actual start time and the actual
-            if (actual_start_time == -1):
-                actual_start_time = power_data[0][i]
+#         if ((last_time >= start_time) and (last_time < end_time)):
+#             sum += ((first_current_value + second_current_value) / 2) * \
+#                 (timestamp - last_time)
 
-        if (timestamp >= end_time):
-            actual_end_time = power_data[0][i - 1]
-            break
+#             # We have to select the actual start time and the actual
+#             if (actual_start_time == -1):
+#                 actual_start_time = power_data[0][i]
 
-    return sum / (actual_end_time - actual_start_time)
+#         if (timestamp >= end_time):
+#             actual_end_time = power_data[0][i - 1]
+#             break
+
+#     return sum / (actual_end_time - actual_start_time)
 
 
-def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_time=None, end_time=None):
-    # Calculate average value using midpoint Riemann sum
-    sum = 0
-    to_divide = 0
+# def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_time=None, end_time=None):
+#     # Calculate average value using midpoint Riemann sum
+#     sum = 0
+#     to_divide = 0
 
-    for intv in intervals:
-        if ((intv[0] >= start_time) and (intv[0] <= end_time) and (intv[1] >= start_time) and (intv[1] <= end_time)):
-            sum += calculate_average_midpoint_single_interval(
-                power_data, intv[0], intv[1])
-            to_divide += 1
+#     for intv in intervals:
+#         if ((intv[0] >= start_time) and (intv[0] <= end_time) and (intv[1] >= start_time) and (intv[1] <= end_time)):
+#             sum += calculate_average_midpoint_single_interval(
+#                 power_data, intv[0], intv[1])
+#             to_divide += 1
 
-    return sum / to_divide
+#     return sum / to_divide
 
 ##########################################
 # Obsolete / Possibly obsolete functions #

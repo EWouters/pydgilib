@@ -2,7 +2,7 @@ from time import sleep
 import csv
 
 from pydgilib_extra.dgilib_extra_config import *
-from pydgilib_extra.dgilib_calculations import HoldTimes, calculate_average_leftpoint_single_interval, calculate_average_midpoint_multiple_intervals
+from pydgilib_extra.dgilib_calculations import HoldTimes #, calculate_average_leftpoint_single_interval, calculate_average_midpoint_multiple_intervals
 
 import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox
@@ -33,8 +33,8 @@ class DGILibPlot(object):
         self.ax = kwargs.get("ax")
         if self.ax is None:
             self.ax = self.fig.add_subplot(1, 1, 1)
-            self.ax.set_xlabel('Time (s)')
-            self.ax.set_ylabel('Current (A)')
+            self.ax.set_xlabel('Time [s]')
+            self.ax.set_ylabel('Current [A]')
 
         # We need the Line2D object as well, to update it
         if (len(self.ax.lines) == 0):
