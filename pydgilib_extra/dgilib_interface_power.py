@@ -78,8 +78,7 @@ class DGILibInterfacePower(DGILibInterface):
             if power_buffer not in power_buffers:
                 self.dgilib_extra.auxiliary_power_unregister_buffer_pointers(
                     channel=power_buffer["channel"],
-                    power_type=power_buffer["power_type"],
-                )
+                    power_type=power_buffer["power_type"],)
                 self.power_buffers.remove(power_buffer)
 
         # Uninitialize the power handle if there are no power buffers left
