@@ -182,7 +182,8 @@ class DGILibInterfacePower(DGILibInterface):
         Check if calibration is valid and trigger calibration if it is not.
 
         Keyword Arguments:
-            force {bool} - - Force calibration, even if it is valid(default: {False})
+            force {bool} - - Force calibration, even if it is valid(default:
+                {False})
 
         Raises:
             PowerReadError - - [description]
