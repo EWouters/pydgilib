@@ -48,7 +48,7 @@ class GPIOAugmentEdges(StreamingCalculation):
         :rtype: InterfaceData
         """
         if not len(self.data):
-            self.data = [False] * NUM_PINS
+            self.data = [True] * NUM_PINS
         pin_states = self.data
 
         # iterate over the list and insert items at the same time:
@@ -102,7 +102,7 @@ def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
     :return: InterfaceData object of augmented GPIO data.
     :rtype: InterfaceData
     """
-    pin_states = [False] * NUM_PINS
+    pin_states = [True] * NUM_PINS
 
     # iterate over the list and insert items at the same time:
     i = 0
@@ -170,8 +170,16 @@ def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
 
     power_index = 0
 
+    initialized = False
+
     # Loop over all gpio samples
     for timestamp, pin_values in logger_data.gpio:
+        # Skip all samples until initialization has finished
+        if not initialized:
+            if all(pin_values):
+                continue
+            else:
+                initialized = True
         if stop_function is not None and stop_function(pin_values):
             break
         # Detect inside start and end time
@@ -335,21 +343,29 @@ class HoldTimes(StreamingCalculation):
 ###############################
 # Calculate average leftpoint #
 ###############################
+
+
 def calculate_average_leftpoint_single_interval(data_power, start_time=None, end_time=None, start_index=0):
     if start_time is None:
         start_time = data_power.timestamps[0]
     else:
-        (_, start_time, _, left_index) = data_power.get_next_available_timestamps(start_time, start_index)
+        (_, start_time, _, left_index) = data_power.get_next_available_timestamps(
+            start_time, start_index)
 
     if end_time is None:
         end_time = data_power.timestamps[-1]
     else:
-        (end_time, _, right_index, _) = data_power.get_next_available_timestamps(end_time, start_index)
+        (end_time, _, right_index, _) = data_power.get_next_available_timestamps(
+            end_time, start_index)
 
-    if start_time is None: return None
-    if end_time is None: return None
-    if left_index is None: return None
-    if right_index is None: return None
+    if start_time is None:
+        return None
+    if end_time is None:
+        return None
+    if left_index is None:
+        return None
+    if right_index is None:
+        return None
 
     last_time = start_time
 
@@ -361,8 +377,9 @@ def calculate_average_leftpoint_single_interval(data_power, start_time=None, end
 
         sum += power_value * (timestamp - last_time)
         last_time = timestamp
-    
+
     return sum / (end_time - start_time)
+
 
 def calculate_average_leftpoint_multiple_intervals(data_power, intervals, start_time=None, end_time=None):
     # Calculate average value using midpoint Riemann sum
@@ -371,14 +388,14 @@ def calculate_average_leftpoint_multiple_intervals(data_power, intervals, start_
 
     for intv in intervals:
         if ((intv[0] >= start_time) and (intv[0] <= end_time) and (intv[1] >= start_time) and (intv[1] <= end_time)):
-            sum += calculate_average_leftpoint_single_interval( 
+            sum += calculate_average_leftpoint_single_interval(
                 data_power, intv[0], intv[1])
             to_divide += 1
 
     return sum / to_divide
 
-def calculate_average(power_data, start_time=None, end_time=None):
 
+def calculate_average(power_data, start_time=None, end_time=None):
     """Calculate average value of the power_data using the left Riemann sum."""
     # print("Start time: " + str(start_time))
     # print("End time: " + str(end_time))
