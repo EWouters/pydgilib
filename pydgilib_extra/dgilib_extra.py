@@ -8,6 +8,7 @@ from pydgilib.dgilib_config import (
     INTERFACE_GPIO, INTERFACE_TIMESTAMP, INTERFACE_POWER_DATA)
 from pydgilib_extra.dgilib_extra_config import INTERFACE_POWER
 from pydgilib_extra.dgilib_logger import DGILibLogger
+from pydgilib_extra.dgilib_data import LoggerData
 from pydgilib_extra.dgilib_interface import DGILibInterface
 from pydgilib_extra.dgilib_interface_gpio import DGILibInterfaceGPIO
 from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
@@ -108,3 +109,16 @@ class DGILibExtra(DGILib):
                 f"{timer_frequency}")
 
         return timer_prescaler / timer_frequency
+
+    def empty_data(self, interfaces=None):
+        """empty_data.
+
+        Populate self.data with an empty data structure (of type LoggerData).
+
+        Keyword Arguments:
+            interfaces {list(int)} -- List of interface ids. (default:
+            {self.enabled_interfaces})
+        """
+        if interfaces is None:
+            interfaces = self.enabled_interfaces
+        self.data = LoggerData(interfaces)

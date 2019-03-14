@@ -76,8 +76,7 @@ class DGILibLogger(object):
 
         # Create data structure self.data if LOGGER_OBJECT is enabled
         if LOGGER_OBJECT in self.loggers:
-            self.dgilib_extra.data = LoggerData(
-                self.dgilib_extra.enabled_interfaces)
+            self.dgilib_extra.empty_data()
 
     def update_callback(self, return_data=False):
         """Call to get new data."""
