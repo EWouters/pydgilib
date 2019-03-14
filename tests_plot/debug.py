@@ -16,7 +16,7 @@ config_dict = {
     "plot_pins_values": [False, False, False, False],
     "plot_pins_method": "highlight",
     "automove_method" : "latest_data",
-    "gpio_delay_time": 0.001,
+    "gpio_delay_time": 0.0007,
 }
 
 # import pydgilib_extra.dgilib_logger
