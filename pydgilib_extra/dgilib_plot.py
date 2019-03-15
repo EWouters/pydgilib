@@ -2,17 +2,12 @@ from time import sleep
 import csv
 
 from pydgilib_extra.dgilib_extra_config import *
-from pydgilib_extra.dgilib_calculations import HoldTimes, calculate_average_leftpoint_single_interval
+from pydgilib_extra.dgilib_calculations import HoldTimes
 
 import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox
 
 from threading import Lock
-
-# TODO:
-# - Make the plot scrolling in a frame of plot_xmax, as the data comes along
-#   - Either the frame is fixed, moving 1 second at a time, or it scrolls 0.1 or less seconds, having the latest data always on the right side
-# - Buttons lose sync with tools
 
 class DGILibPlot(object):
 
@@ -66,10 +61,9 @@ class DGILibPlot(object):
         self.plot_pins_method = kwargs.get("plot_pins_method", "highlight") # or "line"
         self.plot_pins_colors = kwargs.get("plot_pins_colors", ["red", "orange", "blue", "green"])
         self.automove_method = kwargs.get("automove_method", "latest_data") # or "page"
-        self.average_function = kwargs.get("average_function", "leftpoint")
         self.axvspans = [[], [], [], []]
         self.annotations = [[], [], [], []]
-        self.averages = [[], [], [], []]
+        self.preprocessed_averages_data = [[], [], [], []]
         self.total_average = [0,0,0,0]
         self.iterations = [0,0,0,0]
         self.last_xpos = 0
@@ -124,7 +118,7 @@ class DGILibPlot(object):
         self.ax.set_title("Waiting for data...")
 
         # Hold times for pins list, we're going to collect them
-        self.hold_times = []
+        self.preprocessed_averages_data = []
         self.hold_times_sum = 0.00
         self.hold_times_next_index = 0 # Will be incremented to 0 later
         self.hold_times_already_drawn = []
@@ -360,7 +354,7 @@ class DGILibPlot(object):
         plot_pins_correction_forward = self.plot_pins_correction_forward or 0.00
         plot_pins_interval_shrink = self.plot_pins_interval_shrink or 0.00
         plot_pins_colors = self.plot_pins_colors
-        average_function = self.average_function or "leftpoint"
+        #average_function = self.average_function or "leftpoint"
 
         # Here we do checks and stop drawing pins if something is unset
         if ax is None:                                      return
@@ -400,7 +394,7 @@ class DGILibPlot(object):
                             
                             #average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1], start_index)
                             self.iterations[pin_idx] += 1
-                            self.averages[pin_idx].append((self.iterations[pin_idx], ht, start_index, None))
+                            self.preprocessed_averages_data[pin_idx].append((self.iterations[pin_idx], ht, start_index, None))
 
         elif self.plot_pins_method == "line":
             for pin, plot_pin in enumerate(self.plot_pins):
@@ -411,48 +405,6 @@ class DGILibPlot(object):
             self.fig.show()      
         else:
             raise ValueError(f"Unrecognized plot_pins_method: {self.plot_pins_method}")
-
-    def print_averages(self, pin_idx):
-
-        for i in range(len(self.averages[pin_idx])):
-            iteration_idx = self.averages[pin_idx][i][0]
-            hold_times_0 = round(self.averages[pin_idx][i][1][0], 5)
-            hold_times_1 = round(self.averages[pin_idx][i][1][1], 5)
-            #start_index = self.averages[i][2]
-            average = round(self.averages[pin_idx][i][3], 6)
-            #print(iteration_idx, "|", hold_times_0, "|", hold_times_1, "|", average)
-            # '{message:{fill}{align}{width}}'.format(
-            #     message='Hi',
-            #     fill=' ',
-            #     align='<',
-            #     width=16,
-            # )
-            print("{0: >5}: ({1: >10}, {2: >10}) {3: >15} mA".format(iteration_idx, hold_times_0, hold_times_1, average))
-        print("Total average: {0} mA".format(round(self.total_average[pin_idx], 6)))
-
-    def calculate_averages(self, pin_idx, data=None):
-        # TODO: Why does this not work?
-        if data is None:
-            data = self.dgilib_extra.data
-
-        for i in range(len(self.averages[pin_idx])):
-            iteration_idx = self.averages[pin_idx][i][0]
-            hold_times = self.averages[pin_idx][i][1]
-            start_index = self.averages[pin_idx][i][2]
-            #print(iteration_idx, start_index, hold_times)
-
-            average = calculate_average_leftpoint_single_interval(data.power, hold_times[0], hold_times[1], start_index)
-
-            if average is not None:
-                average_scaled = 1000 * average
-            else:
-                average_scaled = -1
-            self.averages[pin_idx][i] = (iteration_idx, hold_times, start_index, average_scaled)
-
-            self.total_average[pin_idx] += average_scaled
-
-        if len(self.averages[pin_idx]) > 0: 
-            self.total_average[pin_idx] /= len(self.averages[pin_idx]) #self.iterations[pin_idx]
 
     def plot_still_exists(self):
         return plt.fignum_exists(self.fig.number)

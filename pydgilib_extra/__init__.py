@@ -13,6 +13,7 @@ from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 from pydgilib_extra.dgilib_data import (
     LoggerData, InterfaceData, valid_interface_data)
 from pydgilib_extra.dgilib_calculations import *
+from pydgilib_extra.dgilib_averages import DGILibAverages
 
 #from pydgilib_extra.dgilib_logger_functions import mergeData
 
