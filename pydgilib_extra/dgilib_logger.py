@@ -132,7 +132,7 @@ class DGILibLogger(object):
         elif return_data:
             return data
 
-    def log(self, duration=10, stop_function=None):
+    def log(self, duration=10, stop_function=None, min_duration=0.1):
         """Run the logger for the specified amount of time.
 
         Keyword Arguments:
@@ -156,16 +156,16 @@ class DGILibLogger(object):
                 self.plotobj.xmax = duration
 
         if stop_function is None:
-            while time() < end_time:
+            while (time() + min_duration > end_time) and time() < end_time:
                 self.update_callback()
         elif LOGGER_OBJECT in self.loggers:
             while time() < end_time:
                 self.update_callback()
-                if stop_function(self.dgilib_extra.data):
+                if (time() + min_duration > end_time) and stop_function(self.dgilib_extra.data):
                     break
         else:
             while time() < end_time:
-                if stop_function(self.update_callback(True)):
+                if (time() + min_duration > end_time) and stop_function(self.update_callback(True)):
                     break
 
         self.stop()
