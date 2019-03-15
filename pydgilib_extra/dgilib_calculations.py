@@ -160,7 +160,7 @@ def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
     if end_time is None:
         end_time = float("Inf")
 
-    pin_value = not pulse_direction
+    pin_value = not pulse_direction # BUG: needs xor in edge detection
 
     pulse_start_time = 0
     pulse_end_time = 0
