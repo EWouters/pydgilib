@@ -13,8 +13,8 @@ from pydgilib_extra.dgilib_data import LoggerData
 from pydgilib_extra.dgilib_extra_config import (
     INTERFACE_POWER, LOGGER_CSV, LOGGER_OBJECT, LOGGER_PLOT, FILE_NAME_BASE,
     POLLING, POWER)
-# from pydgilib_extra.dgilib_interface_gpio import gpio_augment_edges
 from pydgilib_extra.dgilib_plot import DGILibPlot
+from pydgilib_extra.dgilib_averages import DGILibAverages
 
 
 class DGILibLogger(object):
@@ -53,7 +53,7 @@ class DGILibLogger(object):
         # Set self.figure if LOGGER_PLOT enabled
         # Create axes self.axes if LOGGER_PLOT is enabled
         if LOGGER_PLOT in self.loggers:
-            self.plotobj = DGILibPlot(self, self.dgilib_extra, *args, **kwargs)
+            self.plotobj = DGILibPlot(self.dgilib_extra, *args, **kwargs)
             self.refresh_plot = self.plotobj.refresh_plot
             self.plot_still_exists = self.plotobj.plot_still_exists
             self.keep_plot_alive = self.plotobj.keep_plot_alive
@@ -61,6 +61,14 @@ class DGILibLogger(object):
             # Force logging in object if logging in plot
             if (LOGGER_OBJECT not in self.loggers):
                 self.loggers.append(LOGGER_OBJECT)
+            
+        if LOGGER_PLOT in self.loggers:
+            self.avgobj = DGILibAverages(self.dgilib_extra, self.plotobj.preprocessed_averages_data, *args, **kwargs)
+            #self.avgobj.dgilib_extra = self.dgilib_extra
+            self.calculate_averages_for_pin = self.avgobj.calculate_all_for_pin
+            self.print_averages_for_pin = self.avgobj.print_all_for_pin
+        else:
+            raise NotImplementedError("Need to make DGILibAverages work by itself when the plot does not precalculate data")
 
     def start(self):
         """Call to start logging."""
@@ -114,7 +122,6 @@ class DGILibLogger(object):
         # Get last data from buffer
         if LOGGER_OBJECT in self.loggers:
             self.update_callback()
-            # data = self.update_callback(True) # This is a line meant for debugging. Should not be here if it somehow got commited.
         else:
             data = self.update_callback(return_data)
 

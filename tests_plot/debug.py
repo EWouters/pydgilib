@@ -24,10 +24,9 @@ config_dict = {
 # print(pydgilib_extra.dgilib_logger.__file__)
 
 with DGILibExtra(**config_dict) as dgilib:
-    data = dgilib.logger.log(10)
+    data = dgilib.logger.log(1)
 
-    #dgilib.logger.plotobj.draw_pins(data)
-    dgilib.logger.plotobj.calculate_averages(2, dgilib.data)
-    dgilib.logger.plotobj.print_averages(2)
+    dgilib.logger.calculate_averages_for_pin(2)
+    dgilib.logger.print_averages_for_pin(2)
 
     dgilib.logger.keep_plot_alive()
