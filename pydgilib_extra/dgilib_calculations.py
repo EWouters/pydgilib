@@ -130,8 +130,9 @@ def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
     return gpio_data
 
 
-def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
-                             pulse_direction=True, stop_function=None):
+def power_and_time_per_pulse(
+        logger_data, pin, start_time=0.01, end_time=None, pulse_direction=True,
+        stop_function=None, initialized=False):
     """Calculate power and time per pulse.
 
     Takes the data and a pin and returns a list of power and time sums for
@@ -152,6 +153,8 @@ def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
     :param stop_function: Function to evaluate on `pin_values`. If it returns
         True the loop will stop.
     :type stop_function: function
+    :param initialized: If False: Skip first occurrences of all pins high
+    :type initialized: bool
     :return: List of list of power and time sums.
     :rtype: tuple(list(float), list(float))
     """
@@ -160,7 +163,7 @@ def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
     if end_time is None:
         end_time = float("Inf")
 
-    pin_value = not pulse_direction # BUG: needs xor in edge detection
+    pin_value = not pulse_direction  # BUG: needs xor in edge detection
 
     pulse_start_time = 0
     pulse_end_time = 0
@@ -169,8 +172,6 @@ def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
     times = []
 
     power_index = 0
-
-    initialized = False
 
     # Loop over all gpio samples
     for timestamp, pin_values in logger_data.gpio:
