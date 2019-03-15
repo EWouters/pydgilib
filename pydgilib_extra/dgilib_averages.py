@@ -15,6 +15,7 @@ class DGILibAverages(object):
             self.averages = preprocessed_data
 
         self.total_average = [0,0,0,0]
+        self.total_duration = [0,0,0,0]
 
     def print_all_for_pin(self, pin_idx):
 
@@ -39,15 +40,17 @@ class DGILibAverages(object):
             #     align='<',
             #     width=16,
             # )
-            print("{0: >5}: ({1: >10}, {2: >10}) {3: >15} mA".format(iteration_idx, hold_times_0, hold_times_1, average))
+            interval_duration = round(hold_times_1 - hold_times_0, 5)
+            print("{0: >5}: ({1: >10} s, {2: >10} s) = {3: >10} s {4: >15} mC".format(iteration_idx, hold_times_0, hold_times_1, interval_duration, average))
 
-        print("Total average: {0} mA".format(round(self.total_average[pin_idx], 6)))
+        print("Total average: {0} mC".format(round(self.total_average[pin_idx], 6)))
+        print("Total time while pin {0} was holding: {1} s".format(pin_idx, round(self.total_duration[pin_idx], 6)))
 
     def calculate_all_for_pin(self, pin_idx, data = None):
         if data is None:
             data = self.dgilib_extra.data
 
-        if len(self.averages) == 0 or len(self.averages[pin_idx]):
+        if len(self.averages) == 0 or len(self.averages[pin_idx]) == 0:
             return
 
         for i in range(len(self.averages[pin_idx])):
@@ -55,7 +58,7 @@ class DGILibAverages(object):
             hold_times = self.averages[pin_idx][i][1]
             start_index = self.averages[pin_idx][i][2]
 
-            average = calculate_average(data.power, hold_times[0], hold_times[1], start_index, -1)
+            average = calculate_average(data.power, hold_times[0], hold_times[1], start_index)
 
             if average is not None:
                 average_scaled = 1000 * average
@@ -64,6 +67,7 @@ class DGILibAverages(object):
             self.averages[pin_idx][i] = (iteration_idx, hold_times, start_index, average_scaled)
 
             self.total_average[pin_idx] += average_scaled
+            self.total_duration[pin_idx] += hold_times[1] - hold_times[0]
 
         if len(self.averages[pin_idx]) > 0: 
             self.total_average[pin_idx] /= len(self.averages[pin_idx]) #self.iterations[pin_idx]
