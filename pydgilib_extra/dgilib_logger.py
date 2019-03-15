@@ -68,7 +68,7 @@ class DGILibLogger(object):
             self.calculate_averages_for_pin = self.avgobj.calculate_all_for_pin
             self.print_averages_for_pin = self.avgobj.print_all_for_pin
         else:
-            raise NotImplementedError("Need to make DGILibAverages work by itself when the plot does not precalculate data")
+            pass # Don't instantiate DGILibAverages, maybe the user wants to do something with the class himself
 
     def start(self):
         """Call to start logging."""

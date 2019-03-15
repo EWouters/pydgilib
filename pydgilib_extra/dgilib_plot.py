@@ -11,7 +11,7 @@ from threading import Lock
 
 class DGILibPlot(object):
 
-    def __init__(self, dgilib_extra, *args, **kwargs):
+    def __init__(self, dgilib_extra = None, *args, **kwargs):
         self.dgilib_extra = dgilib_extra
 
         # Maybe the user wants to put the power figure along with other figures he wants
@@ -118,7 +118,6 @@ class DGILibPlot(object):
         self.ax.set_title("Waiting for data...")
 
         # Hold times for pins list, we're going to collect them
-        self.preprocessed_averages_data = []
         self.hold_times_sum = 0.00
         self.hold_times_next_index = 0 # Will be incremented to 0 later
         self.hold_times_already_drawn = []
@@ -225,6 +224,7 @@ class DGILibPlot(object):
         self.spos.on_changed(update_pos)
         self.swidth.on_changed(update_width)
 
+        # TODO: This
         def see_all(event):
             if self.xylim_mutex.acquire(False):
 
@@ -232,7 +232,6 @@ class DGILibPlot(object):
                 self.last_xpos = -1
 
                 self.xylim_mutex.release()
-
 
         def reset(event):
             if self.xylim_mutex.acquire(False):
@@ -279,8 +278,9 @@ class DGILibPlot(object):
         verbose = self.verbose
 
         if data is None:
-            if verbose: print("dgilib_plot.update_plot: Expected 'data', got an empty object.")
-            return
+            data = self.dgilib_extra.data
+            #if verbose: print("dgilib_plot.update_plot: Expected 'data', got an empty object.")
+            #return
 
         # In this if, the smart DGILibData object tests if it has data inside
         # TODO: Make 'if data: return' work for if data has no actual values in it.
@@ -299,7 +299,7 @@ class DGILibPlot(object):
             plt.show()
         else:
             plt.draw()
-            self.refresh_plot(0.00000001)
+        self.refresh_plot()
 
         #TODO: ln might have an update_callback and then it can listen to the data being updated instead of updating data here
         self.ln.set_xdata(data.power.timestamps)
@@ -335,7 +335,7 @@ class DGILibPlot(object):
 
         # visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
         # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
-        self.refresh_plot(0.00000001)
+        self.refresh_plot()
 
         self.draw_pins(data)
     
@@ -410,7 +410,7 @@ class DGILibPlot(object):
     def plot_still_exists(self):
         return plt.fignum_exists(self.fig.number)
 
-    def refresh_plot(self, time=None):
+    def refresh_plot(self):
         self.ax.relim()                  # recompute the data limits
         self.ax.autoscale_view()         # automatic axis scaling
         self.fig.canvas.flush_events() 
@@ -420,6 +420,9 @@ class DGILibPlot(object):
     def keep_plot_alive(self):
         while self.plot_still_exists():
             self.refresh_plot()
+
+    def pause(self, time = 0.000001):
+        plt.pause(time)
 
 # Obsolete
 # Give it an index to continue from, so it does not go through all the data
