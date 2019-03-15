@@ -408,7 +408,8 @@ class DGILibPlot(object):
                     self.ln_pins[pin].set_xdata(data.gpio.timestamps)
                     self.ln_pins[pin].set_ydata(
                         data.gpio.get_select_in_value(pin))
-            self.fig.show()      
+            self.ax.set_title(f"Logging. Collected {len(data.power)} power samples and {len(data.gpio)} gpio samples.")
+            self.fig.show()
         else:
             raise ValueError(f"Unrecognized plot_pins_method: {self.plot_pins_method}")
 
