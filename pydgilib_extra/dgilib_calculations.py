@@ -130,8 +130,9 @@ def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
     return gpio_data
 
 
-def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
-                             pulse_direction=True, stop_function=None):
+def power_and_time_per_pulse(
+        logger_data, pin, start_time=0.01, end_time=float("Inf"),
+        stop_function=None, initialized=False, pulse_direction=True):
     """Calculate power and time per pulse.
 
     Takes the data and a pin and returns a list of power and time sums for
@@ -146,21 +147,18 @@ def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
     :type start_time: float
     :param end_time: Last timestamp to consider.
     :type end_time: float
-    :param pulse_direction: If True: detect pulse as False -> True -> False,
-        else detect pulse as True -> False -> True
-    :type pulse_direction: bool
     :param stop_function: Function to evaluate on `pin_values`. If it returns
         True the loop will stop.
     :type stop_function: function
+    :param initialized: If False: Skip first occurrences of all pins high
+    :type initialized: bool
+    :param pulse_direction: If True: detect pulse as False -> True -> False,
+        else detect pulse as True -> False -> True
+    :type pulse_direction: bool
     :return: List of list of power and time sums.
     :rtype: tuple(list(float), list(float))
     """
-    if start_time is None:
-        start_time = 0
-    if end_time is None:
-        end_time = float("Inf")
-
-    pin_value = not pulse_direction # BUG: needs xor in edge detection
+    pin_value = not pulse_direction  # BUG: needs xor in edge detection
 
     pulse_start_time = 0
     pulse_end_time = 0
@@ -169,8 +167,6 @@ def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
     times = []
 
     power_index = 0
-
-    initialized = False
 
     # Loop over all gpio samples
     for timestamp, pin_values in logger_data.gpio:
@@ -185,6 +181,7 @@ def power_and_time_per_pulse(logger_data, pin, start_time=0.01, end_time=None,
         # Detect inside start and end time
         if timestamp > start_time and timestamp <= end_time:
             # Detect rising edge
+            # TODO: not pin_value and (pin_value xor pin_values[pin]) ?
             if not pin_value and pin_values[pin]:
                 pin_value = pulse_direction
                 pulse_start_time = timestamp
