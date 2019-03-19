@@ -456,6 +456,12 @@
     <Compile Include="examples\driver_examples.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="gpio_init.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gpio_init.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="hal\include\hal_atomic.h">
       <SubType>compile</SubType>
     </Compile>
