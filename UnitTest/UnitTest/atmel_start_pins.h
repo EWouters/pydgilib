@@ -30,10 +30,10 @@
 #define LED_ON false
 #define LED_OFF true
 
-#define DGI_GPIO0 GPIO(GPIO_PORTA,  8) // Not the correct pin
-#define DGI_GPIO1 GPIO(GPIO_PORTA,  9) // Not the correct pin
-#define DGI_GPIO2 GPIO(GPIO_PORTA, 11)
-#define DGI_GPIO3 GPIO(GPIO_PORTA, 10)
+#define DGI_GPIO0 GPIO(GPIO_PORTA, 10)
+#define DGI_GPIO1 GPIO(GPIO_PORTA, 11)
+#define DGI_GPIO2 GPIO(GPIO_PORTA, 23)
+#define DGI_GPIO3 GPIO(GPIO_PORTA, 27)
 
 #define LED0 GPIO(GPIO_PORTA, 7)
 
