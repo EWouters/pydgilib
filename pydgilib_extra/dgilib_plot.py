@@ -384,7 +384,7 @@ class DGILibPlot(object):
 
                     if hold_times is not None:
                         for ht in hold_times:
-                            axvsp = ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.5)
+                            axvsp = ax.axvspan(ht[0], ht[1], color=plot_pins_colors[pin_idx], alpha=0.25)
                             self.axvspans[pin_idx].append(axvsp)
 
                             x_halfway = (ht[1] - ht[0]) / 4 + ht[0]
