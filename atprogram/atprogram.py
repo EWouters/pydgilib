@@ -78,7 +78,7 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
         makefile_mode = makefile is "Makefile"
         if not makefile_mode:
             makefile_path = path.join(project_path, configuration)
-    elif make_command is atprogram_command is None:
+    elif make_command is None and atprogram_command is None:
         raise ValueError(
             "Need to specify at least one of project_path, make_command or " +
             "atprogram_command.")
