@@ -61,14 +61,15 @@ class DGILibLogger(object):
             # Force logging in object if logging in plot
             if (LOGGER_OBJECT not in self.loggers):
                 self.loggers.append(LOGGER_OBJECT)
-            
+
         if LOGGER_PLOT in self.loggers:
-            self.avgobj = DGILibAverages(self.dgilib_extra, self.plotobj.preprocessed_averages_data, *args, **kwargs)
+            self.avgobj = DGILibAverages(
+                self.dgilib_extra, self.plotobj.preprocessed_averages_data, *args, **kwargs)
             #self.avgobj.dgilib_extra = self.dgilib_extra
             self.calculate_averages_for_pin = self.avgobj.calculate_averages_for_pin
             self.print_averages_for_pin = self.avgobj.print_averages_for_pin
         else:
-            pass # Don't instantiate DGILibAverages, maybe the user wants to do something with the class himself
+            pass  # Don't instantiate DGILibAverages, maybe the user wants to do something with the class himself
 
     def start(self):
         """Call to start logging."""
@@ -155,6 +156,8 @@ class DGILibLogger(object):
 
         """
         end_time = time() + duration
+        min_time = time() + min_duration
+
         self.start()
 
         if LOGGER_PLOT in self.loggers:
@@ -163,16 +166,16 @@ class DGILibLogger(object):
                 self.plotobj.xmax = duration
 
         if stop_function is None:
-            while (time() + min_duration > end_time) and time() < end_time:
+            while time() < end_time:
                 self.update_callback()
         elif LOGGER_OBJECT in self.loggers:
             while time() < end_time:
                 self.update_callback()
-                if (time() + min_duration > end_time) and stop_function(self.dgilib_extra.data):
+                if (time() > min_time) and stop_function(self.dgilib_extra.data):
                     break
         else:
             while time() < end_time:
-                if (time() + min_duration > end_time) and stop_function(self.update_callback(True)):
+                if (time() > min_time) and stop_function(self.update_callback(True)):
                     break
 
         self.stop()

@@ -8,6 +8,7 @@ extern "C" {
 #include "driver_init.h"
 #include "trustzone/trustzone_manager.h"
 #include "stdio_start.h"
+#include "gpio_init.h"
 
 /**
  * Initializes MCU, drivers and middleware in the project
