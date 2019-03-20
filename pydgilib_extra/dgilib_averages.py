@@ -26,7 +26,7 @@ class DGILibAverages(object):
         self.total_average = [0,0,0,0]
         self.total_duration = [0,0,0,0]
         self.total_iterations = [0,0,0,0]
-        self.total_average_function_time = [0,0]
+        self.total_average_function_time = 0.0
         self.voltage = kwargs.get("voltage", 5)
 
     def read_from_csv(self, filepath, verbose=0):
@@ -103,6 +103,8 @@ class DGILibAverages(object):
         print("Total charge: {0} mC".format(round(self.total_average[pin_idx], 6)))
         print("Total energy: {0} mJ".format(round(self.total_average[pin_idx]*self.voltage, 6)))
         print("Total time: {0} s".format(round(self.total_duration[pin_idx], 6)))
+        #print("")
+        #print("Total average function time spent: {0} s".format(round(self.total_average_function_time)))
         
 
     def calculate_averages_for_pin(self, pin_idx, data = None, ignore_first_average = True):
@@ -112,6 +114,7 @@ class DGILibAverages(object):
         if len(self.averages) == 0 or len(self.averages[pin_idx]) == 0:
             return
 
+        time_now = time()
         for i in range(len(self.averages[pin_idx])):
             iteration_idx = self.averages[pin_idx][i][ITERATION]
             hold_times = self.averages[pin_idx][i][HOLD_TIME]
@@ -121,15 +124,10 @@ class DGILibAverages(object):
             if ignore_first_average and iteration_idx == 1:
                 average = None
             elif average is None:
-                time_now = time()
+                #time_now = time()
                 average = calculate_average_leftpoint_single_interval(data.power, hold_times[0], hold_times[1], start_index)
-                duration = time_now - time()
-                self.total_average_function_time[0] += duration
-
-                time_now = time()
-                average2 = power_and_time_per_pulse(data, pin_idx, hold_times[0], hold_times[1], pulse_direction=False)
-                duration = time_now - time()
-                self.total_average_function_time[1] += duration
+                #duration = time_now - time()
+                #self.total_average_function_time += duration
 
             if average is not None:
                 average_scaled = 1000 * average
