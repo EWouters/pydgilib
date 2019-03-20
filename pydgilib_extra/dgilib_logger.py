@@ -65,8 +65,8 @@ class DGILibLogger(object):
         if LOGGER_PLOT in self.loggers:
             self.avgobj = DGILibAverages(self.dgilib_extra, self.plotobj.preprocessed_averages_data, *args, **kwargs)
             #self.avgobj.dgilib_extra = self.dgilib_extra
-            self.calculate_averages_for_pin = self.avgobj.calculate_all_for_pin
-            self.print_averages_for_pin = self.avgobj.print_all_for_pin
+            self.calculate_averages_for_pin = self.avgobj.calculate_averages_for_pin
+            self.print_averages_for_pin = self.avgobj.print_averages_for_pin
         else:
             pass # Don't instantiate DGILibAverages, maybe the user wants to do something with the class himself
 
