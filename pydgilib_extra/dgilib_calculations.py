@@ -352,8 +352,6 @@ def calculate_average_multiple_intervals(data_power, intervals, start_time=None,
 
     return sum / to_divide
 
-# fixup_end_index can be -1 so that we don't get the power data point that's after a pin toggle
-#  (of which the timestamp we usually use as the end_time for the power timestamp)
 def calculate_average(power_data, start_time=None, end_time=None, initial_search_index = 1):
     """Calculate average value of the power_data using the left Riemann sum."""
     # print("Start time: " + str(start_time))
