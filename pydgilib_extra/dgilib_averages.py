@@ -1,6 +1,5 @@
 from pydgilib_extra.dgilib_calculations import HoldTimes
-from pydgilib_extra.dgilib_calculations import calculate_average, calculate_average_leftpoint_single_interval, power_and_time_per_pulse
-from time import time
+from pydgilib_extra.dgilib_calculations import calculate_average, calculate_average_leftpoint_single_interval
 #import pickle
 
 ITERATION = 0
@@ -114,7 +113,6 @@ class DGILibAverages(object):
         if len(self.averages) == 0 or len(self.averages[pin_idx]) == 0:
             return
 
-        time_now = time()
         for i in range(len(self.averages[pin_idx])):
             iteration_idx = self.averages[pin_idx][i][ITERATION]
             hold_times = self.averages[pin_idx][i][HOLD_TIME]
@@ -124,10 +122,7 @@ class DGILibAverages(object):
             if ignore_first_average and iteration_idx == 1:
                 average = None
             elif average is None:
-                #time_now = time()
                 average = calculate_average_leftpoint_single_interval(data.power, hold_times[0], hold_times[1], start_index)
-                #duration = time_now - time()
-                #self.total_average_function_time += duration
 
             if average is not None:
                 average_scaled = 1000 * average
