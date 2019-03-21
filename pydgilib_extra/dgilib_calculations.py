@@ -102,7 +102,7 @@ def gpio_augment_edges(gpio_data, delay_time=0, switch_time=0, extend_to=None):
     :return: InterfaceData object of augmented GPIO data.
     :rtype: InterfaceData
     """
-    pin_states = [True] * NUM_PINS
+    pin_states = [False] * NUM_PINS
 
     # iterate over the list and insert items at the same time:
     i = 0
