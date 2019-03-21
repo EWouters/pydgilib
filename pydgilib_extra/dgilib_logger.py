@@ -140,13 +140,13 @@ class DGILibLogger(object):
         elif return_data:
             return data
 
-    def log(self, duration=10, stop_function=None, min_duration=0.1):
+    def log(self, duration=10, stop_function=None, min_duration=0.2):
         """Run the logger for the specified amount of time.
 
         Keyword Arguments:
             duration {int} -- Amount of time to log data (default: {10}).
             stop_function {function} -- Function that will be evaluated on the
-                collected data. If it returns False the logging will be
+                collected data. If it returns True the logging will be
                 stopped even if the duration has not been reached (default:
                 {None}).
 
