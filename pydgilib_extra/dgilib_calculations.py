@@ -217,6 +217,58 @@ def power_and_time_per_pulse(
 
     return charges, times
 
+
+def rise_and_fall_times(
+        logger_data, pin, start_time=0.01, end_time=float("Inf"),
+        stop_function=None, initialized=False, pulse_direction=True):
+    """
+    rise_and_fall_times [summary]
+
+    [description]
+
+    Arguments:
+        logger_data {[type]} -- [description]
+        pin {[type]} -- [description]
+
+    Keyword Arguments:
+        start_time {float} -- [description] (default: {0.01})
+        end_time {[type]} -- [description] (default: {float("Inf")})
+        stop_function {[type]} -- [description] (default: {None})
+        initialized {bool} -- [description] (default: {False})
+        pulse_direction {bool} -- [description] (default: {True})
+
+    Returns:
+        [type] -- [description]
+    """
+    pin_value = not pulse_direction  # BUG: needs xor in edge detection
+
+    rise_times = []
+    fall_times = []
+
+    # Loop over all gpio samples
+    for timestamp, pin_values in logger_data.gpio:
+        # Skip all samples until initialization has finished
+        if not initialized:
+            if all(pin_values):
+                continue
+            else:
+                initialized = True
+        if stop_function is not None and stop_function(pin_values):
+            break
+        # Detect inside start and end time
+        if timestamp > start_time and timestamp <= end_time:
+            # Detect rising edge
+            # TODO: not pin_value and (pin_value xor pin_values[pin]) ?
+            if not pin_value and pin_values[pin]:
+                pin_value = pulse_direction
+                rise_times.append(timestamp)
+            # Detect falling edge
+            if pin_value and not pin_values[pin]:
+                pin_value = not pulse_direction
+                fall_times.append(timestamp)
+
+    return rise_times, fall_times
+
 ##############################
 # Identify toggle/hold times #
 ##############################
@@ -341,6 +393,7 @@ class HoldTimes(StreamingCalculation):
 # Calculate average leftpoint #
 ###############################
 
+
 def calculate_average_multiple_intervals(data_power, intervals, start_time=None, end_time=None):
     sum = 0
     to_divide = 0
@@ -352,7 +405,8 @@ def calculate_average_multiple_intervals(data_power, intervals, start_time=None,
 
     return sum / to_divide
 
-def calculate_average(power_data, start_time=None, end_time=None, initial_search_index = 1):
+
+def calculate_average(power_data, start_time=None, end_time=None, initial_search_index=1):
     """Calculate average value of the power_data using the left Riemann sum."""
     # print("Start time: " + str(start_time))
     # print("End time: " + str(end_time))
@@ -377,6 +431,7 @@ def calculate_average(power_data, start_time=None, end_time=None, initial_search
                 for i in range(start_index, end_index)) /
             (power_data.timestamps[end_index] -
              power_data.timestamps[start_index]))
+
 
 def calculate_average_leftpoint_single_interval(data_power, start_time=None, end_time=None, start_index=0):
     if start_time is None:
@@ -411,7 +466,7 @@ def calculate_average_leftpoint_single_interval(data_power, start_time=None, end
         sum += power_value * (timestamp - last_time)
         last_time = timestamp
 
-    return sum #/ (end_time - start_time)
+    return sum  # / (end_time - start_time)
 
 ##############################
 # Calculate average midpoint #
