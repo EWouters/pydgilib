@@ -140,7 +140,7 @@ class DGILibLogger(object):
         elif return_data:
             return data
 
-    def log(self, duration=10, stop_function=None, min_duration=0.1):
+    def log(self, duration=10, stop_function=None, min_duration=0.2):
         """Run the logger for the specified amount of time.
 
         Keyword Arguments:
