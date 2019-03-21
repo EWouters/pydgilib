@@ -1,5 +1,6 @@
 from time import sleep
 import csv
+import sys
 
 from pydgilib_extra.dgilib_extra_config import *
 from pydgilib_extra.dgilib_calculations import HoldTimes
@@ -8,6 +9,8 @@ import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox
 
 from threading import Lock
+
+float_epsilon = sys.float_info.epsilon
 
 class DGILibPlot(object):
 
@@ -126,12 +129,19 @@ class DGILibPlot(object):
 
         self.initialize_sliders()
 
+    # def set_axis(self, xleft, xright, yleft, yright, indicator="not specified"):
+    #     if abs(xleft - xright) < (float_epsilon*2):
+    #         self.ax.axis([xleft, xright + (float_epsilon * 2), yleft, yright])
+    #         #print("Warning! xleft close to xright in value in: " + indicator)
+    #     else:
+    #         self.ax.axis([xleft, xright, yleft, yright])
+
     def initialize_sliders(self):
         self.axpos = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=self.axcolor)
         self.axwidth = plt.axes([0.25, 0.15, 0.65, 0.03], facecolor=self.axcolor)
         self.resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
 
-        self.spos = Slider(self.axpos, 'x', 0, self.plot_xmax - self.plot_xdiv, valinit=0, valstep=self.plot_xstep)
+        self.spos = Slider(self.axpos, 'x', 0, self.plot_xmax, valinit=0, valstep=self.plot_xstep)
         self.swidth = Slider(self.axwidth, 'xmax', 0, self.plot_xmax, valinit=self.plot_xdiv, valstep=self.plot_xstep)
         self.resetbtn = Button(self.resetax, 'Reset', color=self.axcolor, hovercolor='0.975')
 
@@ -203,6 +213,7 @@ class DGILibPlot(object):
                 pos = self.spos.val
                 width = self.swidth.val
 
+                #self.set_axis(pos, pos + width, self.plot_ymin, self.plot_ymax, "update_pos function")
                 self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
 
                 self.xylim_mutex.release()
@@ -217,6 +228,7 @@ class DGILibPlot(object):
                 self.spos.on_changed(update_pos)
                 self.spos.set_val(pos)
 
+                #self.set_axis(pos, pos + width, self.plot_ymin, self.plot_ymax, "update_width function")
                 self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
 
                 self.xylim_mutex.release()
@@ -228,6 +240,7 @@ class DGILibPlot(object):
         def see_all(event):
             if self.xylim_mutex.acquire(False):
 
+                #self.set_axis(0, self.last_timestamp, self.plot_ymin, self.plot_ymax, "see_all function")
                 self.ax.axis([0, self.last_timestamp, self.plot_ymin, self.plot_ymax])
                 self.last_xpos = -1
 
@@ -243,6 +256,7 @@ class DGILibPlot(object):
         
                 self.xsteptb.set_val(str(self.plot_xstep_default))
 
+                #self.set_axis(self.plot_xmin, self.plot_xmax, self.plot_ymin, self.plot_ymax, "reset function")
                 self.ax.axis([self.plot_xmin, self.plot_xmax, self.plot_ymin, self.plot_ymax])
                 self.last_xpos = -1
 
@@ -328,6 +342,7 @@ class DGILibPlot(object):
             pos = self.spos.val
             width = self.swidth.val
 
+            #self.set_axis(pos, pos + width, self.plot_ymin, self.plot_ymax, "update_plot function")
             self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
             self.last_xpos = pos
 
