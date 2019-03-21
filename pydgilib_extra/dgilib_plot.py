@@ -397,11 +397,13 @@ class DGILibPlot(object):
                             self.preprocessed_averages_data[pin_idx].append((self.iterations[pin_idx], ht, start_index, None))
 
         elif self.plot_pins_method == "line":
+            extend_gpio = data.gpio.timestamps[-1] < data.power.timestamps[-1]
             for pin, plot_pin in enumerate(self.plot_pins):
                 if plot_pin:
-                    self.ln_pins[pin].set_xdata(data.gpio.timestamps)
+                    self.ln_pins[pin].set_xdata(
+                        data.gpio.timestamps + extend_gpio * [data.power.timestamps[-1]])
                     self.ln_pins[pin].set_ydata(
-                        data.gpio.get_select_in_value(pin))
+                        data.gpio.get_select_in_value(pin) + extend_gpio * [data.gpio.values[-1][pin]])
             self.ax.set_title(f"Logging. Collected {len(data.power)} power samples and {len(data.gpio)} gpio samples.")
             self.fig.show()
         else:
