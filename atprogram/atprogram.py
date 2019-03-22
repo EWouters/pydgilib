@@ -8,7 +8,8 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
                   getenv("programfiles(x86)"), "Atmel", "Studio", "7.0"),
               make_path=None, atprogram_path=None, configuration="Debug",
               device_sn=None, jobs=getenv("NUMBER_OF_PROCESSORS"),
-              make_command=None, atprogram_command=None, dry_run=False):
+              make_command=None, atprogram_command=None, return_output=False,
+              dry_run=False):
     """Atprogram.
 
     This function can compile projects and write them to a device. It
@@ -58,7 +59,10 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
         atprogram_command {str} -- Command(s) to pass to atprogram: `[options]
             <command> [arguments] [<command> [arguments] ...]` (default:
             {None})
-        dry_run {bool} -- [description] (default: {False})
+        return_output {bool} -- If True the return value will be the output,
+            else it will be the return code (default: {False})
+        dry_run {bool} -- Wether to run the commands using the subprocess
+            module or just print the commands (default: {False})
 
     Raises:
         ValueError -- Need to specify at least one of `project_path`,
@@ -85,6 +89,7 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
     else:
         # This is make_command mode or atprogram_command mode
         clean = build = erase = program = verify = False
+    output = SavePrint(return_output)
     stdout = PIPE if verbose >= 0 else None
     stderr = STDOUT if verbose >= 1 else None
     if not elf_mode and (clean or build or make_command):
@@ -95,12 +100,12 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
             args = ([make_path] + command.split())
             kwargs = dict(cwd=makefile_path, stdout=stdout, stderr=stderr)
             if dry_run:
-                print("".join(kwargs.get("cwd", getcwd())) +
-                      "> " + " ".join(args))
+                output.print("".join(kwargs.get("cwd", getcwd())
+                                     ) + "> " + " ".join(args))
                 return 0
             res = run(args, **kwargs)
             if verbose:
-                print(res.stdout.decode())
+                output.print(res.stdout.decode())
             return res.returncode
         if make_command:
             returncode = make_caller(make_command)
@@ -122,24 +127,39 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
             args = ([atprogram_path] + (verbose-1) * ["-v"] + command.split())
             kwargs = dict(stdout=stdout, stderr=stderr)
             if dry_run:
-                print(getcwd() + "> " + " ".join(args))
+                output.print(getcwd() + "> " + " ".join(args))
                 return 0
             res = run(args, **kwargs)
             if verbose:
-                print(res.stdout.decode())
+                output.print(res.stdout.decode())
             return res.returncode
         elf_file_path = None if not (program or verify) else project_path if \
             elf_mode else path.join(project_path, configuration,
                                     path.basename(project_path)) + ".elf"
-        atprogram_command = atprogram_command or \
-            f"-t {tool} -i {interface} -d {device_name}" + \
-            (device_sn is not None) * f" -s {device_sn}" + \
-            erase * " chiperase" + \
-            program * f" program -f {elf_file_path}" + \
-            verify * f" verify -f {elf_file_path}" + \
-            (verbose >= 3) * " info"
+        atprogram_command = \
+            f"-t {tool} -i {interface} -d {device_name} " + \
+            (device_sn is not None) * f" -s {device_sn} " + \
+            (atprogram_command or
+             erase * " chiperase " +
+             program * f" program -f {elf_file_path} " +
+             verify * f" verify -f {elf_file_path} " +
+             (verbose >= 3) * " info")
         returncode = atprogram_caller(atprogram_command)
         if returncode:
             atprogram_caller("exitcode")
+        if return_output:
+            return output.output + f"\n{returncode}"
+        else:
             return returncode
-    return 0
+
+
+class SavePrint(object):
+    def __init__(self, return_output):
+        self.return_output = return_output
+        self.output = ""
+
+    def print(self, s):
+        if self.return_output:
+            self.output += s + '\n'
+        else:
+            print(s)
