@@ -4,12 +4,11 @@
 import warnings
 
 from pydgilib_extra.dgilib_extra_config import NUM_PINS
+from time import time
 
 ###############################
 # Streaming Calculation Class #
 ###############################
-
-
 class StreamingCalculation(object):
     def __init__(self):
         self.data = []
@@ -278,21 +277,17 @@ def what_value_is_at_time_t_for_pin(data, pin, t):
     index_of_timestamp = data.gpio.timestamps.index(t)
     return data.gpio.values[index_of_timestamp]
 
-
 class HoldTimes(StreamingCalculation):
 
-    def __init__(self):
-        StreamingCalculation.__init__(self)
-
-    def identify_toggle_times(self, pin, data_gpio=None, start_index=None):
+    def identify_toggle_times(self, pin, data_gpio=None, gpio_start_index=0):
         if data_gpio is None:
             data_gpio = self.data
-        if start_index == None:
-            start_index = self.index
+        if gpio_start_index == None:
+            gpio_start_index = self.index
 
         if len(data_gpio.timestamps) <= 1:
             return []  # We can't identify intervals with only one value
-        if start_index > (len(data_gpio.timestamps) - 1):
+        if gpio_start_index > (len(data_gpio.timestamps) - 1):
             return []  # We're being asked to do an index that does not exist yet, so just skip
 
         toggle_times = []
@@ -300,11 +295,11 @@ class HoldTimes(StreamingCalculation):
         false_to_true_toggle_times = []
 
         #last_toggle_timestamp = data_gpio.timestamps[start_index]
-        last_toggle_value = data_gpio.values[start_index][pin]
+        last_toggle_value = data_gpio.values[gpio_start_index][pin]
 
         #print("New data, starting on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[start_index]) + " of value " + str(last_toggle_value) + ". Index is: " + str(start_index))
 
-        for i in range(start_index, len(data_gpio)):
+        for i in range(gpio_start_index, len(data_gpio)):
             if last_toggle_value != data_gpio.values[i][pin]:
                 #print("Detected toggle on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[i]) + " of value " + str(data_gpio.values[i][pin]) + ". Index is: " + str(i))
                 toggle_times.append(data_gpio.timestamps[i])
@@ -333,8 +328,6 @@ class HoldTimes(StreamingCalculation):
     def identify_hold_times(self, pin, pin_value, data_gpio=None):
         if data_gpio is None:
             data_gpio = self.data
-        else:
-            self.data = data_gpio
         if len(data_gpio.timestamps) <= 1:
             return []  # We can't identify intervals with only one value
         if self.index > (len(data_gpio.timestamps) - 1):
@@ -378,16 +371,15 @@ class HoldTimes(StreamingCalculation):
                 else:
                     print("\t" + str(t) + "\t\t" + str(v))
 
-        hold_times_l = list(hold_times)
+        hold_times_list = list(hold_times)
 
         try:
-            self.index = data_gpio.timestamps.index(hold_times_l[-1][-1]) + 1
+            self.index = data_gpio.timestamps.index(hold_times_list[-1][-1]) + 1
         except IndexError:
             # If you remove this, you get an error
             pass
 
-        # print(str(hold_times_l))
-        return hold_times_l
+        return hold_times_list
 
 ###############################
 # Calculate average leftpoint #
@@ -405,6 +397,48 @@ def calculate_average_multiple_intervals(data_power, intervals, start_time=None,
 
     return sum / to_divide
 
+def calculate_average_leftpoint_single_interval(data_power, start_time=None, end_time=None, power_start_index=0):
+    #beginning_time = time()
+    if start_time is None:
+        start_time = data_power.timestamps[0]
+    else:
+        (_, start_time, _, left_index) = data_power.get_next_available_timestamps(start_time, power_start_index)
+    #duration = time() - beginning_time
+    #print("[calculate_average_leftpoint_single_interval benchmark] Start time get: {0} s with index {1}".format(duration, power_start_index))
+
+    #beginning_time = time()
+    if end_time is None:
+        end_time = data_power.timestamps[-1]
+    else:
+        (end_time, _, right_index, _) = data_power.get_next_available_timestamps(
+            end_time, left_index)
+    #duration = time() - beginning_time
+    #print("[calculate_average_leftpoint_single_interval benchmark] End time get: {0} s with index {1}".format(duration, left_index))
+
+    if start_time is None:
+        return None
+    if end_time is None:
+        return None
+    if left_index is None:
+        return None
+    if right_index is None:
+        return None
+
+    last_time = start_time
+
+    sum = 0
+
+    #beginning_time = time()
+    for i in range(left_index, right_index+1): # +1 to include right_index
+        timestamp = data_power.timestamps[i]
+        power_value = data_power.values[i]
+
+        sum += power_value * (timestamp - last_time)
+        last_time = timestamp
+    #duration = time() - beginning_time
+    #print("[calculate_average_leftpoint_single_interval benchmark] Main for loop: {0} s".format(duration))
+
+    return sum, left_index  # / (end_time - start_time)
 
 def calculate_average(power_data, start_time=None, end_time=None, initial_search_index=1):
     """Calculate average value of the power_data using the left Riemann sum."""
@@ -431,42 +465,6 @@ def calculate_average(power_data, start_time=None, end_time=None, initial_search
                 for i in range(start_index, end_index)) /
             (power_data.timestamps[end_index] -
              power_data.timestamps[start_index]))
-
-
-def calculate_average_leftpoint_single_interval(data_power, start_time=None, end_time=None, start_index=0):
-    if start_time is None:
-        start_time = data_power.timestamps[0]
-    else:
-        (_, start_time, _, left_index) = data_power.get_next_available_timestamps(
-            start_time, start_index)
-
-    if end_time is None:
-        end_time = data_power.timestamps[-1]
-    else:
-        (end_time, _, right_index, _) = data_power.get_next_available_timestamps(
-            end_time, start_index)
-
-    if start_time is None:
-        return None
-    if end_time is None:
-        return None
-    if left_index is None:
-        return None
-    if right_index is None:
-        return None
-
-    last_time = start_time
-
-    sum = 0
-
-    for i in range(left_index, right_index+1):
-        timestamp = data_power.timestamps[i]
-        power_value = data_power.values[i]
-
-        sum += power_value * (timestamp - last_time)
-        last_time = timestamp
-
-    return sum  # / (end_time - start_time)
 
 ##############################
 # Calculate average midpoint #
