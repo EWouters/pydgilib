@@ -94,6 +94,7 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
     output = SavePrint(return_output)
     stdout = PIPE if verbose >= 0 else None
     stderr = STDOUT if verbose >= 1 else None
+    returncode = 0
     if not elf_mode and (clean or build or make_command):
         make_path = make_path or path.join(
             atmel_studio_path, "shellutils", "make.exe")
@@ -109,19 +110,15 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
             if verbose:
                 output.print(res.stdout.decode())
             return res.returncode
-        if make_command:
+        if make_command and not returncode:
             returncode = make_caller(make_command)
-            if returncode or not atprogram_command:
-                return returncode
-        if clean:
+        if clean and not returncode:
             returncode = make_caller("clean")
-            if returncode:
-                return returncode
-        if build:
+        if build and not returncode:
             returncode = make_caller(f"all --jobs {jobs} --output-sync")
-            if returncode:
-                return returncode
-    if not makefile_mode and (erase or program or verify or atprogram_command):
+    if (not makefile_mode and
+            (erase or program or verify or atprogram_command) and
+            not returncode):
         atprogram_path = atprogram_path or path.join(
             atmel_studio_path, "atbackend", "atprogram.exe")
 
@@ -144,15 +141,15 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
             (atprogram_command or
              erase * " chiperase " +
              program * f" program -f {elf_file_path} " +
-             verify * f" verify -f {elf_file_path} " +
+             verify * f" verify -fl -f {elf_file_path} " +
              (verbose >= 3) * " info")
         returncode = atprogram_caller(atprogram_command)
         if returncode:
             atprogram_caller("exitcode")
-        if return_output:
-            return output.output + f"\n{returncode}"
-        else:
-            return returncode
+    if return_output:
+        return output.output + f"\n{returncode}"
+    else:
+        return returncode
 
 
 class SavePrint(object):
@@ -162,7 +159,7 @@ class SavePrint(object):
 
     def print(self, s):
         if self.return_output:
-            self.output += s + '\n'
+            self.output += s
         else:
             print(s)
 
@@ -199,29 +196,83 @@ def get_device_info(
         atprogram_command="info", return_output=True, verbose=1,
         device_name=device_name, tool=tool, interface=interface,
         atmel_studio_path=atmel_studio_path, atprogram_path=atprogram_path,
-        device_sn=device_sn)
+        device_sn=device_sn, dry_run=False)
     device_info = {
         "Target voltage": float(re.findall(
-            "\\nTarget voltage:\s(\d+(\.\d+)?)\sV", atprogram_info)[0][0]),
+            r"\nTarget voltage:\s(\d+(\.\d+)?)\sV", atprogram_info)[0][0]),
         "Device information": {
-            "Name": re.findall("\\nName:\s+(\S+)\s+", atprogram_info)[0],
-            "JtagId": re.findall("\\nJtagId:\s+(\S+)\s+", atprogram_info)[0],
-            "CPU arch.": re.findall("\\nCPU arch.:\s+(\S+)\s+", atprogram_info)[0],
-            "Series": re.findall("\\nSeries:\s+(\S+)\s+", atprogram_info)[0],
-            "DAL": int(re.findall("\\nDAL:\s+(\d+)\s+", atprogram_info)[0])},
+            "Name": re.findall(r"\nName:\s+(\S+)\s+", atprogram_info)[0],
+            "JtagId": re.findall(r"\nJtagId:\s+(\S+)\s+", atprogram_info)[0],
+            "CPU arch.": re.findall(r"\nCPU arch.:\s+(\S+)\s+", atprogram_info)[0],
+            "Series": re.findall(r"\nSeries:\s+(\S+)\s+", atprogram_info)[0],
+            "DAL": int(re.findall(r"\nDAL:\s+(\d+)\s+", atprogram_info)[0])},
         "Memory Information": {
             "base": {
                 address_space: [int(start_address, 16), int(size, 16)]
                 for address_space, start_address, size in re.findall(
-                    "\\n  (\w+)\s+(0[xX][0-9a-fA-F]+)\s+(0[xX][0-9a-fA-F]+)\s+\n",
+                    r"\n  (\w+)\s+(0[xX][0-9a-fA-F]+)\s+(0[xX][0-9a-fA-F]+)\s+\n",
                     atprogram_info)},
             "fuses": {
                 fuse: [int(value, 16)]
                 for fuse, value in re.findall(
-                    "\\n   (\w+)\s+(0[xX][0-9a-fA-F]+)\s+\n",
+                    r"\n   (\w+)\s+(0[xX][0-9a-fA-F]+)\s+\n",
                     atprogram_info)}
         }
     }
     if verbose:
         print(device_info)
     return(device_info)
+
+
+size_regexp = re.compile(
+    r"\.elf\"\n\s*text\t\s*data\t\s*bss\t\s*dec\t\s*hex\t\s*filename\r\n\s*" +
+    r"(\d+)\t\s*(\d+)\t\s*(\d+)\t\s*(\d+)\t\s*([0-9a-fA-F]+)\t\s*(\S+).elf")
+
+
+def get_project_size(
+        project_path, device_name="ATSAML11E16A", verbose=0, tool="EDBG",
+        interface="SWD", atmel_studio_path=path.join(
+            getenv("programfiles(x86)"), "Atmel", "Studio", "7.0"),
+        make_path=None, configuration="Debug", device_sn=None,
+        jobs=getenv("NUMBER_OF_PROCESSORS")):
+    """get_project_size.
+
+    Keyword Arguments:
+        project_path {str} -- Location where the project resides. If it ends in
+            `.elf` the elf file will be used. If it ends in `Makefile` the
+            Makefile will be used. Otherwise it should be a path to a folder
+            which holds the `Debug` folder.
+        device_name {str} -- Device name. E.g. atxmega128a1 or at32uc3a0256.
+            (default: {"ATSAML11E16A"})
+        verbose {int} -- Print results (default: {0})
+        tool {str} -- Tool name: avrdragon, avrispmk2, avrone, jtagice3,
+            jtagicemkii, qt600, stk500, stk600, samice, edbg, medbg, nedbg,
+            atmelice, pickit4, powerdebugger, megadfu or flip. (default:
+            {"EDBG"})
+        interface {str} -- Physical interface: aWire, debugWIRE, HVPP, HVSP,
+            ISP, JTAG, PDI, UPDI, TPI or SWD. (default: {"SWD"})
+        atmel_studio_path {[type]} -- Location where Atmel Studio is installed,
+            ending in the folder named after the version, e.g. 7.0. (default:
+            {path.join(getenv("programfiles(x86)"), "Atmel", "Studio", "7.0")})
+        make_path {[type]} -- Location where `make.exe` is installed. (default:
+            {path.join(getenv("programfiles(x86)"), "Atmel", "Studio", "7.0", "shellutils", "make.exe")})
+        configuration {str} -- Which configuration to use. (default: {"Debug"})
+        device_sn {str} -- The programmer/debugger serialnumber. Must be
+            specified when more than one debugger is connected. (default:
+            {None})
+        jobs {int} -- How many jobs *make* should use(default:
+            {getenv("NUMBER_OF_PROCESSORS")})
+
+    Returns:
+        dict -- A dictionary of sizes of the sections, the total size and the
+            file name.
+
+    """
+    (text, data, bss, dec, hex, filename) = size_regexp.findall(atprogram(
+        project_path, clean=True, build=True, erase=False, program=False,
+        verify=False, return_output=True, verbose=1, dry_run=False))[0]
+    result = {"text": int(text), "data": int(data), "bss": int(
+        bss), "dec": int(dec), "hex": int(hex, 16), "filename": filename}
+    if verbose:
+        print(result)
+    return result
