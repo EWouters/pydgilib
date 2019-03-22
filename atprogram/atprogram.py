@@ -63,7 +63,7 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
             {None})
         return_output {bool} -- If True the return value will be the output,
             else it will be the return code (default: {False})
-        dry_run {bool} -- Wether to run the commands using the subprocess
+        dry_run {bool} -- Whether to run the commands using the subprocess
             module or just print the commands (default: {False})
 
     Raises:
@@ -213,20 +213,18 @@ def get_device_info(
                     r"\n  (\w+)\s+(0[xX][0-9a-fA-F]+)\s+(0[xX][0-9a-fA-F]+)\s+\n",
                     atprogram_info)},
             "fuses": {
-                fuse: [int(value, 16)]
-                for fuse, value in re.findall(
-                    r"\n   (\w+)\s+(0[xX][0-9a-fA-F]+)\s+\n",
-                    atprogram_info)}
+                fuse: int(value, 16) for fuse, value in re.findall(
+                    r"\n   (\w+)\s+(0[xX][0-9a-fA-F]+)\s+\n", atprogram_info)}
         }
     }
-    if verbose:
+    if verbose >= 2:
         print(device_info)
     return(device_info)
 
 
 size_regexp = re.compile(
     r"\.elf\"\n\s*text\t\s*data\t\s*bss\t\s*dec\t\s*hex\t\s*filename\r\n\s*" +
-    r"(\d+)\t\s*(\d+)\t\s*(\d+)\t\s*(\d+)\t\s*([0-9a-fA-F]+)\t\s*(\S+).elf")
+    r"(\d+)\t\s*(\d+)\t\s*(\d+)\t\s*(\d+)\t\s*([0-9a-fA-F]+)\t\s*(\S+.elf)")
 
 
 def get_project_size(
@@ -273,6 +271,6 @@ def get_project_size(
         verify=False, return_output=True, verbose=1, dry_run=False))[0]
     result = {"text": int(text), "data": int(data), "bss": int(
         bss), "dec": int(dec), "hex": int(hex, 16), "filename": filename}
-    if verbose:
+    if verbose >= 2:
         print(result)
     return result
