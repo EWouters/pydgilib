@@ -1,6 +1,8 @@
 from os import path, getenv, getcwd
 from subprocess import run, PIPE, STDOUT
 
+import re
+
 
 def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
               clean=False, build=True, erase=True, program=True, verify=False,
@@ -163,3 +165,63 @@ class SavePrint(object):
             self.output += s + '\n'
         else:
             print(s)
+
+
+def get_device_info(
+        device_name="ATSAML11E16A", verbose=0, tool="EDBG", interface="SWD",
+        atmel_studio_path=path.join(
+            getenv("programfiles(x86)"), "Atmel", "Studio", "7.0"),
+        atprogram_path=None, device_sn=None):
+    """get_device_info.
+
+    [description]
+
+    Keyword Arguments:
+        device_name {str} -- Device name. E.g. atxmega128a1 or at32uc3a0256.
+            (default: {"ATSAML11E16A"})
+        verbose {int} -- Print results (default: {0})
+        tool {str} -- Tool name: avrdragon, avrispmk2, avrone, jtagice3,
+            jtagicemkii, qt600, stk500, stk600, samice, edbg, medbg, nedbg,
+            atmelice, pickit4, powerdebugger, megadfu or flip. (default:
+            {"EDBG"})
+        interface {str} -- Physical interface: aWire, debugWIRE, HVPP, HVSP,
+            ISP, JTAG, PDI, UPDI, TPI or SWD. (default: {"SWD"})
+        atmel_studio_path {[type]} -- Location where Atmel Studio is installed,
+            ending in the folder named after the version, e.g. 7.0. (default:
+            {path.join(getenv("programfiles(x86)"), "Atmel", "Studio", "7.0")})
+        atprogram_path {[type]} -- Location where `atprogram.exe` is installed
+            (default: {path.join(getenv("programfiles(x86)"), "Atmel", "Studio", "7.0", "atbackend", "atprogram.exe")})
+        device_sn {str} -- The programmer/debugger serialnumber. Must be
+            specified when more than one debugger is connected. (default:
+            {None})
+    """
+    atprogram_info = atprogram(
+        atprogram_command="info", return_output=True, verbose=1,
+        device_name=device_name, tool=tool, interface=interface,
+        atmel_studio_path=atmel_studio_path, atprogram_path=atprogram_path,
+        device_sn=device_sn)
+    device_info = {
+        "Target voltage": float(re.findall(
+            "\\nTarget voltage:\s(\d+(\.\d+)?)\sV", atprogram_info)[0][0]),
+        "Device information": {
+            "Name": re.findall("\\nName:\s+(\S+)\s+", atprogram_info)[0],
+            "JtagId": re.findall("\\nJtagId:\s+(\S+)\s+", atprogram_info)[0],
+            "CPU arch.": re.findall("\\nCPU arch.:\s+(\S+)\s+", atprogram_info)[0],
+            "Series": re.findall("\\nSeries:\s+(\S+)\s+", atprogram_info)[0],
+            "DAL": int(re.findall("\\nDAL:\s+(\d+)\s+", atprogram_info)[0])},
+        "Memory Information": {
+            "base": {
+                address_space: [int(start_address, 16), int(size, 16)]
+                for address_space, start_address, size in re.findall(
+                    "\\n  (\w+)\s+(0[xX][0-9a-fA-F]+)\s+(0[xX][0-9a-fA-F]+)\s+\n",
+                    atprogram_info)},
+            "fuses": {
+                fuse: [int(value, 16)]
+                for fuse, value in re.findall(
+                    "\\n   (\w+)\s+(0[xX][0-9a-fA-F]+)\s+\n",
+                    atprogram_info)}
+        }
+    }
+    if verbose:
+        print(device_info)
+    return(device_info)

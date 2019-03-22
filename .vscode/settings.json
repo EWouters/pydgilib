@@ -28,6 +28,7 @@
     "ilib",
     "int",
     "ints",
+    "isfile",
     "ivar",
     "jtag",
     "jtagice",
