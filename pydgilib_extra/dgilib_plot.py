@@ -391,7 +391,6 @@ class DGILibPlot(object):
 
                 if plot_pins[pin_idx] == True: # If we want them plotted
                         
-                    start_index = self.hold_times_obj.index
                     hold_times = self.hold_times_obj.identify_hold_times(pin_idx, plot_pins_values[pin_idx], data.gpio)
 
                     # print("Hold times:" + str(hold_times))
@@ -409,7 +408,7 @@ class DGILibPlot(object):
                             
                             #average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1], start_index)
                             self.iterations[pin_idx] += 1
-                            self.preprocessed_averages_data[pin_idx].append((self.iterations[pin_idx], ht, start_index, None))
+                            self.preprocessed_averages_data[pin_idx].append((self.iterations[pin_idx], ht, 0, None))
 
         elif self.plot_pins_method == "line":
             extend_gpio = data.gpio.timestamps[-1] < data.power.timestamps[-1]

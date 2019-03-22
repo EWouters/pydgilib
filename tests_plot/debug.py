@@ -1,4 +1,5 @@
 from pydgilib_extra import *
+from atprogram.atprogram import *
 
 import numpy as np
 import queue
@@ -23,10 +24,16 @@ config_dict = {
 # print(pydgilib_extra.dgilib_logger)
 # print(pydgilib_extra.dgilib_logger.__file__)
 
+atprogram("C:\\Users\\Dragos\\Dropbox\\RISE\\Other\\LEDTest\\STDIO_Redirect_w_TrustZone", verbose=1)
+
 with DGILibExtra(**config_dict) as dgilib:
     data = dgilib.logger.log(1)
 
-    dgilib.logger.calculate_averages_for_pin(2)
-    dgilib.logger.print_averages_for_pin(2)
+    avg1 = DGILibAverages(data = dgilib.data, preprocessed_data = dgilib.logger.plotobj.preprocessed_averages_data, average_function="leftpoint")
+    avg1.calculate_averages_for_pin(1)
+    avg1.print_averages_for_pin(1)
+
+    # dgilib.logger.calculate_averages_for_pin(2)
+    # dgilib.logger.print_averages_for_pin(2)
 
     dgilib.logger.keep_plot_alive()
