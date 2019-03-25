@@ -82,28 +82,18 @@ class InterfaceData(object):
         else:
             return 0
 
+    # Information about __getitem__ going beyond len(..) of object:
+    # https://github.com/pytorch/pytorch/issues/3636
+    # You're supposed to get an IndexError here. The iteration should stop
+    # because of that. Check that VSCode has "Raised Exceptions" unchecked in the lower
+    # left corner of the screen, on the debug page.
     def __getitem__(self, index):
         """Get item.
 
         Used to provide `timestamp, value = interface_data[5]` and
         `timestamp, value = interface_data[2:5]` syntax
         """
-
         return (self.timestamps[index], self.values[index])
-
-        # if isinstance(index, int):
-        #     return (self.timestamps[index], self.values[index])
-        # elif isinstance(index, float):
-        #     _index = self.get_index(index)
-        #     return (self.timestamps[_index], self.values[_index])
-
-        # # Provides data["timestamps"] as well
-        # if index == self.__slots__[0]:
-        #     return self.timestamps
-        # elif index == self.__slots__[1]:
-        #     return self.values
-        # else:
-        #     return (self.timestamps[index], self.values[index])
 
     def __contains__(self, item):
         """Contains.
