@@ -186,16 +186,7 @@ class InterfaceData(object):
             index += 1
         return index
 
-    def get_next_available_timestamps(self, timestamp_to_compare, start_index=0):
-        index = self.get_index(timestamp_to_compare, start_index)
-
-        if self.timestamps[index] >= timestamp_to_compare:
-            if index == 0:
-                return (None, self.timestamps[index], None, index)
-            else:
-                return (self.timestamps[index-1], self.timestamps[index], index-1, index)
-        else:
-            return (None, None, None, None)
+    
 
 
 class LoggerData(dict):
