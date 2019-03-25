@@ -8,7 +8,6 @@ from pydgilib_extra.dgilib_extra_config import (INTERFACES, INTERFACE_POWER)
 class InterfaceData(object):
     """Class to store DGILib Logger Interface Data."""
 
-    # This seems to slow down the operations?
     __slots__ = ['timestamps', 'values']
 
     def __init__(self, *args):
@@ -82,11 +81,6 @@ class InterfaceData(object):
         else:
             return 0
 
-    # Information about __getitem__ going beyond len(..) of object:
-    # https://github.com/pytorch/pytorch/issues/3636
-    # You're supposed to get an IndexError here. The iteration should stop
-    # because of that. Check that VSCode has "Raised Exceptions" unchecked in the lower
-    # left corner of the screen, on the debug page.
     def __getitem__(self, index):
         """Get item.
 
@@ -100,17 +94,12 @@ class InterfaceData(object):
 
         Used to provide `([1], [2]) in interface_data` syntax
         """
-        if isinstance(item, InterfaceData):
-            return all(any(item_timestamp == self_timestamp and
-                           item_value == self_value
-                           for self_timestamp, self_value in self)
-                       for item_timestamp, item_value in item)
-        else:
-            _item = InterfaceData(item)
-            return all(any(item_timestamp == self_timestamp and
-                           item_value == self_value
-                           for self_timestamp, self_value in self)
-                       for item_timestamp, item_value in _item)
+        return all(any(item_timestamp == self_timestamp and
+                       item_value == self_value
+                       for self_timestamp, self_value in self)
+                   for item_timestamp, item_value in (
+                       item if isinstance(item, InterfaceData) else
+                       InterfaceData(item)))
 
     def __str__(self):
         """Print data.
@@ -119,64 +108,40 @@ class InterfaceData(object):
         """
         return str(tuple(self))
 
-    def get_as_lists(self, start_time=None, end_time=None):
-        """get_as_lists."""
-        # Return lists if no arguments specified
+    def get_select_in_value(self, begin=0, end=None, start_time=None,
+                            end_time=None):
+        """
+        get_select_in_value.
+
+        Use to slice a items in the values when the values are iterables.
+
+        Keyword Arguments:
+            begin {int} -- Begin index of item in value (default: {0})
+            end {[type]} -- End index of item in value, if not supplied only
+                the item the begin index will be returned (default: {None})
+            start_time {[type]} -- Start time of selection (default: {None})
+            end_time {[type]} -- End time of selection (default: {None})
+
+        Returns:
+            [list] -- List of values that have timestamps between start_time
+                and end_time
+        """
+
         if start_time is None and end_time is None:
-            return (self.timestamps, self.values)
+            return [value[begin] for value in self.values] if end is None \
+                else [value[begin:end] for value in self.values]
 
         start_index = 0
         end_index = len(self.timestamps) - 1
         # Get the index of the first sample after the start_time
         if start_time is not None:
-            while (self.timestamps[start_index] < start_time and
-                   start_index < end_index):
-                start_index += 1
+            start_index = self.get_index(start_time)
         if end_time is not None:
-            while (self.timestamps[end_index] < end_time and
-                   end_index >= start_index):
-                end_index -= 1
-            # Increase end_index by 1 to include the first point after the
-            # end_time
-            end_index += 1
+            end_index = self.get_index(end_time, start_index)
 
-        return (self.timestamps[start_time:end_time],
-                self.values[start_time:end_time])
-
-    def get_select_in_value(self, begin=0, end=None, start_time=None,
-                            end_time=None):
-        """get_select_in_value."""
-
-        if end is None:
-            if start_time is None and end_time is None:
-                return [value[begin] for value in self.values]
-
-            start_index = 0
-            end_index = len(self.timestamps) - 1
-            # Get the index of the first sample after the start_time
-            if start_time is not None:
-                start_index = self.get_index(start_time)
-            if end_time is not None:
-                end_index = self.get_index(end_time, start_index)
-
-            return [value[begin]
-                    for value in self.values[start_index:end_index]]
-
-        else:
-            end = begin + 1
-            if start_time is None and end_time is None:
-                return [value[begin:end] for value in self.values]
-
-            start_index = 0
-            end_index = len(self.timestamps) - 1
-            # Get the index of the first sample after the start_time
-            if start_time is not None:
-                start_index = self.get_index(start_time)
-            if end_time is not None:
-                end_index = self.get_index(end_time, start_index)
-
-            return [value[begin:end]
-                    for value in self.values[start_index:end_index]]
+        return [value[begin] for value in self.values[start_index:end_index]] \
+            if end is None else \
+            [value[begin:end] for value in self.values[start_index:end_index]]
 
     def get_index(self, timestamp, start_index=0):
         """Get the index of the first sample after the timestamp."""
