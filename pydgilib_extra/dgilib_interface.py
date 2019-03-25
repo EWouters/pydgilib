@@ -93,9 +93,9 @@ class DGILibInterface(object):
         # Close file handle
         self.file_handle.close()
 
-    def csv_write_rows(self, interdace_data):
+    def csv_write_rows(self, interface_data):
         """csv_write_rows."""
-        self.csv_writer.writerows(interdace_data)
+        self.csv_writer.writerows(interface_data)
 
     def csv_read_file(self, file_path=None, newline='', mode='r'):
         """csv_read_file."""
