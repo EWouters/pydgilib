@@ -398,11 +398,26 @@ def calculate_average_multiple_intervals(data_power, intervals, start_time=None,
     return sum / to_divide
 
 def calculate_average_leftpoint_single_interval(data_power, start_time=None, end_time=None, power_start_index=0):
+
+    # Get the timestamps nearest to 'timestamp_to_compare' in the power data.
+    #  Usually the 'timestamp_to_compare' is a timestamp from gpio data, and this
+    #  function is getting the left/right timestamps from the power data
+    def get_nearest_timestamps(data_power, timestamp_to_compare, start_index=0):
+        index = data_power.get_index(timestamp_to_compare, start_index)
+
+        if data_power.timestamps[index] >= timestamp_to_compare:
+            if index == 0:
+                return (None, data_power.timestamps[index], None, index)
+            else:
+                return (data_power.timestamps[index-1], data_power.timestamps[index], index-1, index)
+        else:
+            return (None, None, None, None)
+
     #beginning_time = time()
     if start_time is None:
         start_time = data_power.timestamps[0]
     else:
-        (_, start_time, _, left_index) = data_power.get_next_available_timestamps(start_time, power_start_index)
+        (_, start_time, _, left_index) = data_power.get_nearest_timestamps(start_time, power_start_index)
     #duration = time() - beginning_time
     #print("[calculate_average_leftpoint_single_interval benchmark] Start time get: {0} s with index {1}".format(duration, power_start_index))
 
@@ -410,7 +425,7 @@ def calculate_average_leftpoint_single_interval(data_power, start_time=None, end
     if end_time is None:
         end_time = data_power.timestamps[-1]
     else:
-        (end_time, _, right_index, _) = data_power.get_next_available_timestamps(
+        (end_time, _, right_index, _) = data_power.get_nearest_timestamps(
             end_time, left_index)
     #duration = time() - beginning_time
     #print("[calculate_average_leftpoint_single_interval benchmark] End time get: {0} s with index {1}".format(duration, left_index))
