@@ -59,8 +59,8 @@ class DGILibPlot(object):
         else:
             self.plot_yauto = False
 
-        self.plot_pins = kwargs.get("plot_pins", None)
-        self.plot_pins_values = kwargs.get("plot_pins_values", None)
+        self.plot_pins = kwargs.get("plot_pins", [True, True, True, True])
+        self.plot_pins_values = kwargs.get("plot_pins_values", [True, True, True, True])
         self.plot_pins_method = kwargs.get("plot_pins_method", "highlight") # or "line"
         self.plot_pins_colors = kwargs.get("plot_pins_colors", ["red", "orange", "blue", "green"])
         self.automove_method = kwargs.get("automove_method", "latest_data") # or "page"
@@ -73,8 +73,8 @@ class DGILibPlot(object):
         self.xylim_mutex = Lock()
 
         # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
-        self.plot_pins_correction_forward = kwargs.get("plot_pins_correction_forward", 0.00075)
-        self.plot_pins_interval_shrink = kwargs.get("plot_pins_interval_shrink", 0.0010)
+        #self.plot_pins_correction_forward = kwargs.get("plot_pins_correction_forward", 0.00075)
+        #self.plot_pins_interval_shrink = kwargs.get("plot_pins_interval_shrink", 0.0010)
         self.refresh_plot_pause_secs = kwargs.get("refresh_plot_pause_secs", 0.00000001)
 
         if self.plot_pins_method == "highlight":
@@ -366,8 +366,8 @@ class DGILibPlot(object):
         plot_pins = self.plot_pins
         plot_pins_values = self.plot_pins_values
         plot_pins_method = self.plot_pins_method or "highlight"
-        plot_pins_correction_forward = self.plot_pins_correction_forward or 0.00
-        plot_pins_interval_shrink = self.plot_pins_interval_shrink or 0.00
+        # plot_pins_correction_forward = self.plot_pins_correction_forward or 0.00
+        # plot_pins_interval_shrink = self.plot_pins_interval_shrink or 0.00
         plot_pins_colors = self.plot_pins_colors
         #average_function = self.average_function or "leftpoint"
 
