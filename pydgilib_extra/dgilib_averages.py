@@ -104,8 +104,8 @@ class DGILibAverages(object):
 
         if (self.total_iterations[pin_idx] > 0):
 
-            print("Average charge per iteration: {0} uC".format(round(self.total_average[pin_idx] * 1000 / self.total_iterations[pin_idx], 9)))
-            print("Average energy per iteration: {0} uJ".format(round(self.total_average[pin_idx]*self.voltage*1000 / self.total_iterations[pin_idx], 6)))
+            print("Average charge per iteration: {0} uC".format(round(self.total_average[pin_idx] * 1000 * 1000 / self.total_iterations[pin_idx], 9)))
+            print("Average energy per iteration: {0} uJ".format(round(self.total_average[pin_idx]*self.voltage * 1000 * 1000 / self.total_iterations[pin_idx], 6)))
             print("Average time per iteration: {0} ms".format(round(self.total_duration[pin_idx] / self.total_iterations[pin_idx], 6)))
             print("")
             print("Total iterations: {0}".format(self.total_iterations[pin_idx]))
