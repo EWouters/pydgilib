@@ -46,6 +46,8 @@ class DGILibAverages(object):
 
                 self.averages[pin_idx].append((iteration, (hold_time_from, hold_time_to), 0, average))
 
+        self.initialized = True
+
         if verbose > 0: print("Read averages from CSV file:" + filepath)
 
 
@@ -79,7 +81,7 @@ class DGILibAverages(object):
             hold_times_0 = round(self.averages[pin_idx][i][HOLD_TIME][HOLD_TIME_FROM], 5)
             hold_times_1 = round(self.averages[pin_idx][i][HOLD_TIME][HOLD_TIME_TO], 5)
 
-            if self.averages[pin_idx][i][3] is not None:
+            if self.averages[pin_idx][i][AVERAGE] is not None:
                 average = round(self.averages[pin_idx][i][AVERAGE] * 1000, 6)
             else:
                 average = "ignored"
@@ -100,30 +102,34 @@ class DGILibAverages(object):
                     interval_duration, 
                     average))
 
-        print("Average charge per iteration: {0} uC".format(round(self.total_average[pin_idx] * 1000 / self.total_iterations[pin_idx], 9)))
-        print("Average energy per iteration: {0} uJ".format(round(self.total_average[pin_idx]*self.voltage*1000 / self.total_iterations[pin_idx], 6)))
-        print("Average time per iteration: {0} ms".format(round(self.total_duration[pin_idx] * 1000 / self.total_iterations[pin_idx], 6)))
-        print("")
-        print("Total iterations: {0}".format(self.total_iterations[pin_idx]))
-        print("Total average current: {0} mA".format(round(self.total_average[pin_idx] / self.total_duration[pin_idx], 6)))
-        print("Total charge: {0} mC".format(round(self.total_average[pin_idx], 6)))
-        print("Total energy: {0} mJ".format(round(self.total_average[pin_idx]*self.voltage, 6)))
-        print("Total time: {0} s".format(round(self.total_duration[pin_idx], 6)))
-        print("")
-        print("Benchmark time: {0} s".format(round(self.benchmark_time, 8)))
+        if (self.total_iterations[pin_idx] > 0):
+
+            print("Average charge per iteration: {0} uC".format(round(self.total_average[pin_idx] * 1000 / self.total_iterations[pin_idx], 9)))
+            print("Average energy per iteration: {0} uJ".format(round(self.total_average[pin_idx]*self.voltage*1000 / self.total_iterations[pin_idx], 6)))
+            print("Average time per iteration: {0} ms".format(round(self.total_duration[pin_idx] / self.total_iterations[pin_idx], 6)))
+            print("")
+            print("Total iterations: {0}".format(self.total_iterations[pin_idx]))
+            print("Total average current: {0} mA".format(round(self.total_average[pin_idx] * 1000 / self.total_duration[pin_idx], 6)))
+            print("Total charge: {0} mC".format(round(self.total_average[pin_idx] * 1000, 6)))
+            print("Total energy: {0} mJ".format(round(self.total_average[pin_idx]*self.voltage* 1000, 6)))
+            print("Total time: {0} s".format(round(self.total_duration[pin_idx], 6)))
+            print("")
+            print("Benchmark time: {0} s".format(round(self.benchmark_time, 8)))
+        else:
+            print("Averages not calculated or no average data for pin {0}.".format(pin_idx))
         
 
     def calculate_averages_for_pin(self, pin_idx, pin_value = True, ignore_first_average = True):
         start_time = time()
 
         if self.average_function == "leftpoint":
-            start_index = 0
+            start_index = 1
 
             if not self.initialized:
                 hold_times_all = self.hold_times_obj.identify_hold_times(pin_idx, pin_value, self.data.gpio)
                 self.averages = [[],[],[],[]]
                 if hold_times_all is not None:
-                    self.averages[pin_idx] = [(None, (None, None), None, None) * len(hold_times_all)]
+                    self.averages[pin_idx] = [(None, (None, None), None, None)] * len(hold_times_all)
                 else:
                     self.averages[pin_idx] = []
             
@@ -135,7 +141,7 @@ class DGILibAverages(object):
                     start_index = max(start_index, self.averages[pin_idx][i][START_INDEX])
                     average = self.averages[pin_idx][i][AVERAGE]
                 else:
-                    iteration_idx = i
+                    iteration_idx = i+1
                     hold_times = hold_times_all[i]
                     start_index = 0
                     average = None
@@ -146,12 +152,11 @@ class DGILibAverages(object):
                     average, start_index = calculate_average_leftpoint_single_interval(self.data.power, hold_times[0], hold_times[1], start_index)
 
                 if average is not None:
-                    average_scaled = 1000 * average
-                    self.total_average[pin_idx] += average_scaled
+                    self.total_average[pin_idx] += average
                     self.total_duration[pin_idx] += hold_times[1] - hold_times[0]
                     self.total_iterations[pin_idx] += 1
                 else:
-                    average_scaled = None
+                    average = None
                 self.averages[pin_idx][i] = (iteration_idx, hold_times, start_index, average)
         else:
             charges, times = power_and_time_per_pulse(self.data, pin_idx)
@@ -161,9 +166,12 @@ class DGILibAverages(object):
             if ignore_first_average: start_from = 1
 
             for i in range(start_from, len(charges)):
-                self.total_average[pin_idx] += charges[i] * 1000
+                self.total_average[pin_idx] += charges[i]
                 self.total_iterations[pin_idx] += 1
-                self.averages[pin_idx][i] = (i, (hold_times[0][i], hold_times[1][i]), 0, charges[i])
+                if i >= len(self.averages[pin_idx]):
+                    self.averages[pin_idx].append((i, (hold_times[0][i], hold_times[1][i]), 0, charges[i]))
+                else:
+                    self.averages[pin_idx][i] = (i, (hold_times[0][i], hold_times[1][i]), 0, charges[i])
                 self.total_duration[pin_idx] += times[i]
 
         end_time = time()

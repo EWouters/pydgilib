@@ -44,7 +44,7 @@ with DGILibExtra(**config_dict) as dgilib:
     data = dgilib.logger.log(5)
 
     avg1 = DGILibAverages(data = dgilib.data, average_function="leftpoint")
-    avg1.calculate_averages_for_pin(1)
+    #avg1.calculate_averages_for_pin(1)
     #avg1.print_averages_for_pin(1)
 
 with DGILibExtra(**config_dict_plot) as dgilib:
