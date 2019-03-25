@@ -1,4 +1,4 @@
-from pydgilib_extra.dgilib_calculations import calculate_average, calculate_average_leftpoint_single_interval, power_and_time_per_pulse, rise_and_fall_times
+from pydgilib_extra.dgilib_calculations import calculate_average, calculate_average_leftpoint_single_interval, power_and_time_per_pulse, rise_and_fall_times, HoldTimes
 from time import time
 
 ITERATION = 0
@@ -16,11 +16,12 @@ class DGILibAverages(object):
         self.average_function = kwargs.get("average_function", "leftpoint") # Unused for now
 
         if preprocessed_data is None:
-            #self.hold_times_obj = HoldTimes() # TODO: Calculate yourself if we don't get preprocessed data from plot
+            self.hold_times_obj = HoldTimes() # TODO: Calculate yourself if we don't get preprocessed data from plot
             self.averages = [[],[],[],[]]
-            #raise NotImplementedError("Need to make DGILibAverages work by itself when the plot does not precalculate data")
+            self.initialized = False       
         else:
             self.averages = preprocessed_data
+            self.initialized = True
 
         self.total_average = [0,0,0,0]
         self.total_duration = [0,0,0,0]
@@ -112,19 +113,32 @@ class DGILibAverages(object):
         print("Benchmark time: {0} s".format(round(self.benchmark_time, 8)))
         
 
-    def calculate_averages_for_pin(self, pin_idx, ignore_first_average = True):
+    def calculate_averages_for_pin(self, pin_idx, pin_value = True, ignore_first_average = True):
         start_time = time()
-        if len(self.averages) == 0 or len(self.averages[pin_idx]) == 0:
-            return
 
         if self.average_function == "leftpoint":
             start_index = 0
+
+            if not self.initialized:
+                hold_times_all = self.hold_times_obj.identify_hold_times(pin_idx, pin_value, self.data.gpio)
+                self.averages = [[],[],[],[]]
+                if hold_times_all is not None:
+                    self.averages[pin_idx] = [(None, (None, None), None, None) * len(hold_times_all)]
+                else:
+                    self.averages[pin_idx] = []
             
             for i in range(len(self.averages[pin_idx])):
-                iteration_idx = self.averages[pin_idx][i][ITERATION]
-                hold_times = self.averages[pin_idx][i][HOLD_TIME]
-                start_index = max(start_index, self.averages[pin_idx][i][START_INDEX])
-                average = self.averages[pin_idx][i][AVERAGE]
+
+                if self.initialized:
+                    iteration_idx = self.averages[pin_idx][i][ITERATION]
+                    hold_times = self.averages[pin_idx][i][HOLD_TIME]
+                    start_index = max(start_index, self.averages[pin_idx][i][START_INDEX])
+                    average = self.averages[pin_idx][i][AVERAGE]
+                else:
+                    iteration_idx = i
+                    hold_times = hold_times_all[i]
+                    start_index = 0
+                    average = None
 
                 if ignore_first_average and iteration_idx == 1:
                     average = None
