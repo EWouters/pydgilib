@@ -417,7 +417,7 @@ def calculate_average_leftpoint_single_interval(data_power, start_time=None, end
     if start_time is None:
         start_time = data_power.timestamps[0]
     else:
-        (_, start_time, _, left_index) = data_power.get_nearest_timestamps(start_time, power_start_index)
+        (_, start_time, _, left_index) = get_nearest_timestamps(data_power, start_time, power_start_index)
     #duration = time() - beginning_time
     #print("[calculate_average_leftpoint_single_interval benchmark] Start time get: {0} s with index {1}".format(duration, power_start_index))
 
@@ -425,8 +425,8 @@ def calculate_average_leftpoint_single_interval(data_power, start_time=None, end
     if end_time is None:
         end_time = data_power.timestamps[-1]
     else:
-        (end_time, _, right_index, _) = data_power.get_nearest_timestamps(
-            end_time, left_index)
+        (end_time, _, right_index, _) = get_nearest_timestamps(
+            data_power, end_time, left_index)
     #duration = time() - beginning_time
     #print("[calculate_average_leftpoint_single_interval benchmark] End time get: {0} s with index {1}".format(duration, left_index))
 
