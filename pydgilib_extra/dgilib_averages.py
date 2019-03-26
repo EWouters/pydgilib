@@ -13,10 +13,10 @@ class DGILibAverages(object):
     def __init__(self, data = None, preprocessed_data = None, *args, **kwargs):
         self.data = data
 
-        self.average_function = kwargs.get("average_function", "leftpoint") # Unused for now
+        self.average_function = kwargs.get("average_function", "leftpoint")
 
         if preprocessed_data is None:
-            self.hold_times_obj = HoldTimes() # TODO: Calculate yourself if we don't get preprocessed data from plot
+            self.hold_times_obj = HoldTimes()
             self.averages = [[],[],[],[]]
             self.initialized = False       
         else:
@@ -64,7 +64,7 @@ class DGILibAverages(object):
                     #if not(average is None):
                     f.write("{0},{1},{2},{3},{4}\n".format(pin_idx, iteration, hold_time_from, hold_time_to, average))
 
-            if verbose > 0: print("Wrote averages to CSV file: "+ filepath)
+            if verbose > 0: print("Wrote averages to: "+ filepath)
 
     def print_averages_for_pin(self, pin_idx, how_many=9999):
 
