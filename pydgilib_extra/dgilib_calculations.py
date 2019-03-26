@@ -427,6 +427,8 @@ def calculate_average_leftpoint_single_interval(data_power, start_time=None, end
     else:
         (end_time, _, right_index, _) = get_nearest_timestamps(
             data_power, end_time, left_index)
+
+    if start_time is None:
         return None
     if end_time is None:
         return None
