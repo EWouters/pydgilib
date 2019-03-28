@@ -4,13 +4,19 @@ from pydgilib.dgilib import DGILib
 
 from ctypes import c_uint
 
+import pytest
 
-def test_connect():
+
+verbosity = (0, 99)
+
+
+@pytest.mark.parametrize("verbose", verbosity)
+def test_connect(verbose):
     """test_connect.
 
     DGILibHousekeeping.connect
     """
-    dgilib = DGILib()
+    dgilib = DGILib(verbose=verbose)
     dgilib.discover()
     device_sn = dgilib.get_device_serial()
     dgilib.dgi_hndl = dgilib.connect(device_sn)
@@ -19,24 +25,26 @@ def test_connect():
     dgilib.disconnect()
 
 
-def test_disconnect():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_disconnect(verbose):
     """test_disconnect.
 
     DGILibHousekeeping.disconnect
     """
-    dgilib = DGILib()
+    dgilib = DGILib(verbose=verbose)
     dgilib.discover()
     device_sn = dgilib.get_device_serial()
     dgilib.dgi_hndl = dgilib.connect(device_sn)
     assert dgilib.disconnect() is None
 
 
-def test_connection_status():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_connection_status(verbose):
     """test_connection_status.
 
     DGILibHousekeeping.connection_status
     """
-    dgilib = DGILib()
+    dgilib = DGILib(verbose=verbose)
     dgilib.discover()
     device_sn = dgilib.get_device_serial()
     assert dgilib.connection_status() == 2
@@ -46,36 +54,40 @@ def test_connection_status():
     assert dgilib.connection_status() == 2
 
 
-def test_get_major_version():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_get_major_version(verbose):
     """test_get_major_version.
 
     DGILibHousekeeping.get_major_version
     """
-    assert isinstance(DGILib().get_major_version(), int)
+    assert isinstance(DGILib(verbose=verbose).get_major_version(), int)
 
 
-def test_get_minor_version():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_get_minor_version(verbose):
     """test_get_minor_version.
 
     DGILibHousekeeping.get_minor_version
     """
-    assert isinstance(DGILib().get_minor_version(), int)
+    assert isinstance(DGILib(verbose=verbose).get_minor_version(), int)
 
 
-def test_get_build_number():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_get_build_number(verbose):
     """test_get_build_number.
 
     DGILibHousekeeping.get_build_number
     """
-    assert isinstance(DGILib().get_build_number(), int)
+    assert isinstance(DGILib(verbose=verbose).get_build_number(), int)
 
 
-def test_get_fw_version():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_get_fw_version(verbose):
     """test_get_fw_version.
 
     DGILibHousekeeping.get_fw_version
     """
-    dgilib = DGILib()
+    dgilib = DGILib(verbose=verbose)
     dgilib.discover()
     device_sn = dgilib.get_device_serial()
     dgilib.dgi_hndl = dgilib.connect(device_sn)
@@ -87,12 +99,13 @@ def test_get_fw_version():
     dgilib.disconnect()
 
 
-def test_start_polling():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_start_polling(verbose):
     """test_start_polling.
 
     DGILibHousekeeping.start_polling
     """
-    dgilib = DGILib()
+    dgilib = DGILib(verbose=verbose)
     dgilib.discover()
     device_sn = dgilib.get_device_serial()
     dgilib.dgi_hndl = dgilib.connect(device_sn)
@@ -104,12 +117,13 @@ def test_start_polling():
     # disconnect afterwards resulted in mode 17
 
 
-def test_stop_polling():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_stop_polling(verbose):
     """test_stop_polling.
 
     DGILibHousekeeping.stop_polling
     """
-    dgilib = DGILib()
+    dgilib = DGILib(verbose=verbose)
     dgilib.discover()
     device_sn = dgilib.get_device_serial()
     dgilib.dgi_hndl = dgilib.connect(device_sn)
@@ -120,12 +134,13 @@ def test_stop_polling():
     dgilib.disconnect()
 
 
-def test_target_reset():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_target_reset(verbose):
     """test_target_reset.
 
     DGILibHousekeeping.target_reset
     """
-    dgilib = DGILib()
+    dgilib = DGILib(verbose=verbose)
     dgilib.discover()
     device_sn = dgilib.get_device_serial()
     dgilib.dgi_hndl = dgilib.connect(device_sn)

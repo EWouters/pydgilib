@@ -8,6 +8,10 @@ from pydgilib.dgilib_config import (
 
 from time import sleep
 
+import pytest
+
+verbosity = (0, 99)
+
 # Number of seconds to log data for in read and clear tests
 polling_duration = 1
 
@@ -44,12 +48,13 @@ INTERFACES_WRITE = [INTERFACE_USART,
                     INTERFACE_RESERVED]
 
 
-def test_interface_list():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_interface_list(verbose):
     """test_interface_list.
 
     DGILibInterfaceCommunication.interface_list
     """
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         assert isinstance(interfaces, list)
         assert len(interfaces) < NUM_INTERFACES
@@ -57,36 +62,39 @@ def test_interface_list():
             assert interface in INTERFACES
 
 
-def test_interface_enable():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_interface_enable(verbose):
     """test_interface_enable.
 
     DGILibInterfaceCommunication.interface_enable
     """
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES_ENABLE:
             if interface_id in interfaces:
                 assert dgilib.interface_enable(interface_id) is None
 
 
-def test_interface_disable():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_interface_disable(verbose):
     """test_interface_disable.
 
     DGILibInterfaceCommunication.interface_disable
     """
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES:
             if interface_id in interfaces:
                 assert dgilib.interface_disable(interface_id) is None
 
 
-def test_interface_get_configuration():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_interface_get_configuration(verbose):
     """test_interface_get_configuration.
 
     DGILibInterfaceCommunication.interface_get_configuration
     """
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES:
             if interface_id in interfaces:
@@ -97,14 +105,15 @@ def test_interface_get_configuration():
                 assert isinstance(config[1], list)
 
 
-def test_interface_set_configuration():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_interface_set_configuration(verbose):
     """test_interface_set_configuration.
 
     DGILibInterfaceCommunication.interface_set_configuration
 
     Gets the configuration and sets it to the same values.
     """
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES_SET_CONFIG:
             if interface_id in interfaces:
@@ -113,19 +122,20 @@ def test_interface_set_configuration():
                     interface_id, *config) is None
 
 
-def test_interface_clear_buffer():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_interface_clear_buffer(verbose):
     """test_interface_clear_buffer.
 
     DGILibInterfaceCommunication.interface_clear_buffer
     """
     # When not enabled
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES:
             if interface_id in interfaces:
                 assert dgilib.interface_clear_buffer(interface_id) is None
     # When enabled
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES_ENABLE:
             if interface_id in interfaces:
@@ -133,7 +143,7 @@ def test_interface_clear_buffer():
                 assert dgilib.interface_clear_buffer(interface_id) is None
                 dgilib.interface_disable(interface_id)
     # When enabled and polling
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES_ENABLE:
             if interface_id in interfaces:
@@ -145,13 +155,14 @@ def test_interface_clear_buffer():
                 dgilib.interface_disable(interface_id)
 
 
-def test_interface_read_data():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_interface_read_data(verbose):
     """test_interface_read_data.
 
     DGILibInterfaceCommunication.interface_read_data
     """
     # When not enabled
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES_ENABLE:
             if interface_id in interfaces:
@@ -162,7 +173,7 @@ def test_interface_read_data():
                 assert isinstance(data[1], list)
                 assert len(data[0]) == len(data[1])
     # When enabled
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES_ENABLE:
             if interface_id in interfaces:
@@ -175,7 +186,7 @@ def test_interface_read_data():
                 assert len(data[0]) == len(data[1])
                 dgilib.interface_disable(interface_id)
     # When enabled and polling
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES_ENABLE:
             if interface_id in interfaces:
@@ -192,19 +203,20 @@ def test_interface_read_data():
                 dgilib.interface_disable(interface_id)
 
 
-def test_interface_write_data():
+@pytest.mark.parametrize("verbose", verbosity)
+def test_interface_write_data(verbose):
     """test_interface_write_data.
 
     DGILibInterfaceCommunication.interface_write_data
     """
     # When not enabled
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES_WRITE:
             if interface_id in interfaces:
                 assert dgilib.interface_write_data(interface_id, [0]) is None
     # When enabled
-    with DGILib() as dgilib:
+    with DGILib(verbose=verbose) as dgilib:
         interfaces = dgilib.interface_list()
         for interface_id in INTERFACES_WRITE:
             if interface_id in interfaces:
