@@ -23,7 +23,7 @@ setup(
     setup_requires=[
         # ... (other setup requirements)
     ] + pytest_runner,
-    tests_require=["pytest", "pytest-benchmark"],
+    tests_require=["pytest", "pytest-benchmark", "pytest-cov"],
 )
 
 # TODO: warn if atmel studio not installed.
