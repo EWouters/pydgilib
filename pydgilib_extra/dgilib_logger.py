@@ -1,20 +1,12 @@
-# pylint: disable=E1101
 """This module wraps the logging functionality for DGILibExtra."""
 
-import copy
 from os import getcwd
 from time import time
 
-# Todo, remove dependency
-# import matplotlib.pyplot as plt
-
-from pydgilib.dgilib_config import INTERFACE_GPIO
 from pydgilib_extra.dgilib_data import LoggerData
 from pydgilib_extra.dgilib_extra_config import (
-    INTERFACE_POWER, LOGGER_CSV, LOGGER_OBJECT, LOGGER_PLOT, FILE_NAME_BASE,
-    POLLING, POWER)
+    LOGGER_CSV, LOGGER_OBJECT, LOGGER_PLOT, FILE_NAME_BASE, POLLING, POWER)
 from pydgilib_extra.dgilib_plot import DGILibPlot
-from pydgilib_extra.dgilib_averages import DGILibAverages
 
 
 class DGILibLogger(object):
@@ -62,23 +54,11 @@ class DGILibLogger(object):
             if (LOGGER_OBJECT not in self.loggers):
                 self.loggers.append(LOGGER_OBJECT)
 
-        # if LOGGER_PLOT in self.loggers:
-        #     self.avgobj = DGILibAverages(
-        #         data=self.dgilib_extra.data, preprocessed_data=self.plotobj.preprocessed_averages_data, *args, **kwargs)
-        #     #self.avgobj.dgilib_extra = self.dgilib_extra
-        #     self.calculate_averages_for_pin = self.avgobj.calculate_averages_for_pin
-        #     self.print_averages_for_pin = self.avgobj.print_averages_for_pin
-        # else:
-        #     pass  # Don't instantiate DGILibAverages, maybe the user wants to do something with the class himself
-
     def start(self):
         """Call to start logging."""
         if LOGGER_CSV in self.loggers:
             for interface in self.dgilib_extra.interfaces.values():
                 interface.init_csv_writer(self.log_folder)
-
-        if LOGGER_PLOT in self.loggers:
-            pass  # TODO
 
         # Start the data polling
         self.start_polling()
@@ -104,10 +84,7 @@ class DGILibLogger(object):
                     self.dgilib_extra.data[interface_id] += interface_data
                 # Update the plot if LOGGER_PLOT is enabled
                 if LOGGER_PLOT in self.loggers:
-                    if self.plotobj is not None:
-                        self.plotobj.update_plot(self.dgilib_extra.data)
-                    else:
-                        print("Error: There's no plot!")
+                    self.plotobj.update_plot(self.dgilib_extra.data)
                 if return_data:
                     logger_data[interface_id] += interface_data
 
@@ -130,10 +107,6 @@ class DGILibLogger(object):
         if LOGGER_CSV in self.loggers:
             for interface in self.dgilib_extra.interfaces.values():
                 interface.close_csv_writer()
-
-        if LOGGER_PLOT in self.loggers:
-            self.plotobj.ax.set_title("Logged Data")
-            pass  # TODO
 
         if LOGGER_OBJECT in self.loggers:
             return self.dgilib_extra.data
@@ -171,11 +144,13 @@ class DGILibLogger(object):
         elif LOGGER_OBJECT in self.loggers:
             while time() < end_time:
                 self.update_callback()
-                if (time() > min_time) and stop_function(self.dgilib_extra.data):
+                if (time() > min_time) and \
+                        stop_function(self.dgilib_extra.data):
                     break
         else:
             while time() < end_time:
-                if (time() > min_time) and stop_function(self.update_callback(True)):
+                if (time() > min_time) and \
+                        stop_function(self.update_callback(True)):
                     break
 
         self.stop()
@@ -239,40 +214,3 @@ class DGILibLogger(object):
             self.dgilib_extra.stop_polling()
         if power:
             self.dgilib_extra.auxiliary_power_stop()
-
-# # Should be removed and updated every time update_callback is called
-# def logger_plot_data(data, plot_pins=[True] * 4, fig=None, ax=None):
-#     """TO BE REMOVED."""
-#     if ax is None:
-#         if fig is None:
-#             fig = plt.figure(figsize=(8, 6))
-#         else:
-#             fig.clf()
-#         ax = fig.add_subplot(1, 1, 1)
-#     # plt.gcf().set_size_inches(8, 6, forward=True)
-#     ax.plot(data.power.timestamps, data.power.values)
-#     if data.power:
-#         max_data = max(data.power.values)
-#     for pin, plot_pin in enumerate(plot_pins):
-#         if plot_pin:
-#             ax.plot(data.gpio.timestamps, [
-#                     pin_values[pin]*max_data for pin_values in data.gpio.values])
-#     ax.set_xlabel('Time [s]')
-#     ax.set_ylabel('Current [A]')
-#     # ax.set_title(
-#     #     f"Average current: {calculate_average(data[INTERFACE_POWER])*1e3:.4}"
-#     #     f" mA, with pin 2 high: "
-#     #     f"{calculate_average(power_filter_by_pin(2, data))*1e3:.4} mA, with "
-#     #     f"pin 3 high: "
-#     #     f"{calculate_average(power_filter_by_pin(3, data))*1e3:.4}")
-#     # ax.set_title(
-#     #     f"Average current: {calculate_average(data[INTERFACE_POWER].get_as_lists())*1e3:.4} "
-#     #     f"mA, with pin 2 high: {calculate_average_by_pin(data, 2)*1e3:.4} mA, "
-#     #     f"with pin 3 high: {calculate_average_by_pin(data, 3)*1e3:.4}")
-#     fig.suptitle("Logged Data")
-#     fig.show()
-
-#     while fig.fignum_exists(fig.number):
-#         fig.pause(1)
-
-#     return fig, ax

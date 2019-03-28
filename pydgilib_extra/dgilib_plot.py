@@ -3,7 +3,7 @@ import csv
 import sys
 
 from pydgilib_extra.dgilib_extra_config import *
-from pydgilib_extra.dgilib_calculations import HoldTimes
+from tests_plot.dgilib_averages import HoldTimes
 
 import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox

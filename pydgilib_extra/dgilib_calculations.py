@@ -4,19 +4,12 @@
 import warnings
 
 from pydgilib_extra.dgilib_extra_config import NUM_PINS
-from time import time
 
-###############################
-# Streaming Calculation Class #
-###############################
+
 class StreamingCalculation(object):
     def __init__(self):
         self.data = []
         self.index = 0
-
-#################################################
-# GPIO Augment Edges + Power and time per pulse #
-#################################################
 
 
 class GPIOAugmentEdges(StreamingCalculation):
@@ -157,7 +150,7 @@ def power_and_time_per_pulse(
     :return: List of list of power and time sums.
     :rtype: tuple(list(float), list(float))
     """
-    pin_value = not pulse_direction  # BUG: needs xor in edge detection
+    pin_value = False
 
     pulse_start_time = 0
     pulse_end_time = 0
@@ -179,14 +172,13 @@ def power_and_time_per_pulse(
             break
         # Detect inside start and end time
         if timestamp > start_time and timestamp <= end_time:
-            # Detect rising edge
-            # TODO: not pin_value and (pin_value xor pin_values[pin]) ?
-            if not pin_value and pin_values[pin]:
+            # Detect rising edge (if pulse_direction else falling edge)
+            if not pin_value and (pin_values[pin] ^ (not pulse_direction)):
                 pin_value = pulse_direction
                 pulse_start_time = timestamp
-            # Detect falling edge
-            if pin_value and not pin_values[pin]:
-                pin_value = not pulse_direction
+            # Detect falling edge (if pulse_direction else rising edge)
+            if pin_value and (pin_values[pin] ^ pulse_direction):
+                pin_value = False
                 pulse_end_time = timestamp
 
                 # Get the index of the power sample corresponding to the
@@ -239,7 +231,7 @@ def rise_and_fall_times(
     Returns:
         [type] -- [description]
     """
-    pin_value = not pulse_direction  # BUG: needs xor in edge detection
+    pin_value = False
 
     rise_times = []
     fall_times = []
@@ -256,212 +248,38 @@ def rise_and_fall_times(
             break
         # Detect inside start and end time
         if timestamp > start_time and timestamp <= end_time:
-            # Detect rising edge
-            # TODO: not pin_value and (pin_value xor pin_values[pin]) ?
-            if not pin_value and pin_values[pin]:
+            # Detect rising edge (if pulse_direction else falling edge)
+            if not pin_value and (pin_values[pin] ^ (not pulse_direction)):
                 pin_value = pulse_direction
                 rise_times.append(timestamp)
-            # Detect falling edge
-            if pin_value and not pin_values[pin]:
-                pin_value = not pulse_direction
+            # Detect falling edge (if pulse_direction else rising edge)
+            if pin_value and (pin_values[pin] ^ pulse_direction):
+                pin_value = False
                 fall_times.append(timestamp)
 
     return rise_times, fall_times
 
-##############################
-# Identify toggle/hold times #
-##############################
 
+def calculate_average(power_data, start_time=None, end_time=None,
+                      start_index=1):
+    """Calculate average value of the power_data using the left Riemann sum.
 
-def what_value_is_at_time_t_for_pin(data, pin, t):
-    index_of_timestamp = data.gpio.timestamps.index(t)
-    return data.gpio.values[index_of_timestamp]
+    Arguments:
+        power_data {InterfaceData} -- Instance of InterfaceData with power
+            samples.
 
-class HoldTimes(StreamingCalculation):
+    Keyword Arguments:
+        start_time {float} -- Timestamp of first sample to include (default:
+            {None})
+        end_time {float} -- Timestamp to of last sample to include (default:
+            {None})
+        start_index {int} -- Index to start search for start time at (default:
+            {1})
 
-    def identify_toggle_times(self, pin, data_gpio=None, gpio_start_index=0):
-        if data_gpio is None:
-            data_gpio = self.data
-        if gpio_start_index == None:
-            gpio_start_index = self.index
-
-        if len(data_gpio.timestamps) <= 1:
-            return []  # We can't identify intervals with only one value
-        if gpio_start_index > (len(data_gpio.timestamps) - 1):
-            return []  # We're being asked to do an index that does not exist yet, so just skip
-
-        toggle_times = []
-        true_to_false_toggle_times = []
-        false_to_true_toggle_times = []
-
-        #last_toggle_timestamp = data_gpio.timestamps[start_index]
-        last_toggle_value = data_gpio.values[gpio_start_index][pin]
-
-        #print("New data, starting on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[start_index]) + " of value " + str(last_toggle_value) + ". Index is: " + str(start_index))
-
-        for i in range(gpio_start_index, len(data_gpio)):
-            if last_toggle_value != data_gpio.values[i][pin]:
-                #print("Detected toggle on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[i]) + " of value " + str(data_gpio.values[i][pin]) + ". Index is: " + str(i))
-                toggle_times.append(data_gpio.timestamps[i])
-                if last_toggle_value == True:
-                    true_to_false_toggle_times.append(data_gpio.timestamps[i])
-                if last_toggle_value == False:
-                    false_to_true_toggle_times.append(data_gpio.timestamps[i])
-
-                #last_toggle_timestamp = data_gpio.timestamps[i]
-                last_toggle_value = data_gpio.values[i][pin]
-
-        # A smart printing for debugging this function
-        # Either leave 'debug = False' or comment it, but don't lose it
-        debug = False
-        if debug:
-            for (t, v) in data_gpio:
-                # print(str((t,v)))
-                if t in toggle_times:
-                    print("\t" + str(t) + "\t\t" + str(v) + "\t <-- toggled")
-                else:
-                    print("\t" + str(t) + "\t\t" + str(v))
-
-        # , last_toggle_index
-        return toggle_times, true_to_false_toggle_times, false_to_true_toggle_times
-
-    def identify_hold_times(self, pin, pin_value, data_gpio=None):
-        if data_gpio is None:
-            data_gpio = self.data
-        if len(data_gpio.timestamps) <= 1:
-            return []  # We can't identify intervals with only one value
-        if self.index > (len(data_gpio.timestamps) - 1):
-            return []  # We're being asked to do an index that does not exist yet, so just skip
-
-        hold_times = []
-
-        (_, true_to_false_times, false_to_true_times) = self.identify_toggle_times(
-            pin, data_gpio, self.index)
-
-        #print("T2F: " + str(true_to_false_times))
-        #print("F2T: " + str(false_to_true_times))
-
-        if len(false_to_true_times) == 0:
-            return
-        if len(true_to_false_times) == 0:
-            return
-
-        if (pin_value == True):
-            # A fix
-            if false_to_true_times[0] > true_to_false_times[0]:
-                true_to_false_times.pop(0)
-            hold_times = zip(false_to_true_times, true_to_false_times)
-        elif (pin_value == False):
-            # A fix
-            if true_to_false_times[0] > false_to_true_times[0]:
-                false_to_true_times.pop(0)
-            hold_times = zip(true_to_false_times, false_to_true_times)
-
-        # A smart printing for debugging this function
-        # Either leave 'debug = False' or comment it, but don't lose it
-        debug = False
-        if debug:
-            ht_zip = list(zip(*hold_times))
-            for (t, v) in data_gpio:
-                # print(str((t,v)))
-                if t in ht_zip[0]:
-                    print("\t" + str(t) + "\t\t" + str(v) + "\t <-- start")
-                elif t in ht_zip[1]:
-                    print("\t" + str(t) + "\t\t" + str(v) + "\t <-- stop")
-                else:
-                    print("\t" + str(t) + "\t\t" + str(v))
-
-        hold_times_list = list(hold_times)
-
-        try:
-            self.index = data_gpio.timestamps.index(hold_times_list[-1][-1]) + 1
-        except IndexError:
-            # If you remove this, you get an error
-            pass
-
-        return hold_times_list
-
-###############################
-# Calculate average leftpoint #
-###############################
-
-
-def calculate_average_multiple_intervals(data_power, intervals, start_time=None, end_time=None):
-    sum = 0
-    to_divide = 0
-
-    for intv in intervals:
-        if ((intv[0] >= start_time) and (intv[0] <= end_time) and (intv[1] >= start_time) and (intv[1] <= end_time)):
-            sum += calculate_average(data_power, intv[0], intv[1], -1)
-            to_divide += 1
-
-    return sum / to_divide
-
-def calculate_average_leftpoint_single_interval(data_power, start_time=None, end_time=None, power_start_index=0):
-
-    # Get the timestamps nearest to 'timestamp_to_compare' in the power data.
-    #  Usually the 'timestamp_to_compare' is a timestamp from gpio data, and this
-    #  function is getting the left/right timestamps from the power data
-    def get_nearest_timestamps(data_power, timestamp_to_compare, start_index=0):
-        index = data_power.get_index(timestamp_to_compare, start_index)
-
-        if data_power.timestamps[index] >= timestamp_to_compare:
-            if index == 0:
-                return (None, data_power.timestamps[index], None, index)
-            else:
-                return (data_power.timestamps[index-1], data_power.timestamps[index], index-1, index)
-        else:
-            return (None, None, None, None)
-
-    #beginning_time = time()
-    if start_time is None:
-        start_time = data_power.timestamps[0]
-    else:
-        (_, start_time, _, left_index) = get_nearest_timestamps(data_power, start_time, power_start_index)
-    #duration = time() - beginning_time
-    #print("[calculate_average_leftpoint_single_interval benchmark] Start time get: {0} s with index {1}".format(duration, power_start_index))
-
-    #beginning_time = time()
-    if end_time is None:
-        end_time = data_power.timestamps[-1]
-    else:
-        (end_time, _, right_index, _) = get_nearest_timestamps(
-            data_power, end_time, left_index)
-
-    if start_time is None:
-        return None
-    if end_time is None:
-        return None
-    if left_index is None:
-        return None
-    if right_index is None:
-        return None
-
-    last_time = start_time
-
-    sum = 0
-
-    #beginning_time = time()
-    for i in range(left_index, right_index+1): # +1 to include right_index
-        timestamp = data_power.timestamps[i]
-        power_value = data_power.values[i]
-
-        sum += power_value * (timestamp - last_time)
-        last_time = timestamp
-    #duration = time() - beginning_time
-    #print("[calculate_average_leftpoint_single_interval benchmark] Main for loop: {0} s".format(duration))
-
-    return sum, left_index  # / (end_time - start_time)
-
-def calculate_average(power_data, start_time=None, end_time=None, initial_search_index=1):
-    """Calculate average value of the power_data using the left Riemann sum."""
-    # print("Start time: " + str(start_time))
-    # print("End time: " + str(end_time))
-    # print("Timestamps: " + str(data_power.timestamps))
-    if start_time is None:
-        start_index = 1
-    else:
-        start_index = power_data.get_index(start_time, initial_search_index)
+    Returns:
+        [type] -- [description]
+    """
+    start_index = power_data.get_index(start_time, start_index)
     if end_time is None:
         end_index = len(power_data)
     else:
@@ -478,120 +296,3 @@ def calculate_average(power_data, start_time=None, end_time=None, initial_search
                 for i in range(start_index, end_index)) /
             (power_data.timestamps[end_index] -
              power_data.timestamps[start_index]))
-
-##############################
-# Calculate average midpoint #
-##############################
-
-
-# def calculate_average_midpoint_single_interval(power_data, start_time=None, end_time=None):
-#     # Calculate average value using midpoint Riemann sum
-#     sum = 0
-
-#     actual_start_time = -1
-#     actual_end_time = -1
-
-#     for i in range(len(power_data[0]) - 1)[1:]:
-#         first_current_value = power_data[1][i]
-#         second_current_value = power_data[1][i + 1]
-#         timestamp = power_data[0][i + 1]
-#         last_time = power_data[0][i]
-
-#         if ((last_time >= start_time) and (last_time < end_time)):
-#             sum += ((first_current_value + second_current_value) / 2) * \
-#                 (timestamp - last_time)
-
-#             # We have to select the actual start time and the actual
-#             if (actual_start_time == -1):
-#                 actual_start_time = power_data[0][i]
-
-#         if (timestamp >= end_time):
-#             actual_end_time = power_data[0][i - 1]
-#             break
-
-#     return sum / (actual_end_time - actual_start_time)
-
-
-# def calculate_average_midpoint_multiple_intervals(power_data, intervals, start_time=None, end_time=None):
-#     # Calculate average value using midpoint Riemann sum
-#     sum = 0
-#     to_divide = 0
-
-#     for intv in intervals:
-#         if ((intv[0] >= start_time) and (intv[0] <= end_time) and (intv[1] >= start_time) and (intv[1] <= end_time)):
-#             sum += calculate_average_midpoint_single_interval(
-#                 power_data, intv[0], intv[1])
-#             to_divide += 1
-
-#     return sum / to_divide
-
-##########################################
-# Obsolete / Possibly obsolete functions #
-##########################################
-# def power_filter_by_pin(pin, data, verbose=0):
-#     """Filter the data to when a specified pin is high."""
-#     power_data = copy.deepcopy(data[INTERFACE_POWER])
-
-#     pin_value = False
-
-#     power_index = 0
-
-#     if verbose:
-#         print(
-#             f"power_filter_by_pin filtering  {len(power_data[0])} power "
-#             f"samples.")
-
-#     for timestamp, pin_values in zip(*data[INTERFACE_GPIO]):
-#         while (power_index < len(power_data[0]) and
-#                power_data[0][power_index] < timestamp):
-#             power_data[1][power_index] *= pin_value
-#             power_index += 1
-
-#         if pin_values[pin] != pin_value:
-#             if verbose:
-#                 print(f"\tpin {pin} changed at {timestamp}, {pin_value}")
-#             pin_value = pin_values[pin]
-
-#     return power_data
-
-# def pin_duty_cycle(self, pin=0, data=None):
-#     pass
-
-
-# def calculate_average_by_pin(data, pin=0, start_time=None, end_time=None):
-#     """calculate_average_by_pin.
-
-#     NOTE: NEEDS TO BE REWRITTEN!
-
-#     Calculate average value of the data while pin is high, using the left
-#     Riemann sum.
-#     """
-#     if start_time is None:
-#         start_time = data[INTERFACE_POWER].get_as_lists()[0][0]
-#     if end_time is None:
-#         end_time = data[INTERFACE_POWER].get_as_lists()[0][-1]
-
-#     last_time = start_time
-
-#     power_sum = 0
-#     time_sum = 0
-
-#     power_index = 0
-
-#     for timestamp, pin_values in data[INTERFACE_GPIO]:
-#         while (pin_values[pin] and
-#                power_index < len(data[INTERFACE_POWER].get_as_lists()[0]) and
-#                data[INTERFACE_POWER].get_as_lists()[0][power_index] <= timestamp):
-#             if (data[INTERFACE_POWER].get_as_lists()[0][power_index] >= start_time and
-#                     data[INTERFACE_POWER].get_as_lists()[0][power_index] <= end_time):
-#                 power_sum += data[INTERFACE_POWER].get_as_lists()[1][power_index] * \
-#                     (data[INTERFACE_POWER].get_as_lists()
-#                      [0][power_index] - last_time)
-#                 time_sum += (data[INTERFACE_POWER].get_as_lists()
-#                              [0][power_index] - last_time)
-#             last_time = data[INTERFACE_POWER].get_as_lists()[0][power_index]
-#             power_index += 1
-
-#     if time_sum == 0:
-#         return 0
-#     return power_sum / time_sum

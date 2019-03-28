@@ -146,12 +146,10 @@ class InterfaceData(object):
     def get_index(self, timestamp, start_index=0):
         """Get the index of the first sample after the timestamp."""
         index = start_index  # Start at start_index (can speed up search)
-        max_index = len(self) - 1
+        max_index = len(self.timestamps) - 1
         while index < max_index and self.timestamps[index] < timestamp:
             index += 1
         return index
-
-    
 
 
 class LoggerData(dict):
