@@ -91,10 +91,10 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
     else:
         # This is make_command mode or atprogram_command mode
         clean = build = erase = program = verify = False
+    returncode = 0
     output = SavePrint(return_output)
     stdout = PIPE if verbose >= 0 else None
     stderr = STDOUT if verbose >= 1 else None
-    returncode = 0
     if not elf_mode and (clean or build or make_command):
         make_path = make_path or path.join(
             atmel_studio_path, "shellutils", "make.exe")
@@ -141,10 +141,11 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
             (atprogram_command or
              erase * " chiperase " +
              program * f" program -f {elf_file_path} " +
-             verify * f" verify -fl -f {elf_file_path} " +
+             verify * f" verify -f {elf_file_path} " +
              (verbose >= 3) * " info")
         returncode = atprogram_caller(atprogram_command)
         if returncode:
+            output.print(returncode)
             atprogram_caller("exitcode")
     if return_output:
         return output.output + f"\n{returncode}"
