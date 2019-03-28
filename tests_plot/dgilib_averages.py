@@ -1,5 +1,6 @@
 from pydgilib_extra.dgilib_calculations import (
-    calculate_average, StreamingCalculation, power_and_time_per_pulse)
+    calculate_average, StreamingCalculation, power_and_time_per_pulse,
+    rise_and_fall_times)
 from time import time
 
 ITERATION = 0
@@ -163,7 +164,7 @@ class DGILibAverages(object):
                 else:
                     iteration_idx = i+1
                     hold_times = hold_times_all[i]
-                    start_index = 0
+
                     average = None
 
                 if ignore_first_average and iteration_idx == 1:
@@ -391,4 +392,4 @@ def calculate_average_leftpoint_single_interval(data_power, start_time=None, end
     #duration = time() - beginning_time
     #print("[calculate_average_leftpoint_single_interval benchmark] Main for loop: {0} s".format(duration))
 
-    return sum, left_index  # / (end_time - start_time)
+    return sum, right_index  # / (end_time - start_time)
