@@ -451,7 +451,7 @@ def calculate_average_leftpoint_single_interval(data_power, start_time=None, end
     #duration = time() - beginning_time
     #print("[calculate_average_leftpoint_single_interval benchmark] Main for loop: {0} s".format(duration))
 
-    return sum, left_index  # / (end_time - start_time)
+    return sum, right_index  # / (end_time - start_time)
 
 def calculate_average(power_data, start_time=None, end_time=None, initial_search_index=1):
     """Calculate average value of the power_data using the left Riemann sum."""

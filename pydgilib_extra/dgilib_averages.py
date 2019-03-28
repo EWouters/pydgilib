@@ -143,7 +143,6 @@ class DGILibAverages(object):
                 else:
                     iteration_idx = i+1
                     hold_times = hold_times_all[i]
-                    start_index = 0
                     average = None
 
                 if ignore_first_average and iteration_idx == 1:
