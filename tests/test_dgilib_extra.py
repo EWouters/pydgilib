@@ -15,24 +15,30 @@ from os import path
 
 verbosity = (0, 99)
 
+config_dict = {
+    "loggers": [LOGGER_OBJECT, LOGGER_CSV],
+}
+
+# This dict contains many default values, they test the argument handling.
+config_dict_plot = {
+    "interfaces": [INTERFACE_POWER, INTERFACE_GPIO],
+    "power_buffers": [{"channel": CHANNEL_A, "power_type": POWER_CURRENT}],
+    "read_mode": [False, True, True, True],
+    "write_mode": [True, False, False, False],
+    "loggers": [LOGGER_OBJECT, LOGGER_PLOT, LOGGER_CSV],
+    "plot_pins": [True, True, True, True],
+    "gpio_delay_time": 0.0007,
+    "plot_pins_method": "line",
+    "plot_xmax": 1,
+    "window_title": "UnitTest",
+    "file_name_base": "unit_test"
+}
+
 
 @pytest.mark.parametrize("i", range(2**NUM_PINS))
 def test_int2bool2int(i):
     """test_int2bool2int."""
     assert i == bool2int(int2bool(i))
-
-
-config_dict = {
-    "interfaces": [INTERFACE_POWER, INTERFACE_GPIO],
-    "loggers": [LOGGER_OBJECT, LOGGER_CSV],
-    "gpio_delay_time": 0.010795,
-}
-
-config_dict_csv = {
-    "interfaces": [INTERFACE_POWER, INTERFACE_GPIO],
-    "loggers": [LOGGER_CSV],
-    "gpio_delay_time": 0.010795,
-}
 
 
 @pytest.mark.parametrize("verbose", verbosity)
@@ -53,21 +59,6 @@ def test_device_reset(verbose):
         dgilib.device_reset()
 
 
-config_dict_plot = {
-    "interfaces": [INTERFACE_POWER, INTERFACE_GPIO],
-    "power_buffers": [{"channel": CHANNEL_A, "power_type": POWER_CURRENT}],
-    "read_mode": [False, True, True, True],
-    "write_mode": [True, False, False, False],
-    "loggers": [LOGGER_OBJECT, LOGGER_PLOT, LOGGER_CSV],
-    "plot_pins": [True, True, True, True],
-    "gpio_delay_time": 0.0007,
-    "plot_pins_method": "line",
-    "plot_xmax": 1,
-    "window_title": "UnitTest",
-    "file_name_base": "unit_test"
-}
-
-
 @pytest.mark.parametrize("verbose", verbosity)
 def test_plot_simple(verbose):
     """test_plot_simple."""
@@ -77,7 +68,7 @@ def test_plot_simple(verbose):
 
 
 @pytest.mark.parametrize("config",
-                         (config_dict, config_dict_plot, config_dict_csv,
+                         (config_dict, config_dict_plot, {},
                           {"loggers": [LOGGER_PLOT]}))
 @pytest.mark.parametrize("verbose", verbosity)
 def test_plot(config, verbose):
