@@ -6,7 +6,7 @@ from pydgilib.dgilib import DGILib
 
 from pydgilib.dgilib_config import (
     INTERFACE_GPIO, INTERFACE_TIMESTAMP, INTERFACE_POWER_DATA)
-from pydgilib_extra.dgilib_extra_config import INTERFACE_POWER
+from pydgilib_extra.dgilib_extra_config import (INTERFACE_POWER, LOGGER_CSV)
 from pydgilib_extra.dgilib_logger import DGILibLogger
 from pydgilib_extra.dgilib_data import LoggerData
 from pydgilib_extra.dgilib_interface import DGILibInterface
@@ -18,6 +18,7 @@ class DGILibExtra(DGILib):
     """A user friendly way to interact with the DGILib API."""
 
     default_enabled_interfaces = [INTERFACE_GPIO, INTERFACE_POWER]
+    default_loggers = [LOGGER_CSV]
 
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibExtra object."""
@@ -36,8 +37,8 @@ class DGILibExtra(DGILib):
         self.args = args
         self.kwargs = kwargs
 
-        # Instantiate logger if there were any loggers specified
-        if self.kwargs.get("loggers", []):
+        # Instantiate logger
+        if self.kwargs.get("loggers", self.default_loggers):
             self.logger = self.logger(self, *self.args, **self.kwargs)
 
         if self.verbose >= 2:
