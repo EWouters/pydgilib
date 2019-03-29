@@ -24,6 +24,7 @@ class DGILibInterfaceGPIO(DGILibInterface):
     interface_id = INTERFACE_GPIO
     name = "gpio"
     csv_header = ["timestamp"] + [f"gpio{n}" for n in range(NUM_PINS)]
+    default_gpio_delay_time = 0.00075
 
     @staticmethod
     def _csv_reader_map(row):
@@ -42,12 +43,15 @@ class DGILibInterfaceGPIO(DGILibInterface):
             kwargs["write_mode"] = self.write_mode
         # Instantiate base class
         DGILibInterface.__init__(self, *args, **kwargs)
+
         # Parse arguments
-        self.augment_gpio = kwargs.get("augment_gpio", True)
-        self.gpio_delay_time = kwargs.get("gpio_delay_time", 0)
-        self.gpio_switch_time = kwargs.get("gpio_switch_time", 0)
-        if self.augment_gpio or self.gpio_delay_time or self.gpio_switch_time:
+        # By default augment gpio with delay of self.default_gpio_delay_time
+        if kwargs.get("augment_gpio", True) or "gpio_delay_time" in kwargs or \
+                "gpio_switch_time" in kwargs:
             self.augment_gpio = True
+            self.gpio_delay_time = kwargs.get(
+                "gpio_delay_time", self.default_gpio_delay_time)
+            self.gpio_switch_time = kwargs.get("gpio_switch_time", 0)
             self.gpio_augment_edges_streaming = GPIOAugmentEdges()
             self.gpio_augment_edges = \
                 self.gpio_augment_edges_streaming.gpio_augment_edges
