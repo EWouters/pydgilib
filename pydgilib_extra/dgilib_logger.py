@@ -23,7 +23,7 @@ class DGILibLogger(object):
             "dgilib_extra", args[0] if args else None)
 
         # Get enabled loggers
-        self.loggers = kwargs.get("loggers", [])
+        self.loggers = kwargs.get("loggers", [LOGGER_CSV])
 
         # Enable the csv logger if file_name_base or log_folder has been
         # specified.
