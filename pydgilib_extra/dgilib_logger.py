@@ -128,9 +128,6 @@ class DGILibLogger(object):
                 LOGGER_OBJECT was passed to the logger.
 
         """
-        end_time = time() + duration
-        min_time = time() + min_duration
-
         self.start()
 
         if LOGGER_PLOT in self.loggers:
@@ -138,20 +135,26 @@ class DGILibLogger(object):
             if self.plotobj is type(DGILibPlot):
                 self.plotobj.xmax = duration
 
+        cur_time = time()
+        end_time = cur_time + duration
+        min_time = cur_time + min_duration
+
         if stop_function is None:
             while time() < end_time:
                 self.update_callback()
         elif LOGGER_OBJECT in self.loggers:
-            while time() < end_time:
+            while cur_time < end_time:
                 self.update_callback()
-                if (time() > min_time) and \
+                if (cur_time > min_time) and \
                         stop_function(self.dgilib_extra.data):
                     break
+                cur_time = time()
         else:
-            while time() < end_time:
-                if (time() > min_time) and \
+            while cur_time < end_time:
+                if (cur_time > min_time) and \
                         stop_function(self.update_callback(True)):
                     break
+                cur_time = time()
 
         self.stop()
 
