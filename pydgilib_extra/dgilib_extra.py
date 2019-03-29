@@ -17,6 +17,8 @@ from pydgilib_extra.dgilib_interface_power import DGILibInterfacePower
 class DGILibExtra(DGILib):
     """A user friendly way to interact with the DGILib API."""
 
+    default_enabled_interfaces = [INTERFACE_GPIO, INTERFACE_POWER]
+
     def __init__(self, *args, **kwargs):
         """Instantiate DGILibExtra object."""
         # Add modules as classes (will be replaced by objects when used)
@@ -51,7 +53,7 @@ class DGILibExtra(DGILib):
 
         # Instantiate interface objects and enable the interfaces
         for interface_id in self.kwargs.get(
-                "interfaces", [INTERFACE_GPIO, INTERFACE_POWER]):
+                "interfaces", self.default_enabled_interfaces):
             if interface_id in self.interfaces:
                 self.interfaces[interface_id] = self.interfaces[interface_id](
                     self, *self.args, **self.kwargs)
