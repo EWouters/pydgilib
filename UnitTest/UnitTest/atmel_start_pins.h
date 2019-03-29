@@ -25,4 +25,7 @@
 #define PA24 GPIO(GPIO_PORTA, 24)
 #define PA25 GPIO(GPIO_PORTA, 25)
 
+#define INIT_GPIO
+#define INIT_LED
+
 #endif // ATMEL_START_PINS_H_INCLUDED

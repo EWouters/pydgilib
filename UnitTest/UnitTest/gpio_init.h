@@ -9,9 +9,6 @@
 #ifndef GPIO_INIT_H_
 #define GPIO_INIT_H_
 
-#define INIT_GPIO
-#define INIT_LED
-
 #define DELAY delay_ms(1)
 
 #ifdef INIT_GPIO
