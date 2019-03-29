@@ -275,5 +275,5 @@ def valid_interface_data(samples):
     """Check if samples are valid InterfaceData."""
     return (isinstance(samples, (tuple, list)) and
             len(samples) == 2 and
-            all(isinstance(sample, (list, float, int)) for sample in samples) and
+            all(isinstance(sample, (tuple, list, float, int)) for sample in samples) and
             (isinstance(samples[0], float) or len(samples[0]) == len(samples[1])))

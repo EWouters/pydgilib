@@ -9,12 +9,12 @@ from pydgilib_extra.dgilib_data import InterfaceData
 
 # TODO: make these functions faster/better?
 def int2bool(i):
-    """Convert int to list of bool."""
-    return [bit is '1' for bit in reversed(bin(i)[2:].zfill(NUM_PINS))]
+    """Convert int to tuple of bool."""
+    return tuple(bit is '1' for bit in reversed(bin(i)[2:].zfill(NUM_PINS)))
 
 
 def bool2int(b):
-    """Convert list of bool to int."""
+    """Convert iterable of bool to int."""
     return int(''.join('1' if d else '0' for d in reversed(b)), 2)
 
 
