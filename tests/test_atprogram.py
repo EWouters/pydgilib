@@ -67,3 +67,8 @@ def test_get_project_size():
     assert size.keys() == set(size_keys)
     for key in size_keys[:-1]:
         assert isinstance(size[key], int)
+
+
+def test_atprogram_invalid_command():
+    """test_atprogram_not_a_command."""
+    assert atprogram(atprogram_command="invalid_command")

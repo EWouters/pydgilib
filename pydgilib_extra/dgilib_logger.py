@@ -118,7 +118,7 @@ class DGILibLogger(object):
 
         Keyword Arguments:
             duration {int} -- Amount of time to log data (default: {10}).
-            stop_function {function} -- Function that will be evaluated on the
+            stop_function {callable} -- Function that will be evaluated on the
                 collected data. If it returns True the logging will be
                 stopped even if the duration has not been reached (default:
                 {None}).

@@ -15,8 +15,6 @@ from pydgilib_extra.dgilib_data import (
 from pydgilib_extra.dgilib_calculations import *
 from pydgilib_extra.dgilib_plot import DGILibPlot
 
-#from pydgilib_extra.dgilib_logger_functions import mergeData
-
 __author__ = "EWouters <ehwo(at)kth.se>"
 __url__ = "https://github.com/EWouters/Atmel-SAML11/tree/master/Python/" \
     "pydgilib"

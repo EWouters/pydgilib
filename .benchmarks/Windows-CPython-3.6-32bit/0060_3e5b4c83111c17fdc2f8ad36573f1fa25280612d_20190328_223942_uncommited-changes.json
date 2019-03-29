@@ -1,0 +1,104 @@
+{
+    "machine_info": {
+        "node": "Erik-Z15",
+        "processor": "Intel64 Family 6 Model 60 Stepping 3, GenuineIntel",
+        "machine": "AMD64",
+        "python_compiler": "MSC v.1915 32 bit (Intel)",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.6.8",
+        "python_version": "3.6.8",
+        "python_build": [
+            "default",
+            "Feb 11 2019 15:50:09"
+        ],
+        "release": "10",
+        "system": "Windows",
+        "cpu": {
+            "vendor_id": "GenuineIntel",
+            "hardware": "unknown",
+            "brand": "Intel(R) Core(TM) i7-4700MQ CPU @ 2.40GHz"
+        }
+    },
+    "commit_info": {
+        "id": "3e5b4c83111c17fdc2f8ad36573f1fa25280612d",
+        "time": "2019-03-28T17:57:21+01:00",
+        "author_time": "2019-03-28T17:57:21+01:00",
+        "dirty": true,
+        "project": "Atmel-SAML11",
+        "branch": "master"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_data_iadd_speed",
+            "fullname": "tests/test_benchmarks.py::test_data_iadd_speed",
+            "params": null,
+            "param": null,
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.20147309999999985,
+                "max": 0.2411494999999999,
+                "mean": 0.21746564,
+                "stddev": 0.015337145297055758,
+                "rounds": 5,
+                "median": 0.2185416,
+                "iqr": 0.019676899999999997,
+                "q1": 0.20530087500000005,
+                "q3": 0.22497777500000005,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.20147309999999985,
+                "hd15iqr": 0.2411494999999999,
+                "ops": 4.598427595274361,
+                "total": 1.0873282,
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_data_no_class_speed",
+            "fullname": "tests/test_benchmarks.py::test_data_no_class_speed",
+            "params": null,
+            "param": null,
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.19177290000000013,
+                "max": 0.19939220000000013,
+                "mean": 0.1960702,
+                "stddev": 0.002798014522478378,
+                "rounds": 6,
+                "median": 0.1963043,
+                "iqr": 0.0034741000000000355,
+                "q1": 0.1945866999999999,
+                "q3": 0.19806079999999993,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.19177290000000013,
+                "hd15iqr": 0.19939220000000013,
+                "ops": 5.100214106988211,
+                "total": 1.1764212,
+                "iterations": 1
+            }
+        }
+    ],
+    "datetime": "2019-03-28T22:42:45.530080",
+    "version": "3.2.2"
+}

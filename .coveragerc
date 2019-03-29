@@ -1,0 +1,29 @@
+
+# .coveragerc to control coverage.py
+[run]
+#branch = True
+source =
+    ./atprogram
+    ./pydgilib
+    ./pydgilib_extra
+    ./tests
+omit = 
+    ./conf.py
+    ./setup.py
+    ./tests/debug.py
+    ./tests_plot/*
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain if tests don't hit error code:
+    raise DeviceReturnError
+
+fail_under = 90
+#ignore_errors = True
+
+[html]
+directory = htmlcov
