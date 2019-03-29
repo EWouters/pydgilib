@@ -18,8 +18,9 @@ int main(void)
 		delay_ms(30);
 		STOP_MEASURE(DGI_GPIO2);
 		START_MEASURE(DGI_GPIO3);
-		gpio_toggle_pin_level(LED0);
+		LED_ON;
 		delay_ms(40);
+		LED_OFF;
 		STOP_MEASURE(DGI_GPIO3);
 	}
 	END_MEASUREMENT;

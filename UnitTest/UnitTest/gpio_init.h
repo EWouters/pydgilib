@@ -30,10 +30,12 @@
 #endif
 
 #ifdef INIT_LED
-#define LED_ON false
-#define LED_OFF true
 
 #define LED0 GPIO(GPIO_PORTA, 7)
+
+#define LED_ON gpio_set_pin_level(LED0, false)
+#define LED_OFF gpio_set_pin_level(LED0, true)
+
 #endif
 
 void gpio_init(void);

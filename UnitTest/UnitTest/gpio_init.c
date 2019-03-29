@@ -29,7 +29,7 @@ void gpio_init(void)
 #endif
 
 #ifdef INIT_LED
-	gpio_set_pin_level(LED0, LED_OFF);
+	LED_OFF;
 
 	// Set pin direction to output
 	gpio_set_pin_direction(LED0, GPIO_DIRECTION_OUT);

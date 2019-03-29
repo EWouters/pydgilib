@@ -76,6 +76,11 @@ def power_and_time_per_pulse(
     Takes the data and a pin and returns a list of power and time sums for
     each pulse of the specified pin.
 
+    NOTE: This returns time durations in the sampling frame of the power
+    timestamps. Hence the list of times this function returns will not exactly
+    match with the difference between rise timestamp and fall timestamp of the
+    of the GPIO pin.
+
     :param data: LoggerData object. Needs to have GPIO and Power data.
     :type data: LoggerData
     :param pin: Number of the GPIO pin to be used.
