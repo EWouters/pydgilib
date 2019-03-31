@@ -1,1 +1,0 @@
-%windir%\System32\cmd.exe "/K" C:\Users\Dragos\Miniconda3\Scripts\activate.bat py36_32
