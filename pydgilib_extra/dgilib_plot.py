@@ -3,7 +3,8 @@ import csv
 import sys
 
 from pydgilib_extra.dgilib_extra_config import *
-from tests_plot.dgilib_averages import HoldTimes
+from pydgilib_extra.dgilib_calculations import StreamingCalculation
+#from tests_plot.dgilib_averages import HoldTimes
 
 import matplotlib.pyplot as plt; plt.ion()
 from matplotlib.widgets import Slider, Button, TextBox
@@ -11,6 +12,111 @@ from matplotlib.widgets import Slider, Button, TextBox
 from threading import Lock
 
 float_epsilon = sys.float_info.epsilon
+
+class HoldTimes(StreamingCalculation):
+
+    def identify_toggle_times(self, pin, data_gpio=None, gpio_start_index=0):
+        if data_gpio is None:
+            data_gpio = self.data
+        if gpio_start_index == None:
+            gpio_start_index = self.index
+
+        if len(data_gpio.timestamps) <= 1:
+            return []  # We can't identify intervals with only one value
+        if gpio_start_index > (len(data_gpio.timestamps) - 1):
+            return []  # We're being asked to do an index that does not exist yet, so just skip
+
+        toggle_times = []
+        true_to_false_toggle_times = []
+        false_to_true_toggle_times = []
+
+        #last_toggle_timestamp = data_gpio.timestamps[start_index]
+        last_toggle_value = data_gpio.values[gpio_start_index][pin]
+
+        #print("New data, starting on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[start_index]) + " of value " + str(last_toggle_value) + ". Index is: " + str(start_index))
+
+        for i in range(gpio_start_index, len(data_gpio)):
+            if last_toggle_value != data_gpio.values[i][pin]:
+                #print("Detected toggle on pin " + str(pin) + " at timestamp " + str(data_gpio.timestamps[i]) + " of value " + str(data_gpio.values[i][pin]) + ". Index is: " + str(i))
+                toggle_times.append(data_gpio.timestamps[i])
+                if last_toggle_value == True:
+                    true_to_false_toggle_times.append(data_gpio.timestamps[i])
+                if last_toggle_value == False:
+                    false_to_true_toggle_times.append(data_gpio.timestamps[i])
+
+                #last_toggle_timestamp = data_gpio.timestamps[i]
+                last_toggle_value = data_gpio.values[i][pin]
+
+        # A smart printing for debugging this function
+        # Either leave 'debug = False' or comment it, but don't lose it
+        debug = False
+        if debug:
+            for (t, v) in data_gpio:
+                # print(str((t,v)))
+                if t in toggle_times:
+                    print("\t" + str(t) + "\t\t" + str(v) + "\t <-- toggled")
+                else:
+                    print("\t" + str(t) + "\t\t" + str(v))
+
+        # , last_toggle_index
+        return toggle_times, true_to_false_toggle_times, false_to_true_toggle_times
+
+    def identify_hold_times(self, pin, pin_value, data_gpio=None):
+        if data_gpio is None:
+            data_gpio = self.data
+        if len(data_gpio.timestamps) <= 1:
+            return []  # We can't identify intervals with only one value
+        if self.index > (len(data_gpio.timestamps) - 1):
+            return []  # We're being asked to do an index that does not exist yet, so just skip
+
+        hold_times = []
+
+        (_, true_to_false_times, false_to_true_times) = self.identify_toggle_times(
+            pin, data_gpio, self.index)
+
+        #print("T2F: " + str(true_to_false_times))
+        #print("F2T: " + str(false_to_true_times))
+
+        if len(false_to_true_times) == 0:
+            return
+        if len(true_to_false_times) == 0:
+            return
+
+        if (pin_value == True):
+            # A fix
+            if false_to_true_times[0] > true_to_false_times[0]:
+                true_to_false_times.pop(0)
+            hold_times = zip(false_to_true_times, true_to_false_times)
+        elif (pin_value == False):
+            # A fix
+            if true_to_false_times[0] > false_to_true_times[0]:
+                false_to_true_times.pop(0)
+            hold_times = zip(true_to_false_times, false_to_true_times)
+
+        # A smart printing for debugging this function
+        # Either leave 'debug = False' or comment it, but don't lose it
+        debug = False
+        if debug:
+            ht_zip = list(zip(*hold_times))
+            for (t, v) in data_gpio:
+                # print(str((t,v)))
+                if t in ht_zip[0]:
+                    print("\t" + str(t) + "\t\t" + str(v) + "\t <-- start")
+                elif t in ht_zip[1]:
+                    print("\t" + str(t) + "\t\t" + str(v) + "\t <-- stop")
+                else:
+                    print("\t" + str(t) + "\t\t" + str(v))
+
+        hold_times_list = list(hold_times)
+
+        try:
+            self.index = data_gpio.timestamps.index(
+                hold_times_list[-1][-1]) + 1
+        except IndexError:
+            # If you remove this, you get an error
+            pass
+
+        return hold_times_list
 
 class DGILibPlot(object):
 
