@@ -12,20 +12,6 @@
       "console": "integratedTerminal"
     },
     {
-      "name": "Python: tests_plot/debug.py",
-      "type": "python",
-      "request": "launch",
-      "program": "${workspaceFolder}/tests_plot/debug.py",
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "Python: tests_plot/debug.py (Windowed Terminal)",
-      "type": "python",
-      "request": "launch",
-      "program": "${workspaceFolder}/tests_plot/debug.py",
-      "console": "externalTerminal"
-    },
-    {
       "name": "Python: Current File (Integrated Terminal)",
       "type": "python",
       "request": "launch",
