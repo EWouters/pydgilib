@@ -4,11 +4,12 @@ import sys
 from setuptools import setup
 
 needs_pytest = {"pytest", "test", "ptr"}.intersection(sys.argv)
-pytest_runner = ["pytest-runner"] if needs_pytest else []
+pytest_runner = ["pytest-runner", "pytest-benchmark",
+                 "pytest-cov"] if needs_pytest else []
 
 setup(
     name="pydgilib",
-    version="0.1",
+    version="0.2",
     description="This module provides Python bindings for DGILib.",
     url="https://github.com/EWouters/pydgilib",
     author="Erik Wouters",
@@ -23,7 +24,12 @@ setup(
     setup_requires=[
         # ... (other setup requirements)
     ] + pytest_runner,
-    tests_require=["pytest", "pytest-benchmark", "pytest-cov"],
+    # tests_require=["pytest", "pytest-benchmark", "pytest-cov"],
+    extras_require={
+        'docs':  ["Sphinx", "sphinx_rtd_theme"],
+        'test': ["pytest-runner", "pytest-benchmark", "pytest-cov"], }
 )
 
 # TODO: warn if atmel studio not installed.
+
+# NOTE: dev install: pip install -e .[docs,test]
