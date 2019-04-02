@@ -251,42 +251,33 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
 class SavePrint(object):
     """SavePrint
 
-    A class used to hold the text returned by ``atprogram.exe`` when
-    calling the :func:`~atprogram.atprogram` function.
+    A helper class to store standard output or print if `return_output`
+    is false.
+
+    Parameters
+    ----------
+    return_output : bool
+        If `True`, the output is returned but not printed. If `False`, 
+        the output is printed.
 
     Attributes
     ----------
-    return_output : str
-        .. todo:: Didn't know what to write exactly.
-
     output : str
-        .. todo:: Didn't know what to write exactly.
+        Holds the text that was taken from standard output.
+
     """
 
     def __init__(self, return_output):
-        """__init__
-
-        Called at instantiation of :class:`SavePrint`.
-
-        Parameters
-        ----------
-        return_output : str
-            .. todo:: Didn't know what to write exactly.
-        """
         self.return_output = return_output
         self.output = ""
 
     def print(self, s):
         """print
 
-        .. todo:: Didn't know what to write exactly. Gotta write
-        in relation to the `atprogram` function.
-
         Parameters
         ----------
         s : str
-            .. todo:: Didn't know what to write exactly.
-
+            A string to be added to the output.
         """
         if self.return_output:
             self.output += s
