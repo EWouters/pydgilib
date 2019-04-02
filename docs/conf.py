@@ -16,10 +16,6 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-import guzzle_sphinx_theme
-
-html_theme_path = guzzle_sphinx_theme.html_theme_path()
-
 # -- Project information -----------------------------------------------------
 
 project = 'pydgilib'
@@ -52,7 +48,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'guzzle_sphinx_theme'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -220,7 +215,7 @@ napoleon_use_rtype = True
 # -- Options for Guzzle Sphinx Theme ------------------------------------------
 
 # Guzzle theme options (see theme.conf for more information)
-html_theme_options = {
-    # Set the name of the project to appear in the sidebar
-    "project_nav_name": "Pydgilib",
-}
+# html_theme_options = {
+#     # Set the name of the project to appear in the sidebar
+#     "project_nav_name": "Pydgilib",
+# }
