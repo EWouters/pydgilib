@@ -483,3 +483,8 @@ unit_test_*.csv
 
 # KDE Dolphin on Linux
 .directory
+
+# Script for opening Miniconda in the current directory,
+# which is probably useless for anyone else because it's
+# too specific
+open_miniconda_32.cmd
