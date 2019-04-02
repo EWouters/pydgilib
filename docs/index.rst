@@ -23,13 +23,27 @@ Indices and tables
 Installation
 ============
 
-* Clone the repo:
- ``git clone https://github.com/EWouters/pydgilib.git``
-* Install symlinked to repo:
- ``pip install -e .``
-* If you want to be able to run the tests or compile the docs run instead:
- ``pip install -e .[docs,test]``
-  
+Static Install
+--------------
+
+If you want to install a static copy you can run::
+
+    $ pip install git+https://github.com/EWouters/pydgilib
+
+Development Install
+-------------------
+
+1. Clone the repo::
+
+    $ git clone https://github.com/EWouters/pydgilib.git
+
+2. Install symlinked to repo::
+
+    $ pip install -e .
+
+ If you want to be able to run the tests or compile the docs run instead::
+
+    $ pip install -e .[test,docs]
 
 Code Coverage Report
 ====================
