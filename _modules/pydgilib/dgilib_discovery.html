@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib.dgilib_discovery &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pydgilib.dgilib_discovery</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pydgilib.dgilib_discovery</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides Python bindings for the Discovery API of DGILib.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="n">byref</span><span class="p">,</span> <span class="n">create_string_buffer</span>
+
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_config</span> <span class="k">import</span> <span class="n">GET_STRING_SIZE</span>
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_exceptions</span> <span class="k">import</span> <span class="n">DeviceReturnError</span>
+
+
+<div class="viewcode-block" id="DGILibDiscovery"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibDiscovery">[docs]</a><span class="k">class</span> <span class="nc">DGILibDiscovery</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Python bindings for DGILib Discovery.</span>
+
+<span class="sd">    DGILib is a Dynamic-Link Library (DLL) to help software applications</span>
+<span class="sd">    communicate with Data Gateway Interface (DGI) devices. See the Data</span>
+<span class="sd">    Gateway Interface user guide for further details. DGILib handles</span>
+<span class="sd">    the low-level USB communication and adds a level of buffering for</span>
+<span class="sd">    minimizing the chance of overflows.</span>
+
+<span class="sd">    TODO?</span>
+<span class="sd">    2.1.1. initialize_status_change_notification</span>
+<span class="sd">    Initializes the system necessary for using the status change notification</span>
+<span class="sd">    callback mechanisms. A handle will be created to keep track of the</span>
+<span class="sd">    registered callbacks. This function must always be called before</span>
+<span class="sd">    registering and unregistering notification callbacks.</span>
+<span class="sd">    Function definition</span>
+<span class="sd">    void initialize_status_change_notification(uint32_t* handlep)</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    handlep Pointer to a variable that will hold the handle</span>
+<span class="sd">    2.1.2. uninitialize_status_change_notification</span>
+<span class="sd">    Uninitializes the status change notification callback mechanisms. This</span>
+<span class="sd">    function must be called when shutting down to clean up memory allocations.</span>
+<span class="sd">    Function definition</span>
+<span class="sd">    void uninitialize_status_change_notification(uint32_t handle)</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    handle Handle to uninitialize</span>
+<span class="sd">    2.1.3. register_for_device_status_change_notifications</span>
+<span class="sd">    Registers provided function pointer with the device status change</span>
+<span class="sd">    mechanism. Whenever there is a change (device connected or disconnected)</span>
+<span class="sd">    the callback will be executed. Note that it is not allowed to connect to a</span>
+<span class="sd">    device in the context of the callback function. The callback function has</span>
+<span class="sd">    the following definition: typedef void (*DeviceStatusChangedCallBack)(char*</span>
+<span class="sd">    device_name, char* device_serial, BOOL connected)</span>
+<span class="sd">    Function definition</span>
+<span class="sd">    void register_for_device_status_change_notifications(uint32_t handle,</span>
+<span class="sd">    DeviceStatusChangedCallBack deviceStatusChangedCallBack)</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    handle Handle to change notification mechanisms</span>
+<span class="sd">    deviceStatusChangedCallBack Function pointer that will be called when the</span>
+<span class="sd">    devices change</span>
+<span class="sd">    2.1.4. unregister_for_device_status_change_notifications</span>
+<span class="sd">    Unregisters previously registered function pointer from the device status</span>
+<span class="sd">    change mechanism.</span>
+<span class="sd">    Function definition</span>
+<span class="sd">    void unregister_for_device_status_change_notifications(uint32_t handle,</span>
+<span class="sd">    DeviceStatusChangedCallBack deviceStatusChangedCallBack)</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    handle Handle to change notification mechanisms</span>
+<span class="sd">    deviceStatusChangedCallBack Function pointer that will be removed</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dgilib</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="DGILibDiscovery.discover"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibDiscovery.discover">[docs]</a>    <span class="k">def</span> <span class="nf">discover</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`discover`.</span>
+
+<span class="sd">        Triggers a scan to find available devices in the system. The result</span>
+<span class="sd">        will be immediately available through the `get_device_count`,</span>
+<span class="sd">        `get_device_name` and `get_device_serial` functions.</span>
+
+<span class="sd">        `void discover(void)`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">discover</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DGILibDiscovery.get_device_count"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibDiscovery.get_device_count">[docs]</a>    <span class="k">def</span> <span class="nf">get_device_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`get_device_count`.</span>
+
+<span class="sd">        Returns the number of devices detected.</span>
+
+<span class="sd">        `int get_device_count(void)`</span>
+
+<span class="sd">        :return: The number of devices detected</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">device_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">get_device_count</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;device_count: </span><span class="si">{device_count}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">device_count</span></div>
+
+<div class="viewcode-block" id="DGILibDiscovery.get_device_name"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibDiscovery.get_device_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_device_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`get_device_name`.</span>
+
+<span class="sd">        Gets the name of a detected device.</span>
+
+<span class="sd">        `int get_device_name(int index, char* name)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *index* | Index of device ranges from 0 to `get_device_count` - 1 |</span>
+<span class="sd">        | *name* | Pointer to buffer where name of device can be stored. 100</span>
+<span class="sd">        or more bytes must be allocated |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param index: Index of device ranges from 0 to `get_device_count` - 1</span>
+<span class="sd">        :type index: int</span>
+<span class="sd">        :return: The name of a detected device</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="n">GET_STRING_SIZE</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> get_device_name: </span><span class="si">{name.value}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;get_device_name returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="n">value</span></div>
+
+<div class="viewcode-block" id="DGILibDiscovery.get_device_serial"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibDiscovery.get_device_serial">[docs]</a>    <span class="k">def</span> <span class="nf">get_device_serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`get_device_serial`.</span>
+
+<span class="sd">        Gets the serial number of a detected device.</span>
+
+<span class="sd">        `int get_device_serial(int index, char* sn)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *index* | Index of device ranges from 0 to `get_device_count` - 1 |</span>
+<span class="sd">        | *sn* | Pointer to buffer where the serial number of the device can</span>
+<span class="sd">        be stored. 100 or more bytes must be allocated. This is used when</span>
+<span class="sd">        connecting to a device |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param index: Index of device ranges from 0 to `get_device_count` - 1</span>
+<span class="sd">        :type index: int</span>
+<span class="sd">        :return: The serial number of a detected device</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">device_sn</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="n">GET_STRING_SIZE</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">get_device_serial</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">device_sn</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> get_device_serial: </span><span class="si">{device_sn.value}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;get_device_serial returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">device_sn</span><span class="o">.</span><span class="n">value</span></div>
+
+<div class="viewcode-block" id="DGILibDiscovery.is_msd_mode"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibDiscovery.is_msd_mode">[docs]</a>    <span class="k">def</span> <span class="nf">is_msd_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_sn</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`is_msd_mode`.</span>
+
+<span class="sd">        EDBG devices can be set to a mass storage mode where the DGI is</span>
+<span class="sd">        unavailable. In such cases the device is still detected by DGILib, but</span>
+<span class="sd">        it won&#39;t be possible to directly connect to it. This command is used</span>
+<span class="sd">        to check if the device is in such a mode.</span>
+
+<span class="sd">        A non-zero return value indicates that the mode must be changed by</span>
+<span class="sd">        `set_mode` before proceeding.</span>
+
+<span class="sd">        `int is_msd_mode(char* sn)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *sn* | Serial number of the device to check |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param device_sn: Serial number of the device to check (defaults to</span>
+<span class="sd">            self.device_sn)</span>
+<span class="sd">        :type device_sn: str or None</span>
+<span class="sd">        :return: A non-zero return value indicates that the mode must be</span>
+<span class="sd">            changed by `set_mode` before proceeding.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msd_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">is_msd_mode</span><span class="p">(</span><span class="n">device_sn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;msd_mode: </span><span class="si">{msd_mode}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">msd_mode</span></div>
+
+<div class="viewcode-block" id="DGILibDiscovery.set_mode"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibDiscovery.set_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_sn</span><span class="p">,</span> <span class="n">nmbed</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`set_mode`.</span>
+
+<span class="sd">        This function is used to temporarily set the EDBG to a specified mode.</span>
+
+<span class="sd">        `int set_mode(char* sn, int nmbed)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *sn* | Serial number of the device to set |</span>
+<span class="sd">        | *nmbed* | 0 - Set to mbed mode. 1 - Set to DGI mode |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param device_sn: Serial number of the device to set</span>
+<span class="sd">        :type device_sn: str</span>
+<span class="sd">        :param nmbed: 0 - Set to mbed mode. 1 - Set to DGI mode (defaults to</span>
+<span class="sd">            DGI mode)</span>
+<span class="sd">        :type nmbed: int</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="n">device_sn</span><span class="p">,</span> <span class="n">nmbed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> set_mode </span><span class="si">{nmbed}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;set_mode returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

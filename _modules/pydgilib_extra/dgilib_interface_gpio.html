@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib_extra.dgilib_interface_gpio &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pydgilib_extra.dgilib_interface_gpio</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pydgilib_extra.dgilib_interface_gpio</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module wraps the calls to the GPIO interface.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_config</span> <span class="k">import</span> <span class="n">INTERFACE_GPIO</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_extra_config</span> <span class="k">import</span> <span class="n">NUM_PINS</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_interface</span> <span class="k">import</span> <span class="n">DGILibInterface</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_calculations</span> <span class="k">import</span> <span class="n">GPIOAugmentEdges</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_data</span> <span class="k">import</span> <span class="n">InterfaceData</span>
+
+
+<span class="c1"># TODO: make these functions faster/better?</span>
+<div class="viewcode-block" id="int2bool"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_gpio.int2bool">[docs]</a><span class="k">def</span> <span class="nf">int2bool</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert int to tuple of bool.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bit</span> <span class="ow">is</span> <span class="s1">&#39;1&#39;</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">i</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">NUM_PINS</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="bool2int"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_gpio.bool2int">[docs]</a><span class="k">def</span> <span class="nf">bool2int</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert iterable of bool to int.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;1&#39;</span> <span class="k">if</span> <span class="n">d</span> <span class="k">else</span> <span class="s1">&#39;0&#39;</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">b</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DGILibInterfaceGPIO"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_gpio.DGILibInterfaceGPIO">[docs]</a><span class="k">class</span> <span class="nc">DGILibInterfaceGPIO</span><span class="p">(</span><span class="n">DGILibInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wraps the calls to the GPIO interface.&quot;&quot;&quot;</span>
+
+    <span class="n">interface_id</span> <span class="o">=</span> <span class="n">INTERFACE_GPIO</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;gpio&quot;</span>
+    <span class="n">csv_header</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;gpio</span><span class="si">{n}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_PINS</span><span class="p">)]</span>
+    <span class="n">default_gpio_delay_time</span> <span class="o">=</span> <span class="mf">0.00075</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_csv_reader_map</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">[</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Instantiate DGILibInterfaceGPIO object.&quot;&quot;&quot;</span>
+        <span class="c1"># Set default values for attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_mode</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="n">NUM_PINS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_mode</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">NUM_PINS</span>
+        <span class="c1"># Add read and write mode to kwargs so they get set in the super class</span>
+        <span class="c1"># constructor</span>
+        <span class="k">if</span> <span class="s2">&quot;read_mode&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;read_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_mode</span>
+        <span class="k">if</span> <span class="s2">&quot;write_mode&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;write_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_mode</span>
+        <span class="c1"># Instantiate base class</span>
+        <span class="n">DGILibInterface</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Parse arguments</span>
+        <span class="c1"># By default augment gpio with delay of self.default_gpio_delay_time</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;augment_gpio&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;gpio_delay_time&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">or</span> \
+                <span class="s2">&quot;gpio_switch_time&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">augment_gpio</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gpio_delay_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;gpio_delay_time&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_gpio_delay_time</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gpio_switch_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gpio_switch_time&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gpio_augment_edges_streaming</span> <span class="o">=</span> <span class="n">GPIOAugmentEdges</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gpio_augment_edges</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">gpio_augment_edges_streaming</span><span class="o">.</span><span class="n">gpio_augment_edges</span>
+
+        <span class="c1"># NOTE: Might not be the best place to do this</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">timer_factor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">timer_factor</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">get_time_factor</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;read_mode: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_mode</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;write_mode: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_mode</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;augment_gpio: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_gpio</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_gpio</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;gpio_delay_time: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpio_delay_time</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;gpio_switch_time: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpio_switch_time</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DGILibInterfaceGPIO.get_config"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_gpio.DGILibInterfaceGPIO.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the pin-mode for the GPIO pins.</span>
+
+<span class="sd">        The GPIO configuration controls the direction of the pins.</span>
+
+<span class="sd">        Input pins:  Setting a bit to 1 means the pin is monitored.</span>
+<span class="sd">        Output pins: Setting a bit to 1 means the pin is set to output and can</span>
+<span class="sd">        be controlled by the send command.</span>
+
+<span class="sd">        :return: Tuple of:</span>
+<span class="sd">            - List of read modes, Setting a pin to True means the pin is</span>
+<span class="sd">                monitored.</span>
+<span class="sd">            - List of write modes, Setting a pin to True means the pin is set</span>
+<span class="sd">                to output and can be controlled by the send command.</span>
+<span class="sd">        :rtype: (list(bool), list(bool))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the configuration</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">config_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">interface_get_configuration</span><span class="p">(</span>
+            <span class="n">INTERFACE_GPIO</span><span class="p">)</span>
+
+        <span class="c1"># Convert int to lists of bool</span>
+        <span class="n">read_mode</span> <span class="o">=</span> <span class="n">int2bool</span><span class="p">(</span><span class="n">config_value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">write_mode</span> <span class="o">=</span> <span class="n">int2bool</span><span class="p">(</span><span class="n">config_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">read_mode</span><span class="p">,</span> <span class="n">write_mode</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceGPIO.set_config"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_gpio.DGILibInterfaceGPIO.set_config">[docs]</a>    <span class="k">def</span> <span class="nf">set_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the pin-mode for the GPIO pins.</span>
+
+<span class="sd">        The GPIO configuration controls the direction of the pins, and enables</span>
+<span class="sd">        the interface if needed.</span>
+
+<span class="sd">        Input pins:  Setting a bit to 1 means the pin is monitored.</span>
+<span class="sd">        Output pins: Setting a bit to 1 means the pin is set to output and can</span>
+<span class="sd">        be controlled by the send command.</span>
+
+<span class="sd">        If any of the pins are set to read mode or write mode the GPIO</span>
+<span class="sd">        interface will be enabled. If none of the pins are set to read mode or</span>
+<span class="sd">        write mode the GPIO interface will be disabled.</span>
+
+<span class="sd">        :param read_mode: List of modes, Setting a pin to True means the pin</span>
+<span class="sd">            is monitored.</span>
+<span class="sd">        :type read_mode: list(bool)</span>
+<span class="sd">        :param write_mode: List of modes, Setting a pin to True means the pin</span>
+<span class="sd">            is set to output and can be controlled by the send command.</span>
+<span class="sd">        :type write_mode: list(bool)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Set the configuration</span>
+        <span class="k">if</span> <span class="s2">&quot;read_mode&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;read_mode&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">interface_set_configuration</span><span class="p">(</span>
+                <span class="n">INTERFACE_GPIO</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">bool2int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_mode</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="s2">&quot;write_mode&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;write_mode&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">interface_set_configuration</span><span class="p">(</span>
+                <span class="n">INTERFACE_GPIO</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">bool2int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">write_mode</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceGPIO.read"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_gpio.DGILibInterfaceGPIO.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the state of the GPIO pins.</span>
+
+<span class="sd">        Clears the buffer and returns the values.</span>
+
+<span class="sd">        :return: Tuple of list of timestamps in seconds and list of list of</span>
+<span class="sd">            pin states (bool)</span>
+<span class="sd">        :rtype: (list(float), list(list(bool)))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Read the data from the buffer</span>
+        <span class="n">ticks</span><span class="p">,</span> <span class="n">pin_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">interface_read_data</span><span class="p">(</span>
+            <span class="n">INTERFACE_GPIO</span><span class="p">)</span>
+
+        <span class="n">pin_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">int2bool</span><span class="p">(</span><span class="n">pin_value</span><span class="p">)</span> <span class="k">for</span> <span class="n">pin_value</span> <span class="ow">in</span> <span class="n">pin_values</span><span class="p">]</span>
+        <span class="n">timestamps</span> <span class="o">=</span> <span class="p">[</span><span class="n">tick</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">timer_factor</span> <span class="k">for</span> <span class="n">tick</span> <span class="ow">in</span> <span class="n">ticks</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Collected {len(pin_values)} gpio samples (</span><span class="si">{NUM_PINS}</span><span class="s2"> &quot;</span> <span class="o">+</span>
+                  <span class="s2">&quot;pins per sample)&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_gpio</span><span class="p">:</span>
+            <span class="n">interface_data</span> <span class="o">=</span> <span class="n">InterfaceData</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="n">pin_values</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gpio_augment_edges</span><span class="p">(</span>
+                <span class="n">interface_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpio_delay_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpio_switch_time</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">interface_data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">InterfaceData</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="n">pin_values</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceGPIO.write"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_gpio.DGILibInterfaceGPIO.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pin_values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the state of the GPIO pins.</span>
+
+<span class="sd">        Make sure to set the pin to write mode first. Possibly also needs to</span>
+<span class="sd">        be configured properly on the board</span>
+
+<span class="sd">        A maximum of 255 elements can be written each time. An error return</span>
+<span class="sd">        code will be given if data hasn’t been written yet.</span>
+
+<span class="sd">        :param pin_values: List of pin values. Has to include all four pins ?</span>
+<span class="sd">            TODO: TEST</span>
+<span class="sd">        :type pin_values: list(bool)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert list of bool to int</span>
+        <span class="n">pin_values</span> <span class="o">=</span> <span class="n">bool2int</span><span class="p">(</span><span class="n">pin_values</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">interface_write_data</span><span class="p">(</span><span class="n">INTERFACE_GPIO</span><span class="p">,</span> <span class="p">[</span><span class="n">pin_values</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Sent gpio packet&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceGPIO.csv_write_rows"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_gpio.DGILibInterfaceGPIO.csv_write_rows">[docs]</a>    <span class="k">def</span> <span class="nf">csv_write_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;csv_write_rows.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">csv_writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span>
+            <span class="nb">zip</span><span class="p">(</span><span class="n">interface_data</span><span class="o">.</span><span class="n">timestamps</span><span class="p">,</span>
+                <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">interface_data</span><span class="o">.</span><span class="n">values</span><span class="p">))))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

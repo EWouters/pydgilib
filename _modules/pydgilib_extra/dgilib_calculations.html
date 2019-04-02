@@ -1,0 +1,436 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib_extra.dgilib_calculations &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pydgilib_extra.dgilib_calculations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pydgilib_extra.dgilib_calculations</h1><div class="highlight"><pre>
+<span></span>
+<span class="sd">&quot;&quot;&quot;This module holds the functions that do calculations on Interface Data.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_extra_config</span> <span class="k">import</span> <span class="n">NUM_PINS</span>
+
+
+<div class="viewcode-block" id="StreamingCalculation"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_calculations.StreamingCalculation">[docs]</a><span class="k">class</span> <span class="nc">StreamingCalculation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="GPIOAugmentEdges"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_calculations.GPIOAugmentEdges">[docs]</a><span class="k">class</span> <span class="nc">GPIOAugmentEdges</span><span class="p">(</span><span class="n">StreamingCalculation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;GPIO Augment Edges.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GPIOAugmentEdges.gpio_augment_edges"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_calculations.GPIOAugmentEdges.gpio_augment_edges">[docs]</a>    <span class="k">def</span> <span class="nf">gpio_augment_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gpio_data</span><span class="p">,</span> <span class="n">delay_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">switch_time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;GPIO Augment Edges (streaming).</span>
+
+<span class="sd">        Augments the edges of the GPIO data by inserting an extra sample of the</span>
+<span class="sd">        previous pin values at moment before a switch occurs (minus switch_time</span>
+<span class="sd">        ).</span>
+<span class="sd">        The switch time is measured to be around 0.3 ms.</span>
+
+<span class="sd">        Also delays all time stamps by delay_time. The delay time seems to vary</span>
+<span class="sd">        a lot between different projects and should be manually specified for</span>
+<span class="sd">        the best accuracy.</span>
+
+<span class="sd">        Can insert the last datapoint again at the time specified (has to be</span>
+<span class="sd">        after last sample).</span>
+
+<span class="sd">        :param gpio_data: InterfaceData object of GPIO data.</span>
+<span class="sd">        :type gpio_data: InterfaceData</span>
+<span class="sd">        :param delay_time: Switch time of GPIO pin.</span>
+<span class="sd">        :type delay_time: float</span>
+<span class="sd">        :param switch_time: Switch time of GPIO pin.</span>
+<span class="sd">        :type switch_time: float</span>
+<span class="sd">        :return: InterfaceData object of augmented GPIO data.</span>
+<span class="sd">        :rtype: InterfaceData</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="n">NUM_PINS</span>
+        <span class="n">pin_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># iterate over the list and insert items at the same time:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">gpio_data</span><span class="p">):</span>
+            <span class="c1">#print(gpio_data.timestamps[i], gpio_data.values[i])</span>
+            <span class="k">if</span> <span class="n">gpio_data</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pin_states</span><span class="p">:</span>
+                <span class="c1"># This inserts a time sample at time + switch time (so moves</span>
+                <span class="c1"># the time stamp into the future)</span>
+                <span class="n">gpio_data</span><span class="o">.</span><span class="n">timestamps</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                    <span class="n">i</span><span class="p">,</span> <span class="n">gpio_data</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">switch_time</span><span class="p">)</span>
+                <span class="c1"># This inserts the last datapoint again at the time the next</span>
+                <span class="c1"># switch actually arrived (without switch time)</span>
+                <span class="n">gpio_data</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">pin_states</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">pin_states</span> <span class="o">=</span> <span class="n">gpio_data</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pin_states</span>
+
+        <span class="c1"># Delay all time stamps by delay_time</span>
+        <span class="n">gpio_data</span><span class="o">.</span><span class="n">timestamps</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">t</span> <span class="o">+</span> <span class="n">delay_time</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">gpio_data</span><span class="o">.</span><span class="n">timestamps</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">gpio_data</span></div></div>
+
+
+<div class="viewcode-block" id="power_and_time_per_pulse"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_calculations.power_and_time_per_pulse">[docs]</a><span class="k">def</span> <span class="nf">power_and_time_per_pulse</span><span class="p">(</span>
+        <span class="n">logger_data</span><span class="p">,</span> <span class="n">pin</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;Inf&quot;</span><span class="p">),</span>
+        <span class="n">stop_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initialized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pulse_direction</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate power and time per pulse.</span>
+
+<span class="sd">    Takes the data and a pin and returns a list of power and time sums for</span>
+<span class="sd">    each pulse of the specified pin.</span>
+
+<span class="sd">    NOTE: This returns time durations in the sampling frame of the power</span>
+<span class="sd">    timestamps. Hence the list of times this function returns will not exactly</span>
+<span class="sd">    match with the difference between rise timestamp and fall timestamp of the</span>
+<span class="sd">    of the GPIO pin.</span>
+
+<span class="sd">    :param data: LoggerData object. Needs to have GPIO and Power data.</span>
+<span class="sd">    :type data: LoggerData</span>
+<span class="sd">    :param pin: Number of the GPIO pin to be used.</span>
+<span class="sd">    :type pin: int</span>
+<span class="sd">    :param start_time: First timestamp to consider (defaults to 0.01 to skip</span>
+<span class="sd">        GPIO initialization).</span>
+<span class="sd">    :type start_time: float</span>
+<span class="sd">    :param end_time: Last timestamp to consider.</span>
+<span class="sd">    :type end_time: float</span>
+<span class="sd">    :param stop_function: Function to evaluate on `pin_values`. If it returns</span>
+<span class="sd">        True the loop will stop.</span>
+<span class="sd">    :type stop_function: function</span>
+<span class="sd">    :param initialized: If False: Skip first occurrences of all pins high</span>
+<span class="sd">    :type initialized: bool</span>
+<span class="sd">    :param pulse_direction: If True: detect pulse as False -&gt; True -&gt; False,</span>
+<span class="sd">        else detect pulse as True -&gt; False -&gt; True</span>
+<span class="sd">    :type pulse_direction: bool</span>
+<span class="sd">    :return: List of list of power and time sums.</span>
+<span class="sd">    :rtype: tuple(list(float), list(float))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pin_value</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">pulse_start_time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">pulse_end_time</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">charges</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">power_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Loop over all gpio samples</span>
+    <span class="k">for</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">pin_values</span> <span class="ow">in</span> <span class="n">logger_data</span><span class="o">.</span><span class="n">gpio</span><span class="p">:</span>
+        <span class="c1"># Skip all samples until initialization has finished</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">initialized</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">pin_values</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">initialized</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">stop_function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stop_function</span><span class="p">(</span><span class="n">pin_values</span><span class="p">):</span>
+            <span class="k">break</span>
+        <span class="c1"># Detect inside start and end time</span>
+        <span class="k">if</span> <span class="n">timestamp</span> <span class="o">&gt;</span> <span class="n">start_time</span> <span class="ow">and</span> <span class="n">timestamp</span> <span class="o">&lt;=</span> <span class="n">end_time</span><span class="p">:</span>
+            <span class="c1"># Detect rising edge (if pulse_direction else falling edge)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pin_value</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pin_values</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span> <span class="o">^</span> <span class="p">(</span><span class="ow">not</span> <span class="n">pulse_direction</span><span class="p">)):</span>
+                <span class="n">pin_value</span> <span class="o">=</span> <span class="n">pulse_direction</span>
+                <span class="n">pulse_start_time</span> <span class="o">=</span> <span class="n">timestamp</span>
+            <span class="c1"># Detect falling edge (if pulse_direction else rising edge)</span>
+            <span class="k">if</span> <span class="n">pin_value</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pin_values</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span> <span class="o">^</span> <span class="n">pulse_direction</span><span class="p">):</span>
+                <span class="n">pin_value</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">pulse_end_time</span> <span class="o">=</span> <span class="n">timestamp</span>
+
+                <span class="c1"># Get the index of the power sample corresponding to the</span>
+                <span class="c1"># rising edge</span>
+                <span class="n">power_index</span> <span class="o">=</span> <span class="n">start_index</span> <span class="o">=</span> <span class="n">logger_data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span>
+                    <span class="n">pulse_start_time</span><span class="p">,</span> <span class="n">power_index</span><span class="p">)</span>
+                <span class="c1"># Get the index of the power sample corresponding to the</span>
+                <span class="c1"># falling edge</span>
+                <span class="n">power_index</span> <span class="o">=</span> <span class="n">end_index</span> <span class="o">=</span> <span class="n">logger_data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span>
+                    <span class="n">pulse_end_time</span><span class="p">,</span> <span class="n">power_index</span><span class="p">)</span>
+                <span class="c1"># Make sure the start index is larger than 0</span>
+                <span class="k">if</span> <span class="n">start_index</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">start_index</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;Corrected a start_index of 0 in &quot;</span> <span class="o">+</span>
+                        <span class="s2">&quot;power_and_time_per_pulse.&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Sum charges and append to charges array</span>
+                <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">logger_data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span>
+                                   <span class="p">(</span><span class="n">logger_data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span>
+                                    <span class="n">logger_data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                                   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_index</span><span class="p">,</span> <span class="n">end_index</span><span class="p">)))</span>
+                <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logger_data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">end_index</span><span class="p">]</span> <span class="o">-</span>
+                             <span class="n">logger_data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">start_index</span><span class="p">])</span>
+
+                <span class="c1"># TODO: Check for off-by-one errors using a pytest testcases</span>
+
+    <span class="k">return</span> <span class="n">charges</span><span class="p">,</span> <span class="n">times</span></div>
+
+
+<div class="viewcode-block" id="rise_and_fall_times"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_calculations.rise_and_fall_times">[docs]</a><span class="k">def</span> <span class="nf">rise_and_fall_times</span><span class="p">(</span>
+        <span class="n">logger_data</span><span class="p">,</span> <span class="n">pin</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;Inf&quot;</span><span class="p">),</span>
+        <span class="n">stop_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initialized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pulse_direction</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;rise_and_fall_times.</span>
+
+<span class="sd">    [description]</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        logger_data {[type]} -- [description]</span>
+<span class="sd">        pin {[type]} -- [description]</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        start_time {float} -- [description] (default: {0.01})</span>
+<span class="sd">        end_time {[type]} -- [description] (default: {float(&quot;Inf&quot;)})</span>
+<span class="sd">        stop_function {[type]} -- [description] (default: {None})</span>
+<span class="sd">        initialized {bool} -- [description] (default: {False})</span>
+<span class="sd">        pulse_direction {bool} -- [description] (default: {True})</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pin_value</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">rise_times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">fall_times</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Loop over all gpio samples</span>
+    <span class="k">for</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">pin_values</span> <span class="ow">in</span> <span class="n">logger_data</span><span class="o">.</span><span class="n">gpio</span><span class="p">:</span>
+        <span class="c1"># Skip all samples until initialization has finished</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">initialized</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">pin_values</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">initialized</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">stop_function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stop_function</span><span class="p">(</span><span class="n">pin_values</span><span class="p">):</span>
+            <span class="k">break</span>
+        <span class="c1"># Detect inside start and end time</span>
+        <span class="k">if</span> <span class="n">timestamp</span> <span class="o">&gt;</span> <span class="n">start_time</span> <span class="ow">and</span> <span class="n">timestamp</span> <span class="o">&lt;=</span> <span class="n">end_time</span><span class="p">:</span>
+            <span class="c1"># Detect rising edge (if pulse_direction else falling edge)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pin_value</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pin_values</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span> <span class="o">^</span> <span class="p">(</span><span class="ow">not</span> <span class="n">pulse_direction</span><span class="p">)):</span>
+                <span class="n">pin_value</span> <span class="o">=</span> <span class="n">pulse_direction</span>
+                <span class="n">rise_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+            <span class="c1"># Detect falling edge (if pulse_direction else rising edge)</span>
+            <span class="k">if</span> <span class="n">pin_value</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pin_values</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span> <span class="o">^</span> <span class="n">pulse_direction</span><span class="p">):</span>
+                <span class="n">pin_value</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">fall_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rise_times</span><span class="p">,</span> <span class="n">fall_times</span></div>
+
+
+<div class="viewcode-block" id="calculate_average"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_calculations.calculate_average">[docs]</a><span class="k">def</span> <span class="nf">calculate_average</span><span class="p">(</span><span class="n">power_data</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">start_index</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate average value of the power_data using the left Riemann sum.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        power_data {InterfaceData} -- Instance of InterfaceData with power</span>
+<span class="sd">            samples.</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        start_time {float} -- Timestamp of first sample to include (default:</span>
+<span class="sd">            {None})</span>
+<span class="sd">        end_time {float} -- Timestamp to of last sample to include (default:</span>
+<span class="sd">            {None})</span>
+<span class="sd">        start_index {int} -- Index to start search for start time at (default:</span>
+<span class="sd">            {1})</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">start_index</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">start_index</span> <span class="o">=</span> <span class="n">power_data</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">start_index</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">end_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">power_data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">end_index</span> <span class="o">=</span> <span class="n">power_data</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">end_time</span><span class="p">,</span> <span class="n">start_index</span><span class="p">)</span>
+
+    <span class="c1"># Make sure the start index is larger than 0</span>
+    <span class="k">if</span> <span class="n">start_index</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">start_index</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;Corrected a start_index of 0 in calculate_average.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">power_data</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">power_data</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span>
+                                        <span class="n">power_data</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_index</span><span class="p">,</span> <span class="n">end_index</span><span class="p">))</span> <span class="o">/</span>
+            <span class="p">(</span><span class="n">power_data</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">end_index</span><span class="p">]</span> <span class="o">-</span>
+             <span class="n">power_data</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">start_index</span><span class="p">]))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

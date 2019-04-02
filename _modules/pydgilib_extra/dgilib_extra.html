@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib_extra.dgilib_extra &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pydgilib_extra.dgilib_extra</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pydgilib_extra.dgilib_extra</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides user friendly way to interact with the DGILib API.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
+
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib</span> <span class="k">import</span> <span class="n">DGILib</span>
+
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_config</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">INTERFACE_GPIO</span><span class="p">,</span> <span class="n">INTERFACE_TIMESTAMP</span><span class="p">,</span> <span class="n">INTERFACE_POWER_DATA</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_extra_config</span> <span class="k">import</span> <span class="p">(</span><span class="n">INTERFACE_POWER</span><span class="p">,</span> <span class="n">LOGGER_CSV</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_logger</span> <span class="k">import</span> <span class="n">DGILibLogger</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_data</span> <span class="k">import</span> <span class="n">LoggerData</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_interface</span> <span class="k">import</span> <span class="n">DGILibInterface</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_interface_gpio</span> <span class="k">import</span> <span class="n">DGILibInterfaceGPIO</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_interface_power</span> <span class="k">import</span> <span class="n">DGILibInterfacePower</span>
+
+
+<div class="viewcode-block" id="DGILibExtra"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra">[docs]</a><span class="k">class</span> <span class="nc">DGILibExtra</span><span class="p">(</span><span class="n">DGILib</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A user friendly way to interact with the DGILib API.&quot;&quot;&quot;</span>
+
+    <span class="n">default_enabled_interfaces</span> <span class="o">=</span> <span class="p">[</span><span class="n">INTERFACE_GPIO</span><span class="p">,</span> <span class="n">INTERFACE_POWER</span><span class="p">]</span>
+    <span class="n">default_loggers</span> <span class="o">=</span> <span class="p">[</span><span class="n">LOGGER_CSV</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Instantiate DGILibExtra object.&quot;&quot;&quot;</span>
+        <span class="c1"># Add modules as classes (will be replaced by objects when used)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">DGILibLogger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span> <span class="o">=</span> <span class="p">{</span><span class="n">INTERFACE_GPIO</span><span class="p">:</span> <span class="n">DGILibInterfaceGPIO</span><span class="p">,</span>
+                           <span class="n">INTERFACE_POWER</span><span class="p">:</span> <span class="n">DGILibInterfacePower</span><span class="p">}</span>
+        <span class="c1"># Set default values for attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_interfaces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enabled_interfaces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timer_factor</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Instantiate base class</span>
+        <span class="n">DGILib</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Store arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="c1"># Instantiate logger</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;loggers&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_loggers</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;args: &quot;</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;kwargs: &quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DGILibExtra.__enter__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.__enter__">[docs]</a>    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;For usage in `with DGILibExtra() as dgilib:` syntax.&quot;&quot;&quot;</span>
+        <span class="n">DGILib</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_interfaces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interface_list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">INTERFACE_POWER_DATA</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_interfaces</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">available_interfaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">INTERFACE_POWER</span><span class="p">)</span>
+
+        <span class="c1"># Instantiate interface objects and enable the interfaces</span>
+        <span class="k">for</span> <span class="n">interface_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;interfaces&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_enabled_interfaces</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">interface_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="n">interface_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="n">interface_id</span><span class="p">](</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="n">interface_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">DGILibInterface</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="n">interface_id</span><span class="p">]</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="DGILibExtra.__exit__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.__exit__">[docs]</a>    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;For usage in `with DGILibExtra() as dgilib:` syntax.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">interface</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+
+        <span class="n">DGILib</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibExtra.info"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the build information of DGILib.</span>
+
+<span class="sd">        :return:  Version information of DGILib:</span>
+<span class="sd">            - major_version: the major_version of DGILib</span>
+<span class="sd">            - minor_version: the minor_version of DGILib</span>
+<span class="sd">            - build_number: the build number of DGILib. 0 if not supported</span>
+<span class="sd">            - major_fw: the major firmware version of the connected DGI device</span>
+<span class="sd">            - minor_fw: the minor firmware version of the connected DGI device</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">major_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_major_version</span><span class="p">()</span>
+        <span class="n">minor_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_minor_version</span><span class="p">()</span>
+        <span class="n">build_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_number</span><span class="p">()</span>
+        <span class="n">major_fw</span><span class="p">,</span> <span class="n">minor_fw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fw_version</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">major_version</span><span class="p">,</span> <span class="n">minor_version</span><span class="p">,</span> <span class="n">build_number</span><span class="p">,</span> <span class="n">major_fw</span><span class="p">,</span> <span class="n">minor_fw</span></div>
+
+<div class="viewcode-block" id="DGILibExtra.device_reset"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.device_reset">[docs]</a>    <span class="k">def</span> <span class="nf">device_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the device reset line for duration seconds.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_reset</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_reset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibExtra.get_time_factor"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.get_time_factor">[docs]</a>    <span class="k">def</span> <span class="nf">get_time_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the factor to multiply timestamps by to get seconds.</span>
+
+<span class="sd">        :return: timer_factor</span>
+<span class="sd">        :rtype: double</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">config_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interface_get_configuration</span><span class="p">(</span><span class="n">INTERFACE_TIMESTAMP</span><span class="p">)</span>
+        <span class="n">timer_prescaler</span> <span class="o">=</span> <span class="n">config_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">timer_frequency</span> <span class="o">=</span> <span class="n">config_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;timer_factor: {timer_prescaler / timer_frequency}, &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;timer_prescaler: </span><span class="si">{timer_prescaler}</span><span class="s2">, timer_frequency: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{timer_frequency}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">timer_prescaler</span> <span class="o">/</span> <span class="n">timer_frequency</span></div>
+
+<div class="viewcode-block" id="DGILibExtra.empty_data"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.empty_data">[docs]</a>    <span class="k">def</span> <span class="nf">empty_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;empty_data.</span>
+
+<span class="sd">        Populate self.data with an empty data structure (of type LoggerData).</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            interfaces {list(int)} -- List of interface ids. (default:</span>
+<span class="sd">            {self.enabled_interfaces})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">interfaces</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">interfaces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled_interfaces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">LoggerData</span><span class="p">(</span><span class="n">interfaces</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

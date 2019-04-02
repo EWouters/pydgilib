@@ -1,0 +1,464 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib_extra.dgilib_data &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pydgilib_extra.dgilib_data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pydgilib_extra.dgilib_data</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides classes to store DGILib Logger Interface Data.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_config</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">INTERFACE_GPIO</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_extra_config</span> <span class="k">import</span> <span class="p">(</span><span class="n">INTERFACES</span><span class="p">,</span> <span class="n">INTERFACE_POWER</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="InterfaceData"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData">[docs]</a><span class="k">class</span> <span class="nc">InterfaceData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to store DGILib Logger Interface Data.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;timestamps&#39;</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Take tuple of timestamps and values.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">args</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">InterfaceData</span><span class="p">)):</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">valid_interface_data</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span>
+              <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span>
+              <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">))):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span> <span class="o">=</span> <span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Samples passed to InterfaceData must be tuple([],[]) or &quot;</span>
+                <span class="s2">&quot;timestamps, values or InterfaceData. Got </span><span class="si">{args}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InterfaceData.__iadd__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData.__iadd__">[docs]</a>    <span class="k">def</span> <span class="nf">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append new interface_data (in-place).</span>
+
+<span class="sd">        Used to provide `interface_data += interface_data1` syntax</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface_data</span><span class="p">,</span> <span class="n">InterfaceData</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interface_data</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interface_data</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">valid_interface_data</span><span class="p">(</span>
+                <span class="n">interface_data</span><span class="p">),</span> <span class="n">f</span><span class="s2">&quot;Samples passed to InterfaceData were not &quot;</span> \
+                <span class="s2">&quot;valid_interface_data. </span><span class="si">{interface_data}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interface_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interface_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">interface_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">interface_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="InterfaceData.__add__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData.__add__">[docs]</a>    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append new interface_data (copy).</span>
+
+<span class="sd">        Used to provide `interface_data2 = interface_data1 + interface_data`</span>
+<span class="sd">        syntax</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">InterfaceData</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="bp">self</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">interface_data</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="InterfaceData.append"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append interface_data.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interface_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="InterfaceData.extend"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData.extend">[docs]</a>    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append a list of interface_data.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface_data</span><span class="p">,</span> <span class="n">InterfaceData</span><span class="p">):</span>
+            <span class="bp">self</span> <span class="o">+=</span> <span class="n">interface_data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span> <span class="o">+=</span> <span class="n">InterfaceData</span><span class="p">(</span><span class="n">interface_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="InterfaceData.__len__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData.__len__">[docs]</a>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the number of samples.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="InterfaceData.__getitem__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get item.</span>
+
+<span class="sd">        Used to provide `timestamp, value = interface_data[5]` and</span>
+<span class="sd">        `timestamp, value = interface_data[2:5]` syntax</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">index</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="InterfaceData.__contains__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData.__contains__">[docs]</a>    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Contains.</span>
+
+<span class="sd">        Used to provide `([1], [2]) in interface_data` syntax</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">item_timestamp</span> <span class="o">==</span> <span class="n">self_timestamp</span> <span class="ow">and</span>
+                       <span class="n">item_value</span> <span class="o">==</span> <span class="n">self_value</span>
+                       <span class="k">for</span> <span class="n">self_timestamp</span><span class="p">,</span> <span class="n">self_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">item_timestamp</span><span class="p">,</span> <span class="n">item_value</span> <span class="ow">in</span> <span class="p">(</span>
+                       <span class="n">item</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">InterfaceData</span><span class="p">)</span> <span class="k">else</span>
+                       <span class="n">InterfaceData</span><span class="p">(</span><span class="n">item</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="InterfaceData.__str__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print data.</span>
+
+<span class="sd">        Used to provide `str(data)` syntax.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="InterfaceData.get_select_in_value"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData.get_select_in_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_select_in_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get_select_in_value.</span>
+
+<span class="sd">        Use to slice a items in the values when the values are iterables.</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            begin {int} -- Begin index of item in value (default: {0})</span>
+<span class="sd">            end {[type]} -- End index of item in value, if not supplied only</span>
+<span class="sd">                the item the begin index will be returned (default: {None})</span>
+<span class="sd">            start_time {[type]} -- Start time of selection (default: {None})</span>
+<span class="sd">            end_time {[type]} -- End time of selection (default: {None})</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [list] -- List of values that have timestamps between start_time</span>
+<span class="sd">                and end_time</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="n">begin</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">]</span> <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span> \
+                <span class="k">else</span> <span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="n">begin</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+
+        <span class="n">start_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">end_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="c1"># Get the index of the first sample after the start_time</span>
+        <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">start_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">end_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">end_time</span><span class="p">,</span> <span class="n">start_index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="n">begin</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">end_index</span><span class="p">]]</span> \
+            <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> \
+            <span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="n">begin</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">end_index</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="InterfaceData.get_index"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.InterfaceData.get_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">start_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the index of the first sample after the timestamp.&quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">start_index</span>  <span class="c1"># Start at start_index (can speed up search)</span>
+        <span class="n">max_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">max_index</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">timestamp</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">index</span></div></div>
+
+
+<div class="viewcode-block" id="LoggerData"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.LoggerData">[docs]</a><span class="k">class</span> <span class="nc">LoggerData</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to store DGILib Logger Data.&quot;&quot;&quot;</span>
+
+    <span class="c1"># __slots__ = [INTERFACE_GPIO, INTERFACE_POWER]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Take list of interfaces for the data.&quot;&quot;&quot;</span>
+        <span class="c1"># Call init function of dict</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># No args or kwargs were specified, populate args[0] with standard</span>
+        <span class="c1"># interfaces</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">[[</span><span class="n">INTERFACE_GPIO</span><span class="p">,</span> <span class="n">INTERFACE_POWER</span><span class="p">]]</span>
+        <span class="c1"># Args is list of interfaces, make data dict with interfaces as keys</span>
+        <span class="c1"># and tuples of lists as values</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">interface</span><span class="p">]</span> <span class="o">=</span> <span class="n">InterfaceData</span><span class="p">()</span>
+        <span class="c1"># Instantiate dict with arguments</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">interface</span><span class="p">,</span> <span class="n">interface_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface_data</span><span class="p">,</span> <span class="n">InterfaceData</span><span class="p">):</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">interface</span><span class="p">]</span> <span class="o">=</span> <span class="n">InterfaceData</span><span class="p">(</span><span class="n">interface_data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LoggerData.__getattr__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.LoggerData.__getattr__">[docs]</a>    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get attribute.</span>
+
+<span class="sd">        Used to provide `data.spi` syntax.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">INTERFACES</span><span class="p">[</span><span class="n">attr</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="LoggerData.__setattr__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.LoggerData.__setattr__">[docs]</a>    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set attribute.</span>
+
+<span class="sd">        Used to provide `data.spi = InterfaceData(([], []))` syntax.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="p">[</span><span class="n">INTERFACES</span><span class="p">[</span><span class="n">attr</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="LoggerData.__iadd__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.LoggerData.__iadd__">[docs]</a>    <span class="k">def</span> <span class="nf">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append new logger_data (in-place).</span>
+
+<span class="sd">        Used to provide `logger_data1 += logger_data` syntax</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logger_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;logger_data must be a dict or LoggerData. &quot;</span>
+                <span class="s2">&quot;Got {type(logger_data)}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">interface</span><span class="p">,</span> <span class="n">interface_data</span> <span class="ow">in</span> <span class="n">logger_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interface</span><span class="p">,</span> <span class="n">interface_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="LoggerData.__add__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.LoggerData.__add__">[docs]</a>    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append new logger_data (copy).</span>
+
+<span class="sd">        Used to provide `logger_data2 = logger_data1 + logger_data` syntax</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">LoggerData</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="bp">self</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">logger_data</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1"># def __copy__(self):</span>
+    <span class="c1">#     return self</span>
+
+<div class="viewcode-block" id="LoggerData.append"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.LoggerData.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">interface_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append a sample to one of the interfaces.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interface</span><span class="p">,</span> <span class="n">interface_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LoggerData.extend"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.LoggerData.extend">[docs]</a>    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">interface_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append a list of samples to one of the interfaces.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">interface</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interface_data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface_data</span><span class="p">,</span> <span class="n">InterfaceData</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">interface</span><span class="p">]</span> <span class="o">=</span> <span class="n">InterfaceData</span><span class="p">(</span><span class="n">interface_data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">interface</span><span class="p">]</span> <span class="o">=</span> <span class="n">interface_data</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="LoggerData.length"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.LoggerData.length">[docs]</a>    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the number of samples for the interfaces.</span>
+
+<span class="sd">        Return a dict of the number of samples for each interface. Or the</span>
+<span class="sd">        length of the `attr` specified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">interface_data</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">interface_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">elif</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">INTERFACES</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">INTERFACES</span><span class="p">[</span><span class="n">attr</span><span class="p">]])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;attr must be a named or numbered interface. Got </span><span class="si">{attr}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LoggerData.__str__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.LoggerData.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print data.</span>
+
+<span class="sd">        Used to provide `str(data)` syntax.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;Interfaces:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">interface</span> <span class="ow">in</span> <span class="n">INTERFACES</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">INTERFACES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">interface</span> <span class="o">==</span> <span class="n">number</span><span class="p">:</span>
+                        <span class="n">output</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{number:4}</span><span class="s2">: {name + &#39;,&#39;:{&#39; &#39;}^</span><span class="si">{10}</span><span class="s2">} samples: {len(self[interface]):7}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{interface:4}</span><span class="s2">: (unknown),  samples: {len(self[interface]):7}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">output</span></div></div>
+
+<span class="c1"># # Load CSV</span>
+
+<span class="c1"># # Calculations</span>
+
+
+<div class="viewcode-block" id="valid_interface_data"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_data.valid_interface_data">[docs]</a><span class="k">def</span> <span class="nf">valid_interface_data</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if samples are valid InterfaceData.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">and</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span>
+            <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

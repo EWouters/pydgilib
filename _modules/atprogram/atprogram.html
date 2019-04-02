@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>atprogram.atprogram &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>atprogram.atprogram</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for atprogram.atprogram</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The ``atprogram.atprogram`` submodule is currently the only submodule</span>
+<span class="sd">in the ``atprogram`` main module.</span>
+
+<span class="sd">Here you can find the Python bindings for `make` and `atprogram`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">path</span><span class="p">,</span> <span class="n">getenv</span><span class="p">,</span> <span class="n">getcwd</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span><span class="p">,</span> <span class="n">STDOUT</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+
+
+<div class="viewcode-block" id="atprogram"><a class="viewcode-back" href="../../source/atprogram.html#atprogram.atprogram.atprogram">[docs]</a><span class="k">def</span> <span class="nf">atprogram</span><span class="p">(</span><span class="n">project_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_name</span><span class="o">=</span><span class="s2">&quot;ATSAML11E16A&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+              <span class="n">clean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">build</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">erase</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">program</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">tool</span><span class="o">=</span><span class="s2">&quot;EDBG&quot;</span><span class="p">,</span> <span class="n">interface</span><span class="o">=</span><span class="s2">&quot;SWD&quot;</span><span class="p">,</span> <span class="n">atmel_studio_path</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                  <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;programfiles(x86)&quot;</span><span class="p">),</span> <span class="s2">&quot;Atmel&quot;</span><span class="p">,</span> <span class="s2">&quot;Studio&quot;</span><span class="p">,</span> <span class="s2">&quot;7.0&quot;</span><span class="p">),</span>
+              <span class="n">make_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atprogram_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">configuration</span><span class="o">=</span><span class="s2">&quot;Debug&quot;</span><span class="p">,</span>
+              <span class="n">device_sn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">jobs</span><span class="o">=</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;NUMBER_OF_PROCESSORS&quot;</span><span class="p">),</span>
+              <span class="n">make_command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atprogram_command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;This function accesses the ``atprogram.exe`` program from Atmel</span>
+<span class="sd">    Studio&#39;s installation directory, to automatically compile and flash</span>
+<span class="sd">    code on Atmel boards.</span>
+
+<span class="sd">    This function can compile projects and write them to a device. It</span>
+<span class="sd">    determines what to do based on the arguments it gets. Specify at least</span>
+<span class="sd">    one of either `project_path`, `make_command` or `atprogram_command`.</span>
+
+<span class="sd">    .. warning:: \</span>
+<span class="sd">                 **WARNING**: This function works only on projects that have</span>
+<span class="sd">                 been **built** at least *once*. The function makes use of</span>
+<span class="sd">                 the `makefiles` that are only generated by Atmel Studio.</span>
+
+<span class="sd">    .. note:: \</span>
+<span class="sd">                 **NOTE**: Verifying that the code has been flashed correctly</span>
+<span class="sd">                 to the board is known to return ``23``. This also happens</span>
+<span class="sd">                 when using ``atprogram.exe`` from the command line. This has</span>
+<span class="sd">                 been experienced with the Atmel board model `ATSAML11E16A`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    project_path : str</span>
+<span class="sd">        Location where the project resides. If it ends in</span>
+<span class="sd">        ``.elf`` the elf file will be used. If it ends in ``Makefile`` the</span>
+<span class="sd">        Makefile will be used. Otherwise it should be a path to a folder</span>
+<span class="sd">        which holds the `Debug` folder. (the default is ``None``,</span>
+<span class="sd">        which will return an error)</span>
+
+<span class="sd">    device_name : str, optional</span>
+<span class="sd">        Device name. E.g. `&quot;atxmega128a1&quot;` or `&quot;at32uc3a0256&quot;`.</span>
+<span class="sd">        (the default is ``&quot;ATSAML11E16A&quot;``, which is a variant of the</span>
+<span class="sd">        Atmel SAM L11 board)</span>
+
+<span class="sd">    verbose : int, optional</span>
+<span class="sd">        Specify the verbosity of the `atprogram` function:</span>
+
+<span class="sd">        - 0: Silent</span>
+
+<span class="sd">        - 1: Info</span>
+
+<span class="sd">        - 2: Debug</span>
+
+<span class="sd">        - 3: List</span>
+
+<span class="sd">        (the default is `0`, which only prints compiler error and/or</span>
+<span class="sd">        warnings)</span>
+
+<span class="sd">    clean : bool, optional</span>
+<span class="sd">        Run ``make clean`` in the provided `project_path`, if `True`</span>
+<span class="sd">        (the default is `False`)</span>
+
+<span class="sd">    build : bool, optional</span>
+<span class="sd">        Run ``make all`` in the provided `project_path`, if `True`</span>
+<span class="sd">        (the default is `True`)</span>
+
+<span class="sd">    erase : bool, optional</span>
+<span class="sd">        Run ``atprogram chiperase`` if `True` (the default is `True`)</span>
+
+<span class="sd">    program : bool, optional</span>
+<span class="sd">        Run ``atprogram program`` if `True` (the default is `True`)</span>
+
+<span class="sd">    verify : bool, optional</span>
+<span class="sd">        Run ``atprogram verify`` if `True` (the default is `False`)</span>
+
+<span class="sd">    tool : str, optional</span>
+<span class="sd">        Tool&#39;s name. Available options are: ``avrdragon``,</span>
+<span class="sd">        ``avrispmk2``, ``avrone``, ``jtagice3``, ``jtagicemkii``, ``qt600``,</span>
+<span class="sd">        ``stk500``, ``stk600``, ``samice``, ``edbg``, ``medbg``, ``nedbg``,</span>
+<span class="sd">        ``atmelice``, ``pickit4``, ``powerdebugger``, ``megadfu`` or ``flip``.</span>
+<span class="sd">        (the default is `&quot;EDBG&quot;`, being the Atmel® Embedded Debugger, which</span>
+<span class="sd">        is what the Atmel board of model `ATSAML11E16A` uses)</span>
+
+<span class="sd">    interface : str, optional</span>
+<span class="sd">        Physical interface. Available options are: ``aWire``, </span>
+<span class="sd">        ``debugWIRE``, ``HVPP``, ``HVSP``, ``ISP``, ``JTAG``, ``PDI``,</span>
+<span class="sd">        ``UPDI``, ``TPI`` or ``SWD``. (the default is `&quot;SWD&quot;`, which is</span>
+<span class="sd">        what the Atmel board of model `ATSAML11E16A` uses)</span>
+
+<span class="sd">    atmel_studio_path : str, optional</span>
+<span class="sd">        Specify the location where Atmel Studio is installed. Note that the</span>
+<span class="sd">        path usually ends in a folder name corresponding to the version name</span>
+<span class="sd">        e.g. 7.0 (the default is `&quot;C:\\Program Files (x86)\\Atmel\\Studio\\7.0&quot;`),</span>
+<span class="sd">        which is the default installation location of Atmel Studio 7.0)</span>
+
+<span class="sd">    make_path : str, optional</span>
+<span class="sd">        Specify the path to `make.exe`, which should be the location of</span>
+<span class="sd">        a GNU make installation for Windows. (the default is</span>
+<span class="sd">        `&quot;C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\shellutils\\make.exe&quot;`,</span>
+<span class="sd">        as Atmel Studio already provides a GNU make installation for Windows)</span>
+
+<span class="sd">    atprogram_path : str, optional</span>
+<span class="sd">        Specify the location where `atprogram.exe` is installed. (the default</span>
+<span class="sd">        is `&quot;C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\atbackend\\atprogram.exe&quot;`,</span>
+<span class="sd">        as it is included with the installation of Atmel Studio)</span>
+
+<span class="sd">    configuration : str, optional</span>
+<span class="sd">        Specify which configuration of the Atmel Studio solution project should</span>
+<span class="sd">        be used for compilation, flashing, etc. Most common options are: </span>
+<span class="sd">        `Release`, `Debug`. (the default is `&quot;Debug&quot;`)</span>
+
+<span class="sd">    device_sn : str, optional</span>
+<span class="sd">        The programmer/debugger&#39;s serial number. Must be</span>
+<span class="sd">        specified when more than one debugger is connected. (the default is </span>
+<span class="sd">        `None`, as it is common to have a single programmer/debugger connected)</span>
+
+<span class="sd">    jobs : int, optional</span>
+<span class="sd">        How many jobs `make` should use (the default is</span>
+<span class="sd">        ``getenv(&quot;NUMBER_OF_PROCESSORS&quot;)``,</span>
+<span class="sd">        which takes your number of processor cores available)</span>
+
+<span class="sd">    make_command : str, optional</span>
+<span class="sd">        Other options to specify to `make`, similar to the command line</span>
+<span class="sd">        ``[options] [target] ...``</span>
+<span class="sd">        (the default is `None`, which means no extra commands/options)</span>
+
+<span class="sd">    atprogram_command : str, optional</span>
+<span class="sd">        Other command(s) to pass to `atprogram`, similar to the command line</span>
+<span class="sd">        arguments. This will be passed as:</span>
+<span class="sd">        ``-d {device_name} -i {interface} [options] &lt;command&gt; [arguments] </span>
+<span class="sd">        [&lt;command&gt; [arguments] ...]``.</span>
+<span class="sd">        (the  default is `None`, which means no extra commands/options)</span>
+
+<span class="sd">    return_output : bool, optional</span>
+<span class="sd">        If `True` the return value will be the output, else it will be</span>
+<span class="sd">        the return code (the default is `False`, which means the</span>
+<span class="sd">        return value is the return code of `atprogram`)</span>
+
+<span class="sd">    dry_run : bool, optional</span>
+<span class="sd">        Whether to run the commands using the `subprocess`</span>
+<span class="sd">        module or just print the commands. (the default is `False`, which</span>
+<span class="sd">        means the commands are indeed run using the `subprocess` module)</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        Need to specify at least one of `project_path`,</span>
+<span class="sd">        `make_command` or `atprogram_command`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        A non-zero return value indicates the subprocess call returned</span>
+<span class="sd">        an error.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">elf_mode</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">makefile_mode</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">makefile_path</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">project_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">elf_mode</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">project_path</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="s2">&quot;.elf&quot;</span>
+        <span class="n">makefile_path</span><span class="p">,</span> <span class="n">makefile</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">project_path</span><span class="p">)</span>
+        <span class="n">makefile_mode</span> <span class="o">=</span> <span class="n">makefile</span> <span class="ow">is</span> <span class="s2">&quot;Makefile&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">makefile_mode</span><span class="p">:</span>
+            <span class="n">makefile_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">project_path</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">make_command</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">atprogram_command</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Need to specify at least one of project_path, make_command or &quot;</span> <span class="o">+</span>
+            <span class="s2">&quot;atprogram_command.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># This is make_command mode or atprogram_command mode</span>
+        <span class="n">clean</span> <span class="o">=</span> <span class="n">build</span> <span class="o">=</span> <span class="n">erase</span> <span class="o">=</span> <span class="n">program</span> <span class="o">=</span> <span class="n">verify</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">returncode</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">SavePrint</span><span class="p">(</span><span class="n">return_output</span><span class="p">)</span>
+    <span class="n">stdout</span> <span class="o">=</span> <span class="n">PIPE</span> <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">stderr</span> <span class="o">=</span> <span class="n">STDOUT</span> <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">elf_mode</span> <span class="ow">and</span> <span class="p">(</span><span class="n">clean</span> <span class="ow">or</span> <span class="n">build</span> <span class="ow">or</span> <span class="n">make_command</span><span class="p">):</span>
+        <span class="n">make_path</span> <span class="o">=</span> <span class="n">make_path</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">atmel_studio_path</span><span class="p">,</span> <span class="s2">&quot;shellutils&quot;</span><span class="p">,</span> <span class="s2">&quot;make.exe&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">make_caller</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">([</span><span class="n">make_path</span><span class="p">]</span> <span class="o">+</span> <span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">cwd</span><span class="o">=</span><span class="n">makefile_path</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">stderr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cwd&quot;</span><span class="p">,</span> <span class="n">getcwd</span><span class="p">())</span>
+                                     <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&gt; &quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">returncode</span>
+        <span class="k">if</span> <span class="n">make_command</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">returncode</span><span class="p">:</span>
+            <span class="n">returncode</span> <span class="o">=</span> <span class="n">make_caller</span><span class="p">(</span><span class="n">make_command</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">clean</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">returncode</span><span class="p">:</span>
+            <span class="n">returncode</span> <span class="o">=</span> <span class="n">make_caller</span><span class="p">(</span><span class="s2">&quot;clean&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">build</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">returncode</span><span class="p">:</span>
+            <span class="n">returncode</span> <span class="o">=</span> <span class="n">make_caller</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;all --jobs </span><span class="si">{jobs}</span><span class="s2"> --output-sync&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">makefile_mode</span> <span class="ow">and</span>
+            <span class="p">(</span><span class="n">erase</span> <span class="ow">or</span> <span class="n">program</span> <span class="ow">or</span> <span class="n">verify</span> <span class="ow">or</span> <span class="n">atprogram_command</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="ow">not</span> <span class="n">returncode</span><span class="p">):</span>
+        <span class="n">atprogram_path</span> <span class="o">=</span> <span class="n">atprogram_path</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">atmel_studio_path</span><span class="p">,</span> <span class="s2">&quot;atbackend&quot;</span><span class="p">,</span> <span class="s2">&quot;atprogram.exe&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">atprogram_caller</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">([</span><span class="n">atprogram_path</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">verbose</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="s2">&quot;-v&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">stdout</span><span class="o">=</span><span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">stderr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">getcwd</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;&gt; &quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">returncode</span>
+        <span class="n">elf_file_path</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">program</span> <span class="ow">or</span> <span class="n">verify</span><span class="p">)</span> <span class="k">else</span> <span class="n">project_path</span> <span class="k">if</span> \
+            <span class="n">elf_mode</span> <span class="k">else</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">project_path</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span>
+                                    <span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">project_path</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;.elf&quot;</span>
+        <span class="n">atprogram_command</span> <span class="o">=</span> \
+            <span class="n">f</span><span class="s2">&quot;-t </span><span class="si">{tool}</span><span class="s2"> -i </span><span class="si">{interface}</span><span class="s2"> -d </span><span class="si">{device_name}</span><span class="s2"> &quot;</span> <span class="o">+</span> \
+            <span class="p">(</span><span class="n">device_sn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="o">*</span> <span class="n">f</span><span class="s2">&quot; -s </span><span class="si">{device_sn}</span><span class="s2"> &quot;</span> <span class="o">+</span> \
+            <span class="p">(</span><span class="n">atprogram_command</span> <span class="ow">or</span>
+             <span class="n">erase</span> <span class="o">*</span> <span class="s2">&quot; chiperase &quot;</span> <span class="o">+</span>
+             <span class="n">program</span> <span class="o">*</span> <span class="n">f</span><span class="s2">&quot; program -f </span><span class="si">{elf_file_path}</span><span class="s2"> &quot;</span> <span class="o">+</span>
+             <span class="n">verify</span> <span class="o">*</span> <span class="n">f</span><span class="s2">&quot; verify -f </span><span class="si">{elf_file_path}</span><span class="s2"> &quot;</span> <span class="o">+</span>
+             <span class="p">(</span><span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="s2">&quot; info&quot;</span><span class="p">)</span>
+        <span class="n">returncode</span> <span class="o">=</span> <span class="n">atprogram_caller</span><span class="p">(</span><span class="n">atprogram_command</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">returncode</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">returncode</span><span class="p">)</span>
+            <span class="n">atprogram_caller</span><span class="p">(</span><span class="s2">&quot;exitcode&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">return_output</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{returncode}</span><span class="s2">&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">returncode</span></div>
+
+
+<div class="viewcode-block" id="SavePrint"><a class="viewcode-back" href="../../source/atprogram.html#atprogram.atprogram.SavePrint">[docs]</a><span class="k">class</span> <span class="nc">SavePrint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_output</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">return_output</span> <span class="o">=</span> <span class="n">return_output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<div class="viewcode-block" id="SavePrint.print"><a class="viewcode-back" href="../../source/atprogram.html#atprogram.atprogram.SavePrint.print">[docs]</a>    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_output</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">+=</span> <span class="n">s</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="get_device_info"><a class="viewcode-back" href="../../source/atprogram.html#atprogram.atprogram.get_device_info">[docs]</a><span class="k">def</span> <span class="nf">get_device_info</span><span class="p">(</span>
+        <span class="n">device_name</span><span class="o">=</span><span class="s2">&quot;ATSAML11E16A&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">&quot;EDBG&quot;</span><span class="p">,</span> <span class="n">interface</span><span class="o">=</span><span class="s2">&quot;SWD&quot;</span><span class="p">,</span>
+        <span class="n">atmel_studio_path</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;programfiles(x86)&quot;</span><span class="p">),</span> <span class="s2">&quot;Atmel&quot;</span><span class="p">,</span> <span class="s2">&quot;Studio&quot;</span><span class="p">,</span> <span class="s2">&quot;7.0&quot;</span><span class="p">),</span>
+        <span class="n">atprogram_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_sn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Polls the connected board for information, such as:  target voltage, general device information (name, JTAG ID, </span>
+<span class="sd">    CPU architecture, board series, DAL (debug access levels fuses status) and memory information regarding  </span>
+<span class="sd">    the address space and fuses)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    device_name : str, optional</span>
+<span class="sd">        Device name. E.g. ``atxmega128a1`` or ``at32uc3a0256``. (the default is `ATSAML11E16A`, which [default_description])</span>
+
+<span class="sd">    verbose : int, optional</span>
+<span class="sd">        Print most of `atprogram` output, if value is `1`, or print debugging information as well, if value is `2`</span>
+<span class="sd">        (the default is `0`, which is to print only compiler warnings and errors)</span>
+<span class="sd">    tool : str, optional</span>
+<span class="sd">        [description] (the default is &quot;EDBG&quot;, which [default_description])</span>
+<span class="sd">    interface : str, optional</span>
+<span class="sd">        [description] (the default is &quot;SWD&quot;, which [default_description])</span>
+<span class="sd">    atmel_studio_path : [type], optional</span>
+<span class="sd">        [description] (the default is path.join(getenv(&quot;programfiles(x86)&quot;), &quot;Atmel&quot;, &quot;Studio&quot;, &quot;7.0&quot;), which [default_description])</span>
+<span class="sd">    atprogram_path : [type], optional</span>
+<span class="sd">        [description] (the default is None, which [default_description])</span>
+<span class="sd">    device_sn : [type], optional</span>
+<span class="sd">        [description] (the default is None, which [default_description])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># &quot;&quot;&quot;get_device_info.</span>
+
+    <span class="c1"># [description]</span>
+
+    <span class="c1"># Keyword Arguments:</span>
+    <span class="c1">#     device_name {str} -- Device name. E.g. atxmega128a1 or at32uc3a0256.</span>
+    <span class="c1">#         (default: {&quot;ATSAML11E16A&quot;})</span>
+    <span class="c1">#     verbose {int} -- Print results (default: {0})</span>
+    <span class="c1">#     tool {str} -- Tool name: avrdragon, avrispmk2, avrone, jtagice3,</span>
+    <span class="c1">#         jtagicemkii, qt600, stk500, stk600, samice, edbg, medbg, nedbg,</span>
+    <span class="c1">#         atmelice, pickit4, powerdebugger, megadfu or flip. (default:</span>
+    <span class="c1">#         {&quot;EDBG&quot;})</span>
+    <span class="c1">#     interface {str} -- Physical interface: aWire, debugWIRE, HVPP, HVSP,</span>
+    <span class="c1">#         ISP, JTAG, PDI, UPDI, TPI or SWD. (default: {&quot;SWD&quot;})</span>
+    <span class="c1">#     atmel_studio_path {[type]} -- Location where Atmel Studio is installed,</span>
+    <span class="c1">#         ending in the folder named after the version, e.g. 7.0. (default:</span>
+    <span class="c1">#         {path.join(getenv(&quot;programfiles(x86)&quot;), &quot;Atmel&quot;, &quot;Studio&quot;, &quot;7.0&quot;)})</span>
+    <span class="c1">#     atprogram_path {[type]} -- Location where `atprogram.exe` is installed</span>
+    <span class="c1">#         (default: {path.join(getenv(&quot;programfiles(x86)&quot;), &quot;Atmel&quot;, &quot;Studio&quot;, &quot;7.0&quot;, &quot;atbackend&quot;, &quot;atprogram.exe&quot;)})</span>
+    <span class="c1">#     device_sn {str} -- The programmer/debugger serialnumber. Must be</span>
+    <span class="c1">#         specified when more than one debugger is connected. (default:</span>
+    <span class="c1">#         {None})</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="n">atprogram_info</span> <span class="o">=</span> <span class="n">atprogram</span><span class="p">(</span>
+        <span class="n">atprogram_command</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">return_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">device_name</span><span class="o">=</span><span class="n">device_name</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="n">tool</span><span class="p">,</span> <span class="n">interface</span><span class="o">=</span><span class="n">interface</span><span class="p">,</span>
+        <span class="n">atmel_studio_path</span><span class="o">=</span><span class="n">atmel_studio_path</span><span class="p">,</span> <span class="n">atprogram_path</span><span class="o">=</span><span class="n">atprogram_path</span><span class="p">,</span>
+        <span class="n">device_sn</span><span class="o">=</span><span class="n">device_sn</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">device_info</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Target voltage&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">&quot;\nTarget voltage:\s(\d+(\.\d+)?)\sV&quot;</span><span class="p">,</span> <span class="n">atprogram_info</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="s2">&quot;Device information&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\nName:\s+(\S+)\s+&quot;</span><span class="p">,</span> <span class="n">atprogram_info</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;JtagId&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\nJtagId:\s+(\S+)\s+&quot;</span><span class="p">,</span> <span class="n">atprogram_info</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;CPU arch.&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\nCPU arch.:\s+(\S+)\s+&quot;</span><span class="p">,</span> <span class="n">atprogram_info</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;Series&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\nSeries:\s+(\S+)\s+&quot;</span><span class="p">,</span> <span class="n">atprogram_info</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;DAL&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\nDAL:\s+(\d+)\s+&quot;</span><span class="p">,</span> <span class="n">atprogram_info</span><span class="p">)[</span><span class="mi">0</span><span class="p">])},</span>
+        <span class="s2">&quot;Memory Information&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;base&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">address_space</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">start_address</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">16</span><span class="p">)]</span>
+                <span class="k">for</span> <span class="n">address_space</span><span class="p">,</span> <span class="n">start_address</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+                    <span class="sa">r</span><span class="s2">&quot;\n  (\w+)\s+(0[xX][0-9a-fA-F]+)\s+(0[xX][0-9a-fA-F]+)\s+\n&quot;</span><span class="p">,</span>
+                    <span class="n">atprogram_info</span><span class="p">)},</span>
+            <span class="s2">&quot;fuses&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">fuse</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span> <span class="k">for</span> <span class="n">fuse</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+                    <span class="sa">r</span><span class="s2">&quot;\n   (\w+)\s+(0[xX][0-9a-fA-F]+)\s+\n&quot;</span><span class="p">,</span> <span class="n">atprogram_info</span><span class="p">)}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">device_info</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">device_info</span><span class="p">)</span></div>
+
+
+<span class="n">size_regexp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s2">&quot;\.elf</span><span class="se">\&quot;</span><span class="s2">\n\s*text\t\s*data\t\s*bss\t\s*dec\t\s*hex\t\s*filename\r\n\s*&quot;</span> <span class="o">+</span>
+    <span class="sa">r</span><span class="s2">&quot;(\d+)\t\s*(\d+)\t\s*(\d+)\t\s*(\d+)\t\s*([0-9a-fA-F]+)\t\s*(\S+.elf)&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_project_size"><a class="viewcode-back" href="../../source/atprogram.html#atprogram.atprogram.get_project_size">[docs]</a><span class="k">def</span> <span class="nf">get_project_size</span><span class="p">(</span>
+        <span class="n">project_path</span><span class="p">,</span> <span class="n">device_name</span><span class="o">=</span><span class="s2">&quot;ATSAML11E16A&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">&quot;EDBG&quot;</span><span class="p">,</span>
+        <span class="n">interface</span><span class="o">=</span><span class="s2">&quot;SWD&quot;</span><span class="p">,</span> <span class="n">atmel_studio_path</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;programfiles(x86)&quot;</span><span class="p">),</span> <span class="s2">&quot;Atmel&quot;</span><span class="p">,</span> <span class="s2">&quot;Studio&quot;</span><span class="p">,</span> <span class="s2">&quot;7.0&quot;</span><span class="p">),</span>
+        <span class="n">make_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">configuration</span><span class="o">=</span><span class="s2">&quot;Debug&quot;</span><span class="p">,</span> <span class="n">device_sn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">jobs</span><span class="o">=</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;NUMBER_OF_PROCESSORS&quot;</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;get_project_size.</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        project_path {str} -- Location where the project resides. If it ends in</span>
+<span class="sd">            `.elf` the elf file will be used. If it ends in `Makefile` the</span>
+<span class="sd">            Makefile will be used. Otherwise it should be a path to a folder</span>
+<span class="sd">            which holds the `Debug` folder.</span>
+<span class="sd">        device_name {str} -- Device name. E.g. atxmega128a1 or at32uc3a0256.</span>
+<span class="sd">            (default: {&quot;ATSAML11E16A&quot;})</span>
+<span class="sd">        verbose {int} -- Print results (default: {0})</span>
+<span class="sd">        tool {str} -- Tool name: avrdragon, avrispmk2, avrone, jtagice3,</span>
+<span class="sd">            jtagicemkii, qt600, stk500, stk600, samice, edbg, medbg, nedbg,</span>
+<span class="sd">            atmelice, pickit4, powerdebugger, megadfu or flip. (default:</span>
+<span class="sd">            {&quot;EDBG&quot;})</span>
+<span class="sd">        interface {str} -- Physical interface: aWire, debugWIRE, HVPP, HVSP,</span>
+<span class="sd">            ISP, JTAG, PDI, UPDI, TPI or SWD. (default: {&quot;SWD&quot;})</span>
+<span class="sd">        atmel_studio_path {[type]} -- Location where Atmel Studio is installed,</span>
+<span class="sd">            ending in the folder named after the version, e.g. 7.0. (default:</span>
+<span class="sd">            {path.join(getenv(&quot;programfiles(x86)&quot;), &quot;Atmel&quot;, &quot;Studio&quot;, &quot;7.0&quot;)})</span>
+<span class="sd">        make_path {[type]} -- Location where `make.exe` is installed. (default:</span>
+<span class="sd">            {path.join(getenv(&quot;programfiles(x86)&quot;), &quot;Atmel&quot;, &quot;Studio&quot;, &quot;7.0&quot;, &quot;shellutils&quot;, &quot;make.exe&quot;)})</span>
+<span class="sd">        configuration {str} -- Which configuration to use. (default: {&quot;Debug&quot;})</span>
+<span class="sd">        device_sn {str} -- The programmer/debugger serialnumber. Must be</span>
+<span class="sd">            specified when more than one debugger is connected. (default:</span>
+<span class="sd">            {None})</span>
+<span class="sd">        jobs {int} -- How many jobs *make* should use(default:</span>
+<span class="sd">            {getenv(&quot;NUMBER_OF_PROCESSORS&quot;)})</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict -- A dictionary of sizes of the sections, the total size and the</span>
+<span class="sd">            file name.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bss</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="nb">hex</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">=</span> <span class="n">size_regexp</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">atprogram</span><span class="p">(</span>
+        <span class="n">project_path</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">build</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">erase</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">program</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s2">&quot;bss&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span>
+        <span class="n">bss</span><span class="p">),</span> <span class="s2">&quot;dec&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">dec</span><span class="p">),</span> <span class="s2">&quot;hex&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">hex</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">filename</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

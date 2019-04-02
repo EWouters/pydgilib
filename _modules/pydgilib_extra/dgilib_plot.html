@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib_extra.dgilib_plot &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pydgilib_extra.dgilib_plot</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pydgilib_extra.dgilib_plot</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_extra_config</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_calculations</span> <span class="k">import</span> <span class="n">StreamingCalculation</span>
+<span class="c1">#from tests_plot.dgilib_averages import HoldTimes</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span><span class="p">;</span> <span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+<span class="kn">from</span> <span class="nn">matplotlib.widgets</span> <span class="k">import</span> <span class="n">Slider</span><span class="p">,</span> <span class="n">Button</span><span class="p">,</span> <span class="n">TextBox</span>
+
+<span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Lock</span>
+
+<span class="n">float_epsilon</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">epsilon</span>
+
+<div class="viewcode-block" id="HoldTimes"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.HoldTimes">[docs]</a><span class="k">class</span> <span class="nc">HoldTimes</span><span class="p">(</span><span class="n">StreamingCalculation</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HoldTimes.identify_toggle_times"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.HoldTimes.identify_toggle_times">[docs]</a>    <span class="k">def</span> <span class="nf">identify_toggle_times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pin</span><span class="p">,</span> <span class="n">data_gpio</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gpio_start_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data_gpio</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_gpio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">gpio_start_index</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">gpio_start_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_gpio</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>  <span class="c1"># We can&#39;t identify intervals with only one value</span>
+        <span class="k">if</span> <span class="n">gpio_start_index</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_gpio</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>  <span class="c1"># We&#39;re being asked to do an index that does not exist yet, so just skip</span>
+
+        <span class="n">toggle_times</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">true_to_false_toggle_times</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">false_to_true_toggle_times</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1">#last_toggle_timestamp = data_gpio.timestamps[start_index]</span>
+        <span class="n">last_toggle_value</span> <span class="o">=</span> <span class="n">data_gpio</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">gpio_start_index</span><span class="p">][</span><span class="n">pin</span><span class="p">]</span>
+
+        <span class="c1">#print(&quot;New data, starting on pin &quot; + str(pin) + &quot; at timestamp &quot; + str(data_gpio.timestamps[start_index]) + &quot; of value &quot; + str(last_toggle_value) + &quot;. Index is: &quot; + str(start_index))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gpio_start_index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_gpio</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">last_toggle_value</span> <span class="o">!=</span> <span class="n">data_gpio</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">pin</span><span class="p">]:</span>
+                <span class="c1">#print(&quot;Detected toggle on pin &quot; + str(pin) + &quot; at timestamp &quot; + str(data_gpio.timestamps[i]) + &quot; of value &quot; + str(data_gpio.values[i][pin]) + &quot;. Index is: &quot; + str(i))</span>
+                <span class="n">toggle_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_gpio</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">last_toggle_value</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">true_to_false_toggle_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_gpio</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">last_toggle_value</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">false_to_true_toggle_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_gpio</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+                <span class="c1">#last_toggle_timestamp = data_gpio.timestamps[i]</span>
+                <span class="n">last_toggle_value</span> <span class="o">=</span> <span class="n">data_gpio</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">pin</span><span class="p">]</span>
+
+        <span class="c1"># A smart printing for debugging this function</span>
+        <span class="c1"># Either leave &#39;debug = False&#39; or comment it, but don&#39;t lose it</span>
+        <span class="n">debug</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">data_gpio</span><span class="p">:</span>
+                <span class="c1"># print(str((t,v)))</span>
+                <span class="k">if</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">toggle_times</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> &lt;-- toggled&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+        <span class="c1"># , last_toggle_index</span>
+        <span class="k">return</span> <span class="n">toggle_times</span><span class="p">,</span> <span class="n">true_to_false_toggle_times</span><span class="p">,</span> <span class="n">false_to_true_toggle_times</span></div>
+
+<div class="viewcode-block" id="HoldTimes.identify_hold_times"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.HoldTimes.identify_hold_times">[docs]</a>    <span class="k">def</span> <span class="nf">identify_hold_times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pin</span><span class="p">,</span> <span class="n">pin_value</span><span class="p">,</span> <span class="n">data_gpio</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data_gpio</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_gpio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_gpio</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>  <span class="c1"># We can&#39;t identify intervals with only one value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_gpio</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>  <span class="c1"># We&#39;re being asked to do an index that does not exist yet, so just skip</span>
+
+        <span class="n">hold_times</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">true_to_false_times</span><span class="p">,</span> <span class="n">false_to_true_times</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identify_toggle_times</span><span class="p">(</span>
+            <span class="n">pin</span><span class="p">,</span> <span class="n">data_gpio</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c1">#print(&quot;T2F: &quot; + str(true_to_false_times))</span>
+        <span class="c1">#print(&quot;F2T: &quot; + str(false_to_true_times))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">false_to_true_times</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">true_to_false_times</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">pin_value</span> <span class="o">==</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="c1"># A fix</span>
+            <span class="k">if</span> <span class="n">false_to_true_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">true_to_false_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">true_to_false_times</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">hold_times</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">false_to_true_times</span><span class="p">,</span> <span class="n">true_to_false_times</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">pin_value</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="c1"># A fix</span>
+            <span class="k">if</span> <span class="n">true_to_false_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">false_to_true_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">false_to_true_times</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">hold_times</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">true_to_false_times</span><span class="p">,</span> <span class="n">false_to_true_times</span><span class="p">)</span>
+
+        <span class="c1"># A smart printing for debugging this function</span>
+        <span class="c1"># Either leave &#39;debug = False&#39; or comment it, but don&#39;t lose it</span>
+        <span class="n">debug</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="n">ht_zip</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">hold_times</span><span class="p">))</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">data_gpio</span><span class="p">:</span>
+                <span class="c1"># print(str((t,v)))</span>
+                <span class="k">if</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ht_zip</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> &lt;-- start&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ht_zip</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> &lt;-- stop&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+        <span class="n">hold_times_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">hold_times</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">data_gpio</span><span class="o">.</span><span class="n">timestamps</span><span class="o">.</span><span class="n">index</span><span class="p">(</span>
+                <span class="n">hold_times_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="c1"># If you remove this, you get an error</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">hold_times_list</span></div></div>
+
+<div class="viewcode-block" id="DGILibPlot"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot">[docs]</a><span class="k">class</span> <span class="nc">DGILibPlot</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dgilib_extra</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span> <span class="o">=</span> <span class="n">dgilib_extra</span>
+
+        <span class="c1"># Maybe the user wants to put the power figure along with other figures he wants</span>
+        <span class="c1"># if &quot;fig&quot; in kwargs: # It seems the second argument of kwargs.get</span>
+            <span class="c1"># always gets called, so this check prevents an extra figure from</span>
+            <span class="c1"># being created</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fig&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="c1"># Set window title if supplied</span>
+        <span class="k">if</span> <span class="s2">&quot;window_title&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">set_window_title</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;window_title&quot;</span><span class="p">])</span>
+        <span class="c1"># if &quot;ax&quot; in kwargs: # It seems the second argument of kwargs.get</span>
+            <span class="c1"># always gets called, so this check prevents an extra axis from</span>
+            <span class="c1"># being created</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ax&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time [s]&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Current [A]&#39;</span><span class="p">)</span>
+
+        <span class="c1"># We need the Line2D object as well, to update it</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ln</span><span class="p">,</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Power&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ln</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ln</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">([])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ln</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">([])</span>
+
+        <span class="c1"># Initialize xmax, ymax of plot initially</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_xmax&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_xauto</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_xauto</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_ymax&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_yauto</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymax</span> <span class="o">=</span> <span class="mf">0.005</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_yauto</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_pins&quot;</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_values</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_pins_values&quot;</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_pins_method&quot;</span><span class="p">,</span> <span class="s2">&quot;highlight&quot;</span><span class="p">)</span> <span class="c1"># or &quot;line&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_colors</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_pins_colors&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">automove_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;automove_method&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_data&quot;</span><span class="p">)</span> <span class="c1"># or &quot;page&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axvspans</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preprocessed_averages_data</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_average</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_xpos</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+
+        <span class="c1"># We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example</span>
+        <span class="c1">#self.plot_pins_correction_forward = kwargs.get(&quot;plot_pins_correction_forward&quot;, 0.00075)</span>
+        <span class="c1">#self.plot_pins_interval_shrink = kwargs.get(&quot;plot_pins_interval_shrink&quot;, 0.0010)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot_pause_secs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;refresh_plot_pause_secs&quot;</span><span class="p">,</span> <span class="mf">0.00000001</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_method</span> <span class="o">==</span> <span class="s2">&quot;highlight&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hold_times_obj</span> <span class="o">=</span> <span class="n">HoldTimes</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_method</span> <span class="o">==</span> <span class="s2">&quot;line&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_pins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_pins</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Pin Value&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_pins</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_pins</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_pins</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s2">&quot;Low&quot;</span><span class="p">,</span> <span class="s2">&quot;High&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ln_pins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_pins</span><span class="p">)</span> <span class="c1"># Instantiate as copy of plot_pins</span>
+            <span class="k">for</span> <span class="n">pin</span><span class="p">,</span> <span class="n">plot_pin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_pins</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">plot_pin</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ln_pins</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax_pins</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">label</span><span class="o">=</span><span class="n">f</span><span class="s2">&quot;gpio</span><span class="si">{pin}</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_pins</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="p">[</span><span class="n">ln_pin</span> <span class="k">for</span> <span class="n">ln_pin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ln_pins</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">ln_pin</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ln</span><span class="p">])</span>  <span class="c1"># Should actually check if it is a lines instance</span>
+
+        <span class="c1"># Hardwiring these values to 0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmin</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymin</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># We absolutely need these values from the user (or from the superior class), hence no default values</span>
+        <span class="c1"># TODO: Are they really needed though?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_xdiv</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_xdiv&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_xstep&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep_default</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span>
+        <span class="c1"># self.duration = kwargs.get(&quot;duration&quot;, max(self.plot_xmax, 5))</span>
+
+        <span class="c1"># We&#39;ll have some sliders to zoom in and out of the plot, as well as a cursor to move around when zoomed in</span>
+        <span class="c1"># Leave space for sliders at the bottom</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+        <span class="c1"># Show grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
+        <span class="c1"># Slider color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span> <span class="o">=</span> <span class="s1">&#39;lightgoldenrodyellow&#39;</span>
+        <span class="c1"># Title format</span>
+        <span class="c1"># Should use this https://matplotlib.org/gallery/recipes/placing_text_boxes.html</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title_avg</span> <span class="o">=</span> <span class="s2">&quot;Total avg curr: %1&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title_vis</span> <span class="o">=</span> <span class="s2">&quot;Visible avg curr: %1&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title_pin</span> <span class="o">=</span> <span class="s2">&quot;Avg curr in %1: %2&quot;</span>  <span class="c1"># &quot;calculate_average(data[INTERFACE_POWER])*1e3:.4} mA&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title_time</span> <span class="o">=</span> <span class="s2">&quot;Time spent in %1: %2&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Waiting for data...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Hold times for pins list, we&#39;re going to collect them</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hold_times_sum</span> <span class="o">=</span> <span class="mf">0.00</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hold_times_next_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Will be incremented to 0 later</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hold_times_already_drawn</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_sliders</span><span class="p">()</span>
+
+    <span class="c1"># def set_axis(self, xleft, xright, yleft, yright, indicator=&quot;not specified&quot;):</span>
+    <span class="c1">#     if abs(xleft - xright) &lt; (float_epsilon*2):</span>
+    <span class="c1">#         self.ax.axis([xleft, xright + (float_epsilon * 2), yleft, yright])</span>
+    <span class="c1">#         #print(&quot;Warning! xleft close to xright in value in: &quot; + indicator)</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         self.ax.axis([xleft, xright, yleft, yright])</span>
+
+<div class="viewcode-block" id="DGILibPlot.initialize_sliders"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.initialize_sliders">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_sliders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axpos</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axwidth</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resetax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">spos</span> <span class="o">=</span> <span class="n">Slider</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axpos</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span><span class="p">,</span> <span class="n">valinit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">valstep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span> <span class="o">=</span> <span class="n">Slider</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axwidth</span><span class="p">,</span> <span class="s1">&#39;xmax&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span><span class="p">,</span> <span class="n">valinit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xdiv</span><span class="p">,</span> <span class="n">valstep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resetbtn</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resetax</span><span class="p">,</span> <span class="s1">&#39;Reset&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span><span class="p">,</span> <span class="n">hovercolor</span><span class="o">=</span><span class="s1">&#39;0.975&#39;</span><span class="p">)</span>
+
+        <span class="c1">#TODO: Change to pixel sizes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xleftax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.095</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>  <span class="c1"># x_pos, y_pos, width, height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xrightax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.095</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xmaxleftax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.095</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xmaxrightax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.095</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xstepupax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.095</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xstepdownax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.095</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">xleftbtn</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xleftax</span><span class="p">,</span> <span class="s1">&#39;&lt;x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span><span class="p">,</span> <span class="n">hovercolor</span><span class="o">=</span><span class="s1">&#39;0.975&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xrightbtn</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xrightax</span><span class="p">,</span> <span class="s1">&#39;x&gt;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span><span class="p">,</span> <span class="n">hovercolor</span><span class="o">=</span><span class="s1">&#39;0.975&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xmaxleftbtn</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmaxleftax</span><span class="p">,</span> <span class="s1">&#39;xmax-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span><span class="p">,</span> <span class="n">hovercolor</span><span class="o">=</span><span class="s1">&#39;0.975&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xmaxrightbtn</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmaxrightax</span><span class="p">,</span> <span class="s1">&#39;xmax+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span><span class="p">,</span> <span class="n">hovercolor</span><span class="o">=</span><span class="s1">&#39;0.975&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xstepupbtn</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xstepupax</span><span class="p">,</span> <span class="s1">&#39;xstep+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span><span class="p">,</span> <span class="n">hovercolor</span><span class="o">=</span><span class="s1">&#39;0.975&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xstepdownbtn</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xstepdownax</span><span class="p">,</span> <span class="s1">&#39;xstep-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span><span class="p">,</span> <span class="n">hovercolor</span><span class="o">=</span><span class="s1">&#39;0.975&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">xstepax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.095</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xsteptb</span> <span class="o">=</span> <span class="n">TextBox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xstepax</span><span class="p">,</span> <span class="s1">&#39;xstep&#39;</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">xstep_submit</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">xsteptb</span><span class="o">.</span><span class="n">on_submit</span><span class="p">(</span><span class="n">xstep_submit</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">increase_x</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+            <span class="c1">#if ((self.spos.val + self.plot_xstep) &lt;= (self.plot_xmax - self.swidth.val)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">val</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span><span class="p">)</span>
+            <span class="n">update_pos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">decrease_x</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+            <span class="c1">#if ((self.spos.val - self.plot_xstep) &gt;= (self.plot_xmin)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span><span class="p">)</span>
+            <span class="n">update_pos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">increase_xmax</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+            <span class="c1">#if ((self.swidth.val + self.plot_xstep) &lt;= self.plot_xmax):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span><span class="p">)</span>
+            <span class="n">update_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">decrease_xmax</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xmin</span> <span class="o">+</span> <span class="mf">0.000001</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span><span class="p">)</span>
+                <span class="n">update_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">increase_xstep</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xsteptb</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">val</span> <span class="o">+</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span> <span class="o">-</span> <span class="mf">0.000001</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">xsteptb</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span> <span class="o">+</span> <span class="mf">0.05</span><span class="p">))</span>
+                <span class="n">xstep_submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xsteptb</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        
+        <span class="k">def</span> <span class="nf">decrease_xstep</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xsteptb</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">val</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">xsteptb</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">))</span>
+                <span class="n">xstep_submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xsteptb</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">xleftbtn</span><span class="o">.</span><span class="n">on_clicked</span><span class="p">(</span><span class="n">decrease_x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xrightbtn</span><span class="o">.</span><span class="n">on_clicked</span><span class="p">(</span><span class="n">increase_x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xmaxleftbtn</span><span class="o">.</span><span class="n">on_clicked</span><span class="p">(</span><span class="n">decrease_xmax</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xmaxrightbtn</span><span class="o">.</span><span class="n">on_clicked</span><span class="p">(</span><span class="n">increase_xmax</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xstepupbtn</span><span class="o">.</span><span class="n">on_clicked</span><span class="p">(</span><span class="n">increase_xstep</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xstepdownbtn</span><span class="o">.</span><span class="n">on_clicked</span><span class="p">(</span><span class="n">decrease_xstep</span><span class="p">)</span>
+
+        <span class="c1"># I&#39;m not sure how to detach these without them forgetting their parents (sliders)</span>
+        <span class="k">def</span> <span class="nf">update_pos</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="kc">False</span><span class="p">):</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">val</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span>
+
+                <span class="c1">#self.set_axis(pos, pos + width, self.plot_ymin, self.plot_ymax, &quot;update_pos function&quot;)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="n">pos</span><span class="p">,</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymax</span><span class="p">])</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">update_width</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="kc">False</span><span class="p">):</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">val</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">axpos</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axpos</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">valinit</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">valstep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">on_changed</span><span class="p">(</span><span class="n">update_pos</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+
+                <span class="c1">#self.set_axis(pos, pos + width, self.plot_ymin, self.plot_ymax, &quot;update_width function&quot;)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="n">pos</span><span class="p">,</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymax</span><span class="p">])</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">on_changed</span><span class="p">(</span><span class="n">update_pos</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">on_changed</span><span class="p">(</span><span class="n">update_width</span><span class="p">)</span>
+
+        <span class="c1"># TODO: This</span>
+        <span class="k">def</span> <span class="nf">see_all</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="kc">False</span><span class="p">):</span>
+
+                <span class="c1">#self.set_axis(0, self.last_timestamp, self.plot_ymin, self.plot_ymax, &quot;see_all function&quot;)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_timestamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymax</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_xpos</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="kc">False</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span><span class="p">)</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">axpos</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axpos</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span><span class="p">,</span> <span class="n">valinit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">valstep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep_default</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">on_changed</span><span class="p">(</span><span class="n">update_pos</span><span class="p">)</span>
+        
+                <span class="bp">self</span><span class="o">.</span><span class="n">xsteptb</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep_default</span><span class="p">))</span>
+
+                <span class="c1">#self.set_axis(self.plot_xmin, self.plot_xmax, self.plot_ymin, self.plot_ymax, &quot;reset function&quot;)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymax</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_xpos</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>                
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">resetbtn</span><span class="o">.</span><span class="n">on_clicked</span><span class="p">(</span><span class="n">reset</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span><span class="p">)</span>
+
+        <span class="c1"># Auto-change the sliders/buttons when using plot tools</span>
+        <span class="k">def</span> <span class="nf">on_xlims_change</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="kc">False</span><span class="p">):</span> <span class="c1"># Non-blocking</span>
+                <span class="n">xlim_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">xlim_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">xlim_left</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="n">xlim_right</span> <span class="o">-</span> <span class="n">xlim_left</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_xpos</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            
+                <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">on_ylims_change</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;xlim_changed&#39;</span><span class="p">,</span> <span class="n">on_xlims_change</span><span class="p">)</span></div>
+        <span class="c1">#self.ax.callbacks.connect(&#39;ylim_changed&#39;, on_ylims_change)</span>
+
+<div class="viewcode-block" id="DGILibPlot.update_plot"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.update_plot">[docs]</a>    <span class="k">def</span> <span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">data</span>
+            <span class="c1">#if verbose: print(&quot;dgilib_plot.update_plot: Expected &#39;data&#39;, got an empty object.&quot;)</span>
+            <span class="c1">#return</span>
+
+        <span class="c1"># In this if, the smart DGILibData object tests if it has data inside</span>
+        <span class="c1"># TODO: Make &#39;if data: return&#39; work for if data has no actual values in it.</span>
+        <span class="c1"># ... Right now is if it has no interfaces.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">data</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dgilib_plot.update_plot: Expected &#39;data&#39; containing interfaces. Got &#39;data&#39; with no interfaces. Returning from call with no work done.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">power</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dgilib_plot.update_plot: Expected &#39;data&#39; containing power data. Got &#39;data&#39; with interfaces but no power timestamp &amp; value pairs. Returning from call with no work done.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">gpio</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dgilib_plot.update_plot: Expected &#39;data&#39; containing gpio data. Got &#39;data&#39; with interfaces but no gpio timestamp &amp; value pairs.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">plt</span><span class="o">.</span><span class="n">fignum_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">number</span><span class="p">):</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">()</span>
+
+        <span class="c1">#TODO: ln might have an update_callback and then it can listen to the data being updated instead of updating data here</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ln</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ln</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="n">automove</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">current_xpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_xpos</span> <span class="o">!=</span> <span class="n">current_xpos</span><span class="p">:</span>
+            <span class="n">automove</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">automove</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="kc">False</span><span class="p">):</span>
+            <span class="n">last_timestamp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">val</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="n">last_timestamp</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="n">width</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">automove_method</span> <span class="o">==</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="n">width</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">automove_method</span> <span class="o">==</span> <span class="s2">&quot;latest_data&quot;</span><span class="p">:</span>
+                    <span class="n">arbitrary_amount</span> <span class="o">=</span> <span class="mf">0.15</span>
+                    <span class="k">if</span> <span class="n">last_timestamp</span> <span class="o">&gt;</span> <span class="n">width</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">set_val</span><span class="p">(</span><span class="n">last_timestamp</span> <span class="o">+</span> <span class="n">arbitrary_amount</span> <span class="o">-</span> <span class="n">width</span><span class="p">)</span>
+
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">val</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span>
+
+            <span class="c1">#self.set_axis(pos, pos + width, self.plot_ymin, self.plot_ymax, &quot;update_plot function&quot;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="n">pos</span><span class="p">,</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymax</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_xpos</span> <span class="o">=</span> <span class="n">pos</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+        <span class="c1"># visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000</span>
+        <span class="c1"># all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_pins</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="DGILibPlot.clear_pins"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.clear_pins">[docs]</a>    <span class="k">def</span> <span class="nf">clear_pins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axvspans</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span>
+        
+        <span class="k">for</span> <span class="n">axvsp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axvspans</span><span class="p">:</span>
+            <span class="n">axvsp</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DGILibPlot.draw_pins"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.draw_pins">[docs]</a>    <span class="k">def</span> <span class="nf">draw_pins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># Here we set defaults (with or ...)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span>
+        <span class="n">plot_pins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins</span>
+        <span class="n">plot_pins_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_values</span>
+        <span class="n">plot_pins_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_method</span> <span class="ow">or</span> <span class="s2">&quot;highlight&quot;</span>
+        <span class="c1"># plot_pins_correction_forward = self.plot_pins_correction_forward or 0.00</span>
+        <span class="c1"># plot_pins_interval_shrink = self.plot_pins_interval_shrink or 0.00</span>
+        <span class="n">plot_pins_colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_colors</span>
+        <span class="c1">#average_function = self.average_function or &quot;leftpoint&quot;</span>
+
+        <span class="c1"># Here we do checks and stop drawing pins if something is unset</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>                                      <span class="k">return</span>
+        <span class="k">if</span> <span class="n">plot_pins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>                               <span class="k">return</span>
+        <span class="c1"># if plot_pins_values is None:                        return</span>
+        <span class="c1"># if plot_pins_method is None:                        return</span>
+        <span class="c1"># if plot_pins_correction_forward is None:            return</span>
+        <span class="c1"># if plot_pins_interval_shrink is None:               return</span>
+        <span class="c1"># if plot_pins_colors is None:                        return</span>
+        <span class="c1"># if average_function is None:                        return</span>
+            
+        <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span>
+
+        <span class="n">no_of_pins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_pins</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">plot_pins_method</span> <span class="o">==</span> <span class="s2">&quot;highlight&quot;</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">pin_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no_of_pins</span><span class="p">):</span> <span class="c1"># For every pin number (0,1,2,3)</span>
+
+                <span class="k">if</span> <span class="n">plot_pins</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span> <span class="c1"># If we want them plotted</span>
+                        
+                    <span class="n">hold_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hold_times_obj</span><span class="o">.</span><span class="n">identify_hold_times</span><span class="p">(</span><span class="n">pin_idx</span><span class="p">,</span> <span class="n">plot_pins_values</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">gpio</span><span class="p">)</span>
+
+                    <span class="c1"># print(&quot;Hold times:&quot; + str(hold_times))</span>
+                    <span class="c1"># print(&quot;Power: &quot; + str(data.power.timestamps))</span>
+
+                    <span class="k">if</span> <span class="n">hold_times</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">ht</span> <span class="ow">in</span> <span class="n">hold_times</span><span class="p">:</span>
+                            <span class="n">axvsp</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">ht</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ht</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">plot_pins_colors</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">axvspans</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">axvsp</span><span class="p">)</span>
+
+                            <span class="n">x_halfway</span> <span class="o">=</span> <span class="p">(</span><span class="n">ht</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ht</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">ht</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">y_halfway</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_ymax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymin</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymin</span>
+                            <span class="n">annon</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x_halfway</span><span class="p">,</span> <span class="n">y_halfway</span><span class="p">))</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">annon</span><span class="p">)</span>
+                            
+                            <span class="c1">#average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1], start_index)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">preprocessed_averages_data</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">],</span> <span class="n">ht</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_method</span> <span class="o">==</span> <span class="s2">&quot;line&quot;</span><span class="p">:</span>
+            <span class="n">extend_gpio</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">gpio</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">pin</span><span class="p">,</span> <span class="n">plot_pin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_pins</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">plot_pin</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ln_pins</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">(</span>
+                        <span class="n">data</span><span class="o">.</span><span class="n">gpio</span><span class="o">.</span><span class="n">timestamps</span> <span class="o">+</span> <span class="n">extend_gpio</span> <span class="o">*</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ln_pins</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span>
+                        <span class="n">data</span><span class="o">.</span><span class="n">gpio</span><span class="o">.</span><span class="n">get_select_in_value</span><span class="p">(</span><span class="n">pin</span><span class="p">)</span> <span class="o">+</span> <span class="n">extend_gpio</span> <span class="o">*</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">gpio</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pin</span><span class="p">]])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Logging. Collected {len(data.power)} power samples and {len(data.gpio)} gpio samples.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unrecognized plot_pins_method: </span><span class="si">{self.plot_pins_method}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibPlot.plot_still_exists"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.plot_still_exists">[docs]</a>    <span class="k">def</span> <span class="nf">plot_still_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">fignum_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">number</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibPlot.refresh_plot"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.refresh_plot">[docs]</a>    <span class="k">def</span> <span class="nf">refresh_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">relim</span><span class="p">()</span>                  <span class="c1"># recompute the data limits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">()</span>         <span class="c1"># automatic axis scaling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">flush_events</span><span class="p">()</span> </div>
+        <span class="c1">#sleep(time or self.refresh_plot_pause_secs)</span>
+        <span class="c1">#plt.pause(self.plot_pause_secs)</span>
+
+<div class="viewcode-block" id="DGILibPlot.keep_plot_alive"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.keep_plot_alive">[docs]</a>    <span class="k">def</span> <span class="nf">keep_plot_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_still_exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DGILibPlot.pause"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.pause">[docs]</a>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mf">0.000001</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">time</span><span class="p">)</span></div></div>
+
+<span class="c1"># Obsolete</span>
+<span class="c1"># Give it an index to continue from, so it does not go through all the data</span>
+<span class="c1"># def identify_hold_times(data, start_index, true_false, pin, correction_forward=0.00, shrink=0.00):</span>
+<span class="c1">#     if len(data.gpio.timestamps) &lt;= 1: return [] # We can&#39;t identify intervals with only one value</span>
+
+<span class="c1">#     hold_times = []</span>
+<span class="c1">#     start = data.gpio.timestamps[0]</span>
+<span class="c1">#     end = data.gpio.timestamps[0]</span>
+<span class="c1">#     in_hold = true_false</span>
+<span class="c1">#     not_in_hold = not true_false</span>
+<span class="c1">#     search = not true_false</span>
+
+<span class="c1">#     #interval_sizes = []</span>
+
+<span class="c1">#     #print(&quot;Start index: &quot; + str(start_index))</span>
+
+<span class="c1">#     for i in range(start_index, len(data.gpio.timestamps)):</span>
+<span class="c1">#         if search == not_in_hold:  # Searching for start of hold time</span>
+<span class="c1">#             if data.gpio.values[i][pin] == search:</span>
+<span class="c1">#                 start = data.gpio.timestamps[i]</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 end = data.gpio.timestamps[i]</span>
+<span class="c1">#                 search = not search</span>
+
+<span class="c1">#         if search == in_hold:  # Searching for end of hold time</span>
+<span class="c1">#             if data.gpio.values[i][pin] == search:</span>
+<span class="c1">#                 end = data.gpio.timestamps[i]</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 search = not search</span>
+<span class="c1">#                 to_add = (start + correction_forward + shrink, end + correction_forward - shrink)</span>
+<span class="c1">#                 if ((to_add[0] != to_add[1]) and (to_add[0] &lt; to_add[1])):</span>
+<span class="c1">#                     hold_times.append(to_add)</span>
+<span class="c1">#                     #interval_sizes.append(to_add[1] - to_add[0])</span>
+<span class="c1">#                 start = data.gpio.timestamps[i]</span>
+
+<span class="c1">#     # should_add_last_interval = True</span>
+<span class="c1">#     # for ht in hold_times:</span>
+<span class="c1">#     #     if (ht[0] == start): should_add_last_interval = False</span>
+
+<span class="c1">#     # if should_add_last_interval:</span>
+
+<span class="c1">#     #     invented_end_time = data.power.timestamps[-1] + correction_forward - shrink</span>
+
+<span class="c1">#     #     # This function ASSUMES that the intervals are about the same in size.</span>
+<span class="c1">#     #     # ... If the last interval that should be highlighted on the graph is</span>
+<span class="c1">#     #     # ... abnormally higher than the maximum of the ones that already happened </span>
+<span class="c1">#     #     # ... correctly then cancel highlighting with the help of &#39;invented_end_time&#39; </span>
+<span class="c1">#     #     # ... and highlight using the minimum from the &#39;interval_sizes&#39; list, to get</span>
+<span class="c1">#     #     # ... an average that is most likely unaffected by stuff happening at the end</span>
+<span class="c1">#     #     # ... of the interval, which the power interface from the board failed to</span>
+<span class="c1">#     #     # ... communicate to us.</span>
+<span class="c1">#     #     # if ((invented_end_time - start) &gt; max(interval_sizes)):</span>
+<span class="c1">#     #     #     invented_end_time = start + min(interval_sizes)</span>
+
+<span class="c1">#     #     to_add = (start + correction_forward + shrink, invented_end_time)</span>
+
+<span class="c1">#     #     if ((to_add[0] != to_add[1]) and (to_add[0] &lt; to_add[1])):</span>
+<span class="c1">#     #         hold_times.append(to_add)</span>
+    
+<span class="c1">#     # A smart printing for debugging this function</span>
+<span class="c1">#     # Either leave &#39;debug = False&#39; or comment it, but don&#39;t lose it</span>
+<span class="c1">#     debug = False</span>
+<span class="c1">#     if debug:</span>
+<span class="c1">#         ht_zip = list(zip(*hold_times))</span>
+<span class="c1">#         for (t, v) in data.gpio:</span>
+<span class="c1">#             #print(str((t,v)))</span>
+<span class="c1">#             if t in ht_zip[0]:</span>
+<span class="c1">#                 print(&quot;\t&quot; + str(t) + &quot;\t\t&quot; + str(v) + &quot;\t &lt;-- start&quot;)</span>
+<span class="c1">#             elif t in ht_zip[1]:</span>
+<span class="c1">#                 print(&quot;\t&quot; + str(t) + &quot;\t\t&quot; + str(v) + &quot;\t &lt;-- stop&quot;)</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 print(&quot;\t&quot; + str(t) + &quot;\t\t&quot; + str(v))</span>
+
+<span class="c1">#     return hold_times</span>
+
+<span class="c1"># Obsolete</span>
+<span class="c1"># def shift_data(data, shift_by):</span>
+<span class="c1">#     new_data = copy.deepcopy(data)</span>
+
+<span class="c1">#     for i in range(len(data[INTERFACE_POWER][0])):</span>
+<span class="c1">#         new_data[INTERFACE_POWER][0][i] = shift_by + data[INTERFACE_POWER][0][i]</span>
+
+<span class="c1">#     for i in range(len(data[INTERFACE_GPIO][0])):</span>
+<span class="c1">#         new_data[INTERFACE_GPIO][0][i] = shift_by + data[INTERFACE_GPIO][0][i]</span>
+
+<span class="c1">#     return new_data</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

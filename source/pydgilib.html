@@ -1,0 +1,2227 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib package &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">pydgilib package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pydgilib.dgilib">pydgilib.dgilib module</a></li>
+<li><a class="reference internal" href="#module-pydgilib.dgilib_auxiliary">pydgilib.dgilib_auxiliary module</a></li>
+<li><a class="reference internal" href="#module-pydgilib.dgilib_config">pydgilib.dgilib_config module</a></li>
+<li><a class="reference internal" href="#module-pydgilib.dgilib_discovery">pydgilib.dgilib_discovery module</a></li>
+<li><a class="reference internal" href="#module-pydgilib.dgilib_exceptions">pydgilib.dgilib_exceptions module</a></li>
+<li><a class="reference internal" href="#module-pydgilib.dgilib_housekeeping">pydgilib.dgilib_housekeeping module</a></li>
+<li><a class="reference internal" href="#module-pydgilib.dgilib_interface_communication">pydgilib.dgilib_interface_communication module</a></li>
+<li><a class="reference internal" href="#module-pydgilib">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>pydgilib package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/pydgilib.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pydgilib-package">
+<h1>pydgilib package<a class="headerlink" href="#pydgilib-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pydgilib.dgilib">
+<span id="pydgilib-dgilib-module"></span><h2>pydgilib.dgilib module<a class="headerlink" href="#module-pydgilib.dgilib" title="Permalink to this headline">¶</a></h2>
+<p>This module provides Python bindings for DGILib.</p>
+<dl class="class">
+<dt id="pydgilib.dgilib.DGILib">
+<em class="property">class </em><code class="descclassname">pydgilib.dgilib.</code><code class="descname">DGILib</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib.html#DGILib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib.DGILib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Python bindings for DGILib.</p>
+<p>DGILib is a Dynamic-Link Library (DLL) to help software applications
+communicate with Data Gateway Interface (DGI) devices. See the Data Gateway
+Interface user guide for further details. DGILib handles the low-level USB
+communication and adds a level of buffering for minimizing the chance of
+overflows.
+The library helps parse data streams of high complexity. The timestamp
+interface is parsed and split into separate buffers for each data source.
+The power interface is optionally parsed and calibrated using an auxiliary
+API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">DGILib</span><span class="p">()</span> <span class="k">as</span> <span class="n">dgilib</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">dgilib</span><span class="o">.</span><span class="n">get_major_version</span><span class="p">()</span>
+<span class="go">5</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.__enter__">
+<code class="descname">__enter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib.html#DGILib.__enter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib.DGILib.__enter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>For usage in <cite>with DGILib() as dgilib:</cite> syntax.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.__exit__">
+<code class="descname">__exit__</code><span class="sig-paren">(</span><em>exc_type</em>, <em>exc_value</em>, <em>traceback</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib.html#DGILib.__exit__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib.DGILib.__exit__" title="Permalink to this definition">¶</a></dt>
+<dd><p>For usage in <cite>with DGILib() as dgilib:</cite> syntax.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_calibration_is_valid">
+<code class="descname">auxiliary_power_calibration_is_valid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_calibration_is_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_calibration_is_valid</cite>.</p>
+<p>Checks the status of the stored calibration.</p>
+<p>Returns true if the calibration is valid, false otherwise. Unity gain
+and offset will be used.</p>
+<p><cite>bool auxiliary_power_calibration_is_valid(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if the calibration is valid, False otherwise</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_copy_data">
+<code class="descname">auxiliary_power_copy_data</code><span class="sig-paren">(</span><em>channel=0</em>, <em>power_type=0</em>, <em>max_count=10000000</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_copy_data" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_copy_data</cite>.</p>
+<p>Copies parsed power data into the specified buffer. Remember to lock
+the buffers first. If the count parameter is the same as max_count
+there is probably more data to be read. Do another read to get the
+remaining data.</p>
+<p><cite>int auxiliary_power_copy_data(uint32_t power_hndl, float* buffer,
+double* timestamp, size_t* count, size_t max_count, int channel, int
+type)</cite></p>
+<p>copied |
+| <em>max_count</em> | Maximum number of elements that the buffer can hold |
+| <em>channel</em> | Power channel for this buffer: A = 0, B = 1 (Power
+Debugger specific) |
+| <em>type</em> | Type of power data: Current = 0, Voltage = 1, Range = 2 |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Power channel for this buffer: A = 0, B = 1 (defaults
+to 0)</p></li>
+<li><p><strong>power_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Type of power data: Current = 0, Voltage = 1,
+Range = 2 (defaults to 0)</p></li>
+<li><p><strong>max_count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Maximum number of elements that the buffer can hold
+(defaults to BUFFER_SIZE)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of a list of samples and a list of the timestamps for
+the samples</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>), <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>))</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_free_data">
+<code class="descname">auxiliary_power_free_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_free_data" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_free_data</cite>.</p>
+<p>Clears the power data buffers and allows the power parser to continue.</p>
+<p><cite>int auxiliary_power_free_data(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_get_calibration">
+<code class="descname">auxiliary_power_get_calibration</code><span class="sig-paren">(</span><em>length=255</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_get_calibration" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_get_calibration</cite>.</p>
+<p>Gets the raw calibration read from the tool.</p>
+<p><cite>int auxiliary_power_get_calibration(uint32_t power_hndl, uint8_t*
+data, size_t length)</cite></p>
+<p>Note: actually returns the number of calibration samples, not an error
+if non-zero. The length argument is not used.</p>
+<p>documentation for number of bytes. |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of raw calibration bytes to fetch. See the DGI
+documentation for number of bytes. (defaults to NUM_CALIBRATION)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of the read raw calibration data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_get_circuit_type">
+<code class="descname">auxiliary_power_get_circuit_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_get_circuit_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_get_circuit_type</cite>.</p>
+<p>Gets the type of power circuit.</p>
+<p><cite>int auxiliary_power_get_circuit_type(uint32_t power_hndl, int*
+circuit)</cite></p>
+<p>OLD_XAM = 0x00, XAM = 0x10, PAM = 0x11, UNKNOWN = 0xFF |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The circuit type: OLD_XAM = 0x00, XAM = 0x10, PAM = 0x11,
+UNKNOWN = 0xFF</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_get_status">
+<code class="descname">auxiliary_power_get_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_get_status" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_get_status</cite>.</p>
+<p>Gets the status of the power parser.</p>
+<p>Return codes:
+- <cite>IDLE</cite> = 0x00
+- <cite>RUNNING</cite> = 0x01
+- <cite>DONE</cite> = 0x02
+- <cite>CALIBRATING</cite> = 0x03
+- <cite>INIT_FAILED</cite> = 0x10
+- <cite>OVERFLOWED</cite> = 0x11
+- <cite>USB_DISCONNECTED</cite> = 0x12
+- <cite>CALIBRATION_FAILED</cite> = 0x20</p>
+<p><cite>int auxiliary_power_get_status(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The status of the power parser:
+- <cite>IDLE</cite> = 0x00
+- <cite>RUNNING</cite> = 0x01
+- <cite>DONE</cite> = 0x02
+- <cite>CALIBRATING</cite> = 0x03
+- <cite>INIT_FAILED</cite> = 0x10
+- <cite>OVERFLOWED</cite> = 0x11
+- <cite>USB_DISCONNECTED</cite> = 0x12
+- <cite>CALIBRATION_FAILED</cite> = 0x20</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_initialize">
+<code class="descname">auxiliary_power_initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_initialize</cite>.</p>
+<p>Initializes the power parser.</p>
+<p><cite>int auxiliary_power_initialize(uint32_t* power_hndl_p, uint32_t
+dgi_hndl)</cite></p>
+<p>the power parser |
+| <em>dgi_hndl</em> | Handle of the connection |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Handle of the power parser</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>c_uint()</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_lock_data_for_reading">
+<code class="descname">auxiliary_power_lock_data_for_reading</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_lock_data_for_reading" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_lock_data_for_reading</cite>.</p>
+<p>Blocks the parsing thread from accessing all the buffers. This must be
+called before the user application code accesses the buffers, or a
+call to <cite>auxiliary_power_copy_data</cite> is made. Afterwards
+<cite>auxiliary_power_free_data</cite> must be called. Minimize the amount of
+time between locking and freeing to avoid buffer overflows.</p>
+<p><cite>int auxiliary_power_lock_data_for_reading(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_register_buffer_pointers">
+<code class="descname">auxiliary_power_register_buffer_pointers</code><span class="sig-paren">(</span><em>channel=0</em>, <em>power_type=0</em>, <em>max_count=10000000</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_register_buffer_pointers" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_register_buffer_pointers</cite>.</p>
+<p>Registers a set of pointers to be used for storing the
+calibrated power data. The buffers can then be locked by
+auxiliary_power_lock_data_for_reading, and the data directly read from
+the specified buffers.
+Zero-pointers can be specified to get the buffers allocated within
+DGILib. This requires the data to be fetched using
+auxiliary_power_copy_data.</p>
+<p><cite>int auxiliary_power_register_buffer_pointers(uint32_t power_hndl,
+float* buffer, double* timestamp, size_t*
+count, size_t max_count, int channel, int type)</cite></p>
+<p>automatically allocated. |
+| <em>timestamp</em> | Buffer that will hold the timestamp for the samples.
+Set to 0 for automatically allocated. |
+| <em>count</em> | Pointer to a variable that will hold the count of samples.
+Set to 0 for automatically allocated. |
+| <em>max_count</em> | Number of samples that can fit into the specified
+buffers. Or size of automatically allocated buffers. |
+| <em>channel</em> | Power channel for this buffer: A = 0, B = 1 (Power
+Debugger specific) |
+| <em>type</em> | Type of power data: Current = 0, Voltage = 1, Range = 2 |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Power channel for this buffer: A = 0, B = 1 (defaults
+to 0)</p></li>
+<li><p><strong>power_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Type of power data: Current = 0, Voltage = 1,
+Range = 2 (defaults to 0)</p></li>
+<li><p><strong>max_count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of samples that can fit into the specified
+buffers (defaults to BUFFER_SIZE)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_start">
+<code class="descname">auxiliary_power_start</code><span class="sig-paren">(</span><em>mode=0</em>, <em>parameter=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_start" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_start</cite>.</p>
+<p>Starts parsing of power data. The power and power sync interfaces are
+enabled automatically, but note that it is necessary to start the
+polling separately. This only starts the parser that consumes data
+from the DGILib buffer.</p>
+<p><cite>int auxiliary_power_start(uint32_t power_hndl, int mode, int
+parameter)</cite></p>
+<p>consume the data. |
+|  | 1 - oneshot capturing that captures data until the buffer has
+been read once, has been filled or the time from the first received
+sample in seconds equals the specified parameter. |
+| <em>parameter</em> | Mode specific |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – <p>Sets the mode of capture (defaults to 0)
+- 0: continuous capturing which requires the user to periodically</p>
+<blockquote>
+<div><p>consume the data</p>
+</div></blockquote>
+<ul>
+<li><p>1: oneshot capturing that captures data until the buffer has</p></li>
+</ul>
+<dl class="simple">
+<dt>been read once, has been filled or the time from the first</dt><dd><p>received sample in seconds equals the specified parameter</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>parameter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Mode specific (defaults to 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_stop">
+<code class="descname">auxiliary_power_stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_stop</cite>.</p>
+<p>Stops parsing of power data.</p>
+<p><cite>int auxiliary_power_stop(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_trigger_calibration">
+<code class="descname">auxiliary_power_trigger_calibration</code><span class="sig-paren">(</span><em>circuit_type=16</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_trigger_calibration" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_trigger_calibration</cite>.</p>
+<p>Triggers a calibration of the specified type. This can take some time,
+so use <cite>auxiliary_power_get_status</cite> to check for completion.</p>
+<p><a href="#id1"><span class="problematic" id="id2">`</span></a>int auxiliary_power_trigger_calibration(uint32_t power_hndl, int type)
+`</p>
+<p>for details. |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>circuit_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Type of calibration to trigger (defaults to XAM)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_uninitialize">
+<code class="descname">auxiliary_power_uninitialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_uninitialize" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_uninitialize</cite>.</p>
+<p>Uninitializes the power parser.</p>
+<p><cite>int auxiliary_power_uninitialize(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.auxiliary_power_unregister_buffer_pointers">
+<code class="descname">auxiliary_power_unregister_buffer_pointers</code><span class="sig-paren">(</span><em>channel=0</em>, <em>power_type=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.auxiliary_power_unregister_buffer_pointers" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_unregister_buffer_pointers</cite>.</p>
+<p>Unregisters the pointers for the specified power channel.</p>
+<p><cite>int auxiliary_power_unregister_buffer_pointers(uint32_t power_hndl,
+int channel, int type)</cite></p>
+<p>Debugger specific) |
+| <em>type</em> | Type of power data: Current = 0, Voltage = 1, Range = 2 |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Power channel for this buffer: A = 0, B = 1 (defaults
+to 0)</p></li>
+<li><p><strong>power_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Type of power data: Current = 0, Voltage = 1,
+Range = 2 (defaults to 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><em>device_sn</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>connect</cite>.</p>
+<p>Opens a connection to the specified device. This function must be
+called prior to any function requiring the connection handle.</p>
+<p><cite>int connect(char* sn, uint32_t* dgi_hndl_p)</cite></p>
+<p>connection to |
+| <em>dgi_hndl_p</em> | Pointer to a variable that will hold the handle of the
+connection |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>device_sn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Serial number of the device</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Variable that holds the handle of the connection</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>c_uint()</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.connection_status">
+<code class="descname">connection_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.connection_status" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>connection_status</cite>.</p>
+<p>Verifies that the specified connection is still open.</p>
+<p><cite>int connection_status(uint32_t* dgi_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A non-zero return value indicates a connection error.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>disconnect</cite>.</p>
+<p>Closes the specified connection.</p>
+<p><cite>int disconnect(uint32_t dgi_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.discover">
+<code class="descname">discover</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.discover" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>discover</cite>.</p>
+<p>Triggers a scan to find available devices in the system. The result
+will be immediately available through the <cite>get_device_count</cite>,
+<cite>get_device_name</cite> and <cite>get_device_serial</cite> functions.</p>
+<p><cite>void discover(void)</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.get_build_number">
+<code class="descname">get_build_number</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.get_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_build_number</cite>.</p>
+<p>Get the major version of the DGI library.</p>
+<p>Returns the build number of DGILib. If not supported, returns 0.</p>
+<p><cite>int get_build_number(void)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The build number of DGILib. If not supported, returns 0.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.get_device_count">
+<code class="descname">get_device_count</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.get_device_count" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_device_count</cite>.</p>
+<p>Returns the number of devices detected.</p>
+<p><cite>int get_device_count(void)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The number of devices detected</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.get_device_name">
+<code class="descname">get_device_name</code><span class="sig-paren">(</span><em>index=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.get_device_name" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_device_name</cite>.</p>
+<p>Gets the name of a detected device.</p>
+<p><cite>int get_device_name(int index, char* name)</cite></p>
+<p>or more bytes must be allocated |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Index of device ranges from 0 to <cite>get_device_count</cite> - 1</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of a detected device</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.get_device_serial">
+<code class="descname">get_device_serial</code><span class="sig-paren">(</span><em>index=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.get_device_serial" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_device_serial</cite>.</p>
+<p>Gets the serial number of a detected device.</p>
+<p><cite>int get_device_serial(int index, char* sn)</cite></p>
+<p>be stored. 100 or more bytes must be allocated. This is used when
+connecting to a device |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Index of device ranges from 0 to <cite>get_device_count</cite> - 1</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The serial number of a detected device</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.get_fw_version">
+<code class="descname">get_fw_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.get_fw_version" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_fw_version</cite>.</p>
+<p>Gets the firmware version of the DGI device connected. Note that this
+is the version of the DGI device, and not the tool.</p>
+<p><cite>int get_fw_version(uint32_t dgi_hndl, unsigned char* major, unsigned
+char* minor)</cite></p>
+<p>stored |
+| <em>minor</em> | Pointer to a variable where the minor version will be
+stored |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Version information of the DGI device:
+- major_fw: the major firmware version of the DGI device connected
+- minor_fw: the minor firmware version of the DGI device connected</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.get_major_version">
+<code class="descname">get_major_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.get_major_version" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_major_version</cite>.</p>
+<p>Get the major version of the DGI library.</p>
+<p><cite>int get_major_version(void)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The major version of the DGI library</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.get_minor_version">
+<code class="descname">get_minor_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.get_minor_version" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_minor_version</cite>.</p>
+<p>Get the minor version of the DGI library.</p>
+<p><cite>int get_minor_version(void)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The minor version of the DGI library</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.interface_clear_buffer">
+<code class="descname">interface_clear_buffer</code><span class="sig-paren">(</span><em>interface_id</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.interface_clear_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_clear_buffer</cite>.</p>
+<p>Clears the data in the buffers for the specified interface.</p>
+<p><cite>int interface_clear_buffer(uint32_t dgi_hndl, int interface_id)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.interface_disable">
+<code class="descname">interface_disable</code><span class="sig-paren">(</span><em>interface_id</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.interface_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_disable</cite>.</p>
+<p>Disables the specified interface.</p>
+<p><cite>int interface_disable(uint32_t dgi_hndl, int interface_id)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface to disable</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.interface_enable">
+<code class="descname">interface_enable</code><span class="sig-paren">(</span><em>interface_id</em>, <em>timestamp=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.interface_enable" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_enable</cite>.</p>
+<p>Enables the specified interface. Note that no data acquisition will
+begin until a session has been started.</p>
+<p><cite>int interface_enable(uint32_t dgi_hndl, int interface_id, bool
+timestamp)</cite></p>
+<p>timestamping. Consult the DGI documentation for details on the
+timestamping option. |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface to enable</p></li>
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Setting this to true will make the interface use
+timestamping (defaults to True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.interface_get_configuration">
+<code class="descname">interface_get_configuration</code><span class="sig-paren">(</span><em>interface_id</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.interface_get_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_get_configuration</cite>.</p>
+<p>Gets the configuration associated with the specified interface.
+Consult the DGI documentation for details.</p>
+<p><cite>int interface_get_configuration(uint32_t dgi_hndl, int interface_id,
+unsigned int* config_id, unsigned int* config_value, unsigned int*
+config_cnt)</cite></p>
+<p>configuration item |
+| <em>config_value</em> | Buffer that will hold the value field for the
+configuration item |
+| <em>config_cnt</em> | Pointer to variable that will hold the count of stored
+configuration items |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of a list of configuration IDs and a list of
+configuration values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>), <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>))</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.interface_list">
+<code class="descname">interface_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.interface_list" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_list</cite>.</p>
+<p>Queries the connected DGI device for available interfaces. Refer to
+the DGI documentation to resolve the ID.</p>
+<p><cite>int interface_list(uint32_t dgi_hndl, unsigned char* interfaces,
+unsigned char* count)</cite></p>
+<p>Should be able to hold minimum 10 elements, but a larger count should
+be used to be future proof. |
+| <em>count</em> | Pointer to a variable that will be set to the number of
+interfaces registered in buffer. |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of available interfaces</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>)</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.interface_read_data">
+<code class="descname">interface_read_data</code><span class="sig-paren">(</span><em>interface_id</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.interface_read_data" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_read_data</cite>.</p>
+<p>Reads the data received on the specified interface. This should be
+called regularly to avoid overflows in the system. DGILib can buffer
+10M samples.</p>
+<p><cite>int interface_read_data(uint32_t dgi_hndl, int interface_id, unsigned
+char* buffer, unsigned long long* timestamp, int* length, unsigned int*
+ovf_index, unsigned int* ovf_length, unsigned int* ovf_entry_count)</cite></p>
+<p>have allocated 10M elements. |
+| <em>timestamp</em> | If timestamp is enabled for the interface, the buffer
+that will hold the received data. The buffer must have allocated 10M
+elements. Otherwise send 0. |
+| <em>length</em> | Pointer to a variable that will hold the count of
+elements received |
+| <em>ovf_index</em> | Reserved. Set to 0. |
+| <em>ovf_length</em> | Reserved. Set to 0. |
+| <em>ovf_entry_count</em> | Reserved. Set to 0. Could be set to a pointer to
+a variable that can be used as an indicator of overflows. Overflow
+would be indicated by non-zero value. |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of a list of received values and a list of ticks</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>), <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>))</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.interface_set_configuration">
+<code class="descname">interface_set_configuration</code><span class="sig-paren">(</span><em>interface_id</em>, <em>config_id</em>, <em>config_value</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.interface_set_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_set_configuration</cite>.</p>
+<p>Sets the given configuration fields for the specified interface.
+Consult the DGI documentation for details.</p>
+<p><cite>int interface_set_configuration(uint32_t dgi_hndl, int interface_id,
+unsigned int* config_id, unsigned int* config_value, unsigned int
+config_cnt)</cite></p>
+<p>items to set |
+| <em>config_value</em> | Buffer that holds the value field for the
+configuration items to set |
+| <em>config_cnt</em> | Number of items to set |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface</p></li>
+<li><p><strong>config_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>)</em>) – List that holds the ID field for the configuration
+items to set</p></li>
+<li><p><strong>config_value</strong> – List that holds the value field for the
+configuration items to set (must have the same number of elements</p></li>
+</ul>
+</dd>
+</dl>
+<p>as config_id)
+:type config_value: list(int)
+:raises: <code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceArgumentError</span></code>
+:raises: <code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.interface_write_data">
+<code class="descname">interface_write_data</code><span class="sig-paren">(</span><em>interface_id</em>, <em>buffer</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.interface_write_data" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_write_data</cite>.</p>
+<p>Writes data to the specified interface. A maximum of 255 elements can
+be written each time. An error return code will be given if data
+hasn’t been written yet.</p>
+<p>TODO: A non-zero return value indicates an error. An error will be
+returned if the interface is still in the process of writing data.
+Wait a while and try again. The function get_connection_status can be
+used to verify if there is an error condition.</p>
+<p><cite>int interface_write_data(uint32_t dgi_hndl, int interface_id,
+unsigned char* buffer, int* length)</cite></p>
+<p>allocated 10M elements |
+| <em>length</em> | Pointer to a variable that will hold the count of
+elements received |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface</p></li>
+<li><p><strong>buffer</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Buffer that holds the data to write (defaults to None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.is_msd_mode">
+<code class="descname">is_msd_mode</code><span class="sig-paren">(</span><em>device_sn</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.is_msd_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>is_msd_mode</cite>.</p>
+<p>EDBG devices can be set to a mass storage mode where the DGI is
+unavailable. In such cases the device is still detected by DGILib, but
+it won’t be possible to directly connect to it. This command is used
+to check if the device is in such a mode.</p>
+<p>A non-zero return value indicates that the mode must be changed by
+<cite>set_mode</cite> before proceeding.</p>
+<p><cite>int is_msd_mode(char* sn)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>device_sn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Serial number of the device to check (defaults to
+self.device_sn)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A non-zero return value indicates that the mode must be
+changed by <cite>set_mode</cite> before proceeding.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.set_mode">
+<code class="descname">set_mode</code><span class="sig-paren">(</span><em>device_sn</em>, <em>nmbed=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.set_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>set_mode</cite>.</p>
+<p>This function is used to temporarily set the EDBG to a specified mode.</p>
+<p><cite>int set_mode(char* sn, int nmbed)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_sn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Serial number of the device to set</p></li>
+<li><p><strong>nmbed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – 0 - Set to mbed mode. 1 - Set to DGI mode (defaults to
+DGI mode)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.start_polling">
+<code class="descname">start_polling</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.start_polling" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>start_polling</cite>.</p>
+<p>This function will start the polling system and start acquisition on
+enabled interfaces. It is possible to enable/disable interfaces both
+before and after the polling has been started. However, no data will be
+transferred until the polling is started.</p>
+<p><cite>int start_polling(uint32_t dgi_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dgi_hndl</strong> (<em>c_uint</em><em>(</em><em>)</em>) – Handle of the connection</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.stop_polling">
+<code class="descname">stop_polling</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.stop_polling" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>stop_polling</cite>.</p>
+<p>This function will stop the polling system and stop acquisition on all
+interfaces.</p>
+<p><cite>int stop_polling(uint32_t dgi_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dgi_hndl</strong> (<em>c_uint</em><em>(</em><em>)</em>) – Handle of the connection</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib.DGILib.target_reset">
+<code class="descname">target_reset</code><span class="sig-paren">(</span><em>hold_reset</em><span class="sig-paren">)</span><a class="headerlink" href="#pydgilib.dgilib.DGILib.target_reset" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>target_reset</cite>.</p>
+<p>This function is used to control the state of the reset line connected
+to the target, if available.</p>
+<p><cite>int target_reset(uint32_t dgi_hndl, bool hold_reset)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hold_reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – True will assert reset, False will release it</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydgilib.dgilib_auxiliary">
+<span id="pydgilib-dgilib-auxiliary-module"></span><h2>pydgilib.dgilib_auxiliary module<a class="headerlink" href="#module-pydgilib.dgilib_auxiliary" title="Permalink to this headline">¶</a></h2>
+<p>This module provides Python bindings for the Auxiliary API of DGILib.</p>
+<dl class="class">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary">
+<em class="property">class </em><code class="descclassname">pydgilib.dgilib_auxiliary.</code><code class="descname">DGILibAuxiliary</code><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Python bindings for DGILib Auxiliary.</p>
+<p>DGILib is a Dynamic-Link Library (DLL) to help software applications
+communicate with Data Gateway Interface (DGI) devices. See the Data Gateway
+Interface user guide for further details. DGILib handles the low-level USB
+communication and adds a level of buffering for minimizing the chance of
+overflows. The library helps parse data streams of high complexity. The
+timestamp interface is parsed and split into separate buffers for each
+data source. The power interface is optionally parsed and calibrated using
+an auxiliary API.</p>
+<p>Power
+The power interface (as found on some EDBG kits and Power Debugger) uses a
+protocol stream and calibration scheme that can be tricky to get right. The
+data rates are also relatively high and the calibration procedure could
+cause issues if not handled efficiently. Therefore some auxiliary
+functions to help with this have been made to perform parsing and
+calibration.</p>
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_calibration_is_valid">
+<code class="descname">auxiliary_power_calibration_is_valid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_calibration_is_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_calibration_is_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_calibration_is_valid</cite>.</p>
+<p>Checks the status of the stored calibration.</p>
+<p>Returns true if the calibration is valid, false otherwise. Unity gain
+and offset will be used.</p>
+<p><cite>bool auxiliary_power_calibration_is_valid(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if the calibration is valid, False otherwise</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_copy_data">
+<code class="descname">auxiliary_power_copy_data</code><span class="sig-paren">(</span><em>channel=0</em>, <em>power_type=0</em>, <em>max_count=10000000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_copy_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_copy_data" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_copy_data</cite>.</p>
+<p>Copies parsed power data into the specified buffer. Remember to lock
+the buffers first. If the count parameter is the same as max_count
+there is probably more data to be read. Do another read to get the
+remaining data.</p>
+<p><cite>int auxiliary_power_copy_data(uint32_t power_hndl, float* buffer,
+double* timestamp, size_t* count, size_t max_count, int channel, int
+type)</cite></p>
+<p>copied |
+| <em>max_count</em> | Maximum number of elements that the buffer can hold |
+| <em>channel</em> | Power channel for this buffer: A = 0, B = 1 (Power
+Debugger specific) |
+| <em>type</em> | Type of power data: Current = 0, Voltage = 1, Range = 2 |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Power channel for this buffer: A = 0, B = 1 (defaults
+to 0)</p></li>
+<li><p><strong>power_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Type of power data: Current = 0, Voltage = 1,
+Range = 2 (defaults to 0)</p></li>
+<li><p><strong>max_count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Maximum number of elements that the buffer can hold
+(defaults to BUFFER_SIZE)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of a list of samples and a list of the timestamps for
+the samples</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>), <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>))</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_free_data">
+<code class="descname">auxiliary_power_free_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_free_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_free_data" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_free_data</cite>.</p>
+<p>Clears the power data buffers and allows the power parser to continue.</p>
+<p><cite>int auxiliary_power_free_data(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_get_calibration">
+<code class="descname">auxiliary_power_get_calibration</code><span class="sig-paren">(</span><em>length=255</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_get_calibration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_get_calibration" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_get_calibration</cite>.</p>
+<p>Gets the raw calibration read from the tool.</p>
+<p><cite>int auxiliary_power_get_calibration(uint32_t power_hndl, uint8_t*
+data, size_t length)</cite></p>
+<p>Note: actually returns the number of calibration samples, not an error
+if non-zero. The length argument is not used.</p>
+<p>documentation for number of bytes. |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of raw calibration bytes to fetch. See the DGI
+documentation for number of bytes. (defaults to NUM_CALIBRATION)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of the read raw calibration data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_get_circuit_type">
+<code class="descname">auxiliary_power_get_circuit_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_get_circuit_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_get_circuit_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_get_circuit_type</cite>.</p>
+<p>Gets the type of power circuit.</p>
+<p><cite>int auxiliary_power_get_circuit_type(uint32_t power_hndl, int*
+circuit)</cite></p>
+<p>OLD_XAM = 0x00, XAM = 0x10, PAM = 0x11, UNKNOWN = 0xFF |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The circuit type: OLD_XAM = 0x00, XAM = 0x10, PAM = 0x11,
+UNKNOWN = 0xFF</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_get_status">
+<code class="descname">auxiliary_power_get_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_get_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_get_status" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_get_status</cite>.</p>
+<p>Gets the status of the power parser.</p>
+<p>Return codes:
+- <cite>IDLE</cite> = 0x00
+- <cite>RUNNING</cite> = 0x01
+- <cite>DONE</cite> = 0x02
+- <cite>CALIBRATING</cite> = 0x03
+- <cite>INIT_FAILED</cite> = 0x10
+- <cite>OVERFLOWED</cite> = 0x11
+- <cite>USB_DISCONNECTED</cite> = 0x12
+- <cite>CALIBRATION_FAILED</cite> = 0x20</p>
+<p><cite>int auxiliary_power_get_status(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The status of the power parser:
+- <cite>IDLE</cite> = 0x00
+- <cite>RUNNING</cite> = 0x01
+- <cite>DONE</cite> = 0x02
+- <cite>CALIBRATING</cite> = 0x03
+- <cite>INIT_FAILED</cite> = 0x10
+- <cite>OVERFLOWED</cite> = 0x11
+- <cite>USB_DISCONNECTED</cite> = 0x12
+- <cite>CALIBRATION_FAILED</cite> = 0x20</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_initialize">
+<code class="descname">auxiliary_power_initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_initialize</cite>.</p>
+<p>Initializes the power parser.</p>
+<p><cite>int auxiliary_power_initialize(uint32_t* power_hndl_p, uint32_t
+dgi_hndl)</cite></p>
+<p>the power parser |
+| <em>dgi_hndl</em> | Handle of the connection |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Handle of the power parser</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>c_uint()</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_lock_data_for_reading">
+<code class="descname">auxiliary_power_lock_data_for_reading</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_lock_data_for_reading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_lock_data_for_reading" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_lock_data_for_reading</cite>.</p>
+<p>Blocks the parsing thread from accessing all the buffers. This must be
+called before the user application code accesses the buffers, or a
+call to <cite>auxiliary_power_copy_data</cite> is made. Afterwards
+<cite>auxiliary_power_free_data</cite> must be called. Minimize the amount of
+time between locking and freeing to avoid buffer overflows.</p>
+<p><cite>int auxiliary_power_lock_data_for_reading(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_register_buffer_pointers">
+<code class="descname">auxiliary_power_register_buffer_pointers</code><span class="sig-paren">(</span><em>channel=0</em>, <em>power_type=0</em>, <em>max_count=10000000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_register_buffer_pointers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_register_buffer_pointers" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_register_buffer_pointers</cite>.</p>
+<p>Registers a set of pointers to be used for storing the
+calibrated power data. The buffers can then be locked by
+auxiliary_power_lock_data_for_reading, and the data directly read from
+the specified buffers.
+Zero-pointers can be specified to get the buffers allocated within
+DGILib. This requires the data to be fetched using
+auxiliary_power_copy_data.</p>
+<p><cite>int auxiliary_power_register_buffer_pointers(uint32_t power_hndl,
+float* buffer, double* timestamp, size_t*
+count, size_t max_count, int channel, int type)</cite></p>
+<p>automatically allocated. |
+| <em>timestamp</em> | Buffer that will hold the timestamp for the samples.
+Set to 0 for automatically allocated. |
+| <em>count</em> | Pointer to a variable that will hold the count of samples.
+Set to 0 for automatically allocated. |
+| <em>max_count</em> | Number of samples that can fit into the specified
+buffers. Or size of automatically allocated buffers. |
+| <em>channel</em> | Power channel for this buffer: A = 0, B = 1 (Power
+Debugger specific) |
+| <em>type</em> | Type of power data: Current = 0, Voltage = 1, Range = 2 |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Power channel for this buffer: A = 0, B = 1 (defaults
+to 0)</p></li>
+<li><p><strong>power_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Type of power data: Current = 0, Voltage = 1,
+Range = 2 (defaults to 0)</p></li>
+<li><p><strong>max_count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of samples that can fit into the specified
+buffers (defaults to BUFFER_SIZE)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_start">
+<code class="descname">auxiliary_power_start</code><span class="sig-paren">(</span><em>mode=0</em>, <em>parameter=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_start" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_start</cite>.</p>
+<p>Starts parsing of power data. The power and power sync interfaces are
+enabled automatically, but note that it is necessary to start the
+polling separately. This only starts the parser that consumes data
+from the DGILib buffer.</p>
+<p><cite>int auxiliary_power_start(uint32_t power_hndl, int mode, int
+parameter)</cite></p>
+<p>consume the data. |
+|  | 1 - oneshot capturing that captures data until the buffer has
+been read once, has been filled or the time from the first received
+sample in seconds equals the specified parameter. |
+| <em>parameter</em> | Mode specific |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – <p>Sets the mode of capture (defaults to 0)
+- 0: continuous capturing which requires the user to periodically</p>
+<blockquote>
+<div><p>consume the data</p>
+</div></blockquote>
+<ul>
+<li><p>1: oneshot capturing that captures data until the buffer has</p></li>
+</ul>
+<dl class="simple">
+<dt>been read once, has been filled or the time from the first</dt><dd><p>received sample in seconds equals the specified parameter</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>parameter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Mode specific (defaults to 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_stop">
+<code class="descname">auxiliary_power_stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_stop</cite>.</p>
+<p>Stops parsing of power data.</p>
+<p><cite>int auxiliary_power_stop(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_trigger_calibration">
+<code class="descname">auxiliary_power_trigger_calibration</code><span class="sig-paren">(</span><em>circuit_type=16</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_trigger_calibration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_trigger_calibration" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_trigger_calibration</cite>.</p>
+<p>Triggers a calibration of the specified type. This can take some time,
+so use <cite>auxiliary_power_get_status</cite> to check for completion.</p>
+<p><a href="#id3"><span class="problematic" id="id4">`</span></a>int auxiliary_power_trigger_calibration(uint32_t power_hndl, int type)
+`</p>
+<p>for details. |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>circuit_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Type of calibration to trigger (defaults to XAM)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_uninitialize">
+<code class="descname">auxiliary_power_uninitialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_uninitialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_uninitialize" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_uninitialize</cite>.</p>
+<p>Uninitializes the power parser.</p>
+<p><cite>int auxiliary_power_uninitialize(uint32_t power_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_unregister_buffer_pointers">
+<code class="descname">auxiliary_power_unregister_buffer_pointers</code><span class="sig-paren">(</span><em>channel=0</em>, <em>power_type=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_auxiliary.html#DGILibAuxiliary.auxiliary_power_unregister_buffer_pointers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.auxiliary_power_unregister_buffer_pointers" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>auxiliary_power_unregister_buffer_pointers</cite>.</p>
+<p>Unregisters the pointers for the specified power channel.</p>
+<p><cite>int auxiliary_power_unregister_buffer_pointers(uint32_t power_hndl,
+int channel, int type)</cite></p>
+<p>Debugger specific) |
+| <em>type</em> | Type of power data: Current = 0, Voltage = 1, Range = 2 |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Power channel for this buffer: A = 0, B = 1 (defaults
+to 0)</p></li>
+<li><p><strong>power_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Type of power data: Current = 0, Voltage = 1,
+Range = 2 (defaults to 0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.dgi_hndl">
+<code class="descname">dgi_hndl</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.dgi_hndl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.dgilib">
+<code class="descname">dgilib</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.dgilib" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.power_hndl">
+<code class="descname">power_hndl</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.power_hndl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydgilib.dgilib_auxiliary.DGILibAuxiliary.verbose">
+<code class="descname">verbose</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_auxiliary.DGILibAuxiliary.verbose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydgilib.dgilib_config">
+<span id="pydgilib-dgilib-config-module"></span><h2>pydgilib.dgilib_config module<a class="headerlink" href="#module-pydgilib.dgilib_config" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pydgilib.dgilib_discovery">
+<span id="pydgilib-dgilib-discovery-module"></span><h2>pydgilib.dgilib_discovery module<a class="headerlink" href="#module-pydgilib.dgilib_discovery" title="Permalink to this headline">¶</a></h2>
+<p>This module provides Python bindings for the Discovery API of DGILib.</p>
+<dl class="class">
+<dt id="pydgilib.dgilib_discovery.DGILibDiscovery">
+<em class="property">class </em><code class="descclassname">pydgilib.dgilib_discovery.</code><code class="descname">DGILibDiscovery</code><a class="reference internal" href="../_modules/pydgilib/dgilib_discovery.html#DGILibDiscovery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_discovery.DGILibDiscovery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Python bindings for DGILib Discovery.</p>
+<p>DGILib is a Dynamic-Link Library (DLL) to help software applications
+communicate with Data Gateway Interface (DGI) devices. See the Data
+Gateway Interface user guide for further details. DGILib handles
+the low-level USB communication and adds a level of buffering for
+minimizing the chance of overflows.</p>
+<p>TODO?
+2.1.1. initialize_status_change_notification
+Initializes the system necessary for using the status change notification
+callback mechanisms. A handle will be created to keep track of the
+registered callbacks. This function must always be called before
+registering and unregistering notification callbacks.
+Function definition
+void initialize_status_change_notification(uint32_t* handlep)
+Parameters
+handlep Pointer to a variable that will hold the handle
+2.1.2. uninitialize_status_change_notification
+Uninitializes the status change notification callback mechanisms. This
+function must be called when shutting down to clean up memory allocations.
+Function definition
+void uninitialize_status_change_notification(uint32_t handle)
+Parameters
+handle Handle to uninitialize
+2.1.3. register_for_device_status_change_notifications
+Registers provided function pointer with the device status change
+mechanism. Whenever there is a change (device connected or disconnected)
+the callback will be executed. Note that it is not allowed to connect to a
+device in the context of the callback function. The callback function has
+the following definition: typedef void (<em>DeviceStatusChangedCallBack)(char</em>
+device_name, char* device_serial, BOOL connected)
+Function definition
+void register_for_device_status_change_notifications(uint32_t handle,
+DeviceStatusChangedCallBack deviceStatusChangedCallBack)
+Parameters
+handle Handle to change notification mechanisms
+deviceStatusChangedCallBack Function pointer that will be called when the
+devices change
+2.1.4. unregister_for_device_status_change_notifications
+Unregisters previously registered function pointer from the device status
+change mechanism.
+Function definition
+void unregister_for_device_status_change_notifications(uint32_t handle,
+DeviceStatusChangedCallBack deviceStatusChangedCallBack)
+Parameters
+handle Handle to change notification mechanisms
+deviceStatusChangedCallBack Function pointer that will be removed</p>
+<dl class="attribute">
+<dt id="pydgilib.dgilib_discovery.DGILibDiscovery.dgilib">
+<code class="descname">dgilib</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_discovery.DGILibDiscovery.dgilib" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_discovery.DGILibDiscovery.discover">
+<code class="descname">discover</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_discovery.html#DGILibDiscovery.discover"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_discovery.DGILibDiscovery.discover" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>discover</cite>.</p>
+<p>Triggers a scan to find available devices in the system. The result
+will be immediately available through the <cite>get_device_count</cite>,
+<cite>get_device_name</cite> and <cite>get_device_serial</cite> functions.</p>
+<p><cite>void discover(void)</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_discovery.DGILibDiscovery.get_device_count">
+<code class="descname">get_device_count</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_discovery.html#DGILibDiscovery.get_device_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_discovery.DGILibDiscovery.get_device_count" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_device_count</cite>.</p>
+<p>Returns the number of devices detected.</p>
+<p><cite>int get_device_count(void)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The number of devices detected</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_discovery.DGILibDiscovery.get_device_name">
+<code class="descname">get_device_name</code><span class="sig-paren">(</span><em>index=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_discovery.html#DGILibDiscovery.get_device_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_discovery.DGILibDiscovery.get_device_name" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_device_name</cite>.</p>
+<p>Gets the name of a detected device.</p>
+<p><cite>int get_device_name(int index, char* name)</cite></p>
+<p>or more bytes must be allocated |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Index of device ranges from 0 to <cite>get_device_count</cite> - 1</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of a detected device</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_discovery.DGILibDiscovery.get_device_serial">
+<code class="descname">get_device_serial</code><span class="sig-paren">(</span><em>index=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_discovery.html#DGILibDiscovery.get_device_serial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_discovery.DGILibDiscovery.get_device_serial" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_device_serial</cite>.</p>
+<p>Gets the serial number of a detected device.</p>
+<p><cite>int get_device_serial(int index, char* sn)</cite></p>
+<p>be stored. 100 or more bytes must be allocated. This is used when
+connecting to a device |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Index of device ranges from 0 to <cite>get_device_count</cite> - 1</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The serial number of a detected device</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_discovery.DGILibDiscovery.is_msd_mode">
+<code class="descname">is_msd_mode</code><span class="sig-paren">(</span><em>device_sn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_discovery.html#DGILibDiscovery.is_msd_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_discovery.DGILibDiscovery.is_msd_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>is_msd_mode</cite>.</p>
+<p>EDBG devices can be set to a mass storage mode where the DGI is
+unavailable. In such cases the device is still detected by DGILib, but
+it won’t be possible to directly connect to it. This command is used
+to check if the device is in such a mode.</p>
+<p>A non-zero return value indicates that the mode must be changed by
+<cite>set_mode</cite> before proceeding.</p>
+<p><cite>int is_msd_mode(char* sn)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>device_sn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Serial number of the device to check (defaults to
+self.device_sn)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A non-zero return value indicates that the mode must be
+changed by <cite>set_mode</cite> before proceeding.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_discovery.DGILibDiscovery.set_mode">
+<code class="descname">set_mode</code><span class="sig-paren">(</span><em>device_sn</em>, <em>nmbed=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_discovery.html#DGILibDiscovery.set_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_discovery.DGILibDiscovery.set_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>set_mode</cite>.</p>
+<p>This function is used to temporarily set the EDBG to a specified mode.</p>
+<p><cite>int set_mode(char* sn, int nmbed)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_sn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Serial number of the device to set</p></li>
+<li><p><strong>nmbed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – 0 - Set to mbed mode. 1 - Set to DGI mode (defaults to
+DGI mode)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pydgilib.dgilib_discovery.DGILibDiscovery.verbose">
+<code class="descname">verbose</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_discovery.DGILibDiscovery.verbose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydgilib.dgilib_exceptions">
+<span id="pydgilib-dgilib-exceptions-module"></span><h2>pydgilib.dgilib_exceptions module<a class="headerlink" href="#module-pydgilib.dgilib_exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Custom Exceptions for DGILib.</p>
+<dl class="exception">
+<dt id="pydgilib.dgilib_exceptions.DLLError">
+<em class="property">exception </em><code class="descclassname">pydgilib.dgilib_exceptions.</code><code class="descname">DLLError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#DLLError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.DLLError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
+<p>Exception raised opening dgilib.dll.</p>
+<p>dgilib.dll could not be found in the specified path.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pydgilib.dgilib_exceptions.DeviceArgumentError">
+<em class="property">exception </em><code class="descclassname">pydgilib.dgilib_exceptions.</code><code class="descname">DeviceArgumentError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#DeviceArgumentError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.DeviceArgumentError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
+<p>Exception raised parsing arguments.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pydgilib.dgilib_exceptions.DeviceConnectionError">
+<em class="property">exception </em><code class="descclassname">pydgilib.dgilib_exceptions.</code><code class="descname">DeviceConnectionError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#DeviceConnectionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.DeviceConnectionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
+<p>Exception raised: Could not connect to the device.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pydgilib.dgilib_exceptions.DeviceIndexError">
+<em class="property">exception </em><code class="descclassname">pydgilib.dgilib_exceptions.</code><code class="descname">DeviceIndexError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#DeviceIndexError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.DeviceIndexError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
+<p>Exception raised selecting device.</p>
+<p>The device_index exceeds the device_count.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pydgilib.dgilib_exceptions.DeviceReturnError">
+<em class="property">exception </em><code class="descclassname">pydgilib.dgilib_exceptions.</code><code class="descname">DeviceReturnError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#DeviceReturnError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.DeviceReturnError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
+<p>Exception raised: DGILib returned non-zero value.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pydgilib.dgilib_exceptions.Error">
+<em class="property">exception </em><code class="descclassname">pydgilib.dgilib_exceptions.</code><code class="descname">Error</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#Error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p>Base class for exceptions in this module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Error message associated with the exception</p>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><p><strong>msg</strong> – Error message associated with the exception</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="pydgilib.dgilib_exceptions.Error.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#Error.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.Error.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>__str__.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydgilib.dgilib_housekeeping">
+<span id="pydgilib-dgilib-housekeeping-module"></span><h2>pydgilib.dgilib_housekeeping module<a class="headerlink" href="#module-pydgilib.dgilib_housekeeping" title="Permalink to this headline">¶</a></h2>
+<p>This module provides Python bindings for the Housekeeping API of DGILib.</p>
+<dl class="class">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping">
+<em class="property">class </em><code class="descclassname">pydgilib.dgilib_housekeeping.</code><code class="descname">DGILibHousekeeping</code><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Python bindings for DGILib Housekeeping.</p>
+<p>DGILib is a Dynamic-Link Library (DLL) to help software applications
+communicate with Data Gateway Interface (DGI) devices. See the Data
+Gateway Interface user guide for further details. DGILib handles the
+low-level USB communication and adds a level of buffering for minimizing
+the chance of overflows.
+The library helps parse data streams of high complexity.</p>
+<dl class="method">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><em>device_sn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>connect</cite>.</p>
+<p>Opens a connection to the specified device. This function must be
+called prior to any function requiring the connection handle.</p>
+<p><cite>int connect(char* sn, uint32_t* dgi_hndl_p)</cite></p>
+<p>connection to |
+| <em>dgi_hndl_p</em> | Pointer to a variable that will hold the handle of the
+connection |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>device_sn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Serial number of the device</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Variable that holds the handle of the connection</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>c_uint()</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.connection_status">
+<code class="descname">connection_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping.connection_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.connection_status" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>connection_status</cite>.</p>
+<p>Verifies that the specified connection is still open.</p>
+<p><cite>int connection_status(uint32_t* dgi_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A non-zero return value indicates a connection error.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.dgi_hndl">
+<code class="descname">dgi_hndl</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.dgi_hndl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.dgilib">
+<code class="descname">dgilib</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.dgilib" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>disconnect</cite>.</p>
+<p>Closes the specified connection.</p>
+<p><cite>int disconnect(uint32_t dgi_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.get_build_number">
+<code class="descname">get_build_number</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping.get_build_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.get_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_build_number</cite>.</p>
+<p>Get the major version of the DGI library.</p>
+<p>Returns the build number of DGILib. If not supported, returns 0.</p>
+<p><cite>int get_build_number(void)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The build number of DGILib. If not supported, returns 0.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.get_fw_version">
+<code class="descname">get_fw_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping.get_fw_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.get_fw_version" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_fw_version</cite>.</p>
+<p>Gets the firmware version of the DGI device connected. Note that this
+is the version of the DGI device, and not the tool.</p>
+<p><cite>int get_fw_version(uint32_t dgi_hndl, unsigned char* major, unsigned
+char* minor)</cite></p>
+<p>stored |
+| <em>minor</em> | Pointer to a variable where the minor version will be
+stored |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Version information of the DGI device:
+- major_fw: the major firmware version of the DGI device connected
+- minor_fw: the minor firmware version of the DGI device connected</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.get_major_version">
+<code class="descname">get_major_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping.get_major_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.get_major_version" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_major_version</cite>.</p>
+<p>Get the major version of the DGI library.</p>
+<p><cite>int get_major_version(void)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The major version of the DGI library</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.get_minor_version">
+<code class="descname">get_minor_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping.get_minor_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.get_minor_version" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>get_minor_version</cite>.</p>
+<p>Get the minor version of the DGI library.</p>
+<p><cite>int get_minor_version(void)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The minor version of the DGI library</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.start_polling">
+<code class="descname">start_polling</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping.start_polling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.start_polling" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>start_polling</cite>.</p>
+<p>This function will start the polling system and start acquisition on
+enabled interfaces. It is possible to enable/disable interfaces both
+before and after the polling has been started. However, no data will be
+transferred until the polling is started.</p>
+<p><cite>int start_polling(uint32_t dgi_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dgi_hndl</strong> (<em>c_uint</em><em>(</em><em>)</em>) – Handle of the connection</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.stop_polling">
+<code class="descname">stop_polling</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping.stop_polling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.stop_polling" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>stop_polling</cite>.</p>
+<p>This function will stop the polling system and stop acquisition on all
+interfaces.</p>
+<p><cite>int stop_polling(uint32_t dgi_hndl)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dgi_hndl</strong> (<em>c_uint</em><em>(</em><em>)</em>) – Handle of the connection</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.target_reset">
+<code class="descname">target_reset</code><span class="sig-paren">(</span><em>hold_reset</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_housekeeping.html#DGILibHousekeeping.target_reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.target_reset" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>target_reset</cite>.</p>
+<p>This function is used to control the state of the reset line connected
+to the target, if available.</p>
+<p><cite>int target_reset(uint32_t dgi_hndl, bool hold_reset)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hold_reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – True will assert reset, False will release it</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pydgilib.dgilib_housekeeping.DGILibHousekeeping.verbose">
+<code class="descname">verbose</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_housekeeping.DGILibHousekeeping.verbose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydgilib.dgilib_interface_communication">
+<span id="pydgilib-dgilib-interface-communication-module"></span><h2>pydgilib.dgilib_interface_communication module<a class="headerlink" href="#module-pydgilib.dgilib_interface_communication" title="Permalink to this headline">¶</a></h2>
+<p>This module provides Python bindings for the Interface Communication API of DGILib.</p>
+<dl class="class">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication">
+<em class="property">class </em><code class="descclassname">pydgilib.dgilib_interface_communication.</code><code class="descname">DGILibInterfaceCommunication</code><a class="reference internal" href="../_modules/pydgilib/dgilib_interface_communication.html#DGILibInterfaceCommunication"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Python bindings for DGILib Interface Communication.</p>
+<p>DGILib is a Dynamic-Link Library (DLL) to help software applications
+communicate with Data Gateway Interface (DGI) devices. See the Data
+Gateway Interface user guide for further details. DGILib handles the
+low-level USB communication and adds a level of buffering for minimizing
+the chance of overflows. The library helps parse data streams of high
+complexity. The timestamp interface is parsed and split into separate
+buffers for each data source.</p>
+<dl class="attribute">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.dgi_hndl">
+<code class="descname">dgi_hndl</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.dgi_hndl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.dgilib">
+<code class="descname">dgilib</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.dgilib" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_clear_buffer">
+<code class="descname">interface_clear_buffer</code><span class="sig-paren">(</span><em>interface_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_interface_communication.html#DGILibInterfaceCommunication.interface_clear_buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_clear_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_clear_buffer</cite>.</p>
+<p>Clears the data in the buffers for the specified interface.</p>
+<p><cite>int interface_clear_buffer(uint32_t dgi_hndl, int interface_id)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_disable">
+<code class="descname">interface_disable</code><span class="sig-paren">(</span><em>interface_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_interface_communication.html#DGILibInterfaceCommunication.interface_disable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_disable</cite>.</p>
+<p>Disables the specified interface.</p>
+<p><cite>int interface_disable(uint32_t dgi_hndl, int interface_id)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface to disable</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_enable">
+<code class="descname">interface_enable</code><span class="sig-paren">(</span><em>interface_id</em>, <em>timestamp=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_interface_communication.html#DGILibInterfaceCommunication.interface_enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_enable" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_enable</cite>.</p>
+<p>Enables the specified interface. Note that no data acquisition will
+begin until a session has been started.</p>
+<p><cite>int interface_enable(uint32_t dgi_hndl, int interface_id, bool
+timestamp)</cite></p>
+<p>timestamping. Consult the DGI documentation for details on the
+timestamping option. |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface to enable</p></li>
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Setting this to true will make the interface use
+timestamping (defaults to True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_get_configuration">
+<code class="descname">interface_get_configuration</code><span class="sig-paren">(</span><em>interface_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_interface_communication.html#DGILibInterfaceCommunication.interface_get_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_get_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_get_configuration</cite>.</p>
+<p>Gets the configuration associated with the specified interface.
+Consult the DGI documentation for details.</p>
+<p><cite>int interface_get_configuration(uint32_t dgi_hndl, int interface_id,
+unsigned int* config_id, unsigned int* config_value, unsigned int*
+config_cnt)</cite></p>
+<p>configuration item |
+| <em>config_value</em> | Buffer that will hold the value field for the
+configuration item |
+| <em>config_cnt</em> | Pointer to variable that will hold the count of stored
+configuration items |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of a list of configuration IDs and a list of
+configuration values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>), <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>))</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_list">
+<code class="descname">interface_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_interface_communication.html#DGILibInterfaceCommunication.interface_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_list" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_list</cite>.</p>
+<p>Queries the connected DGI device for available interfaces. Refer to
+the DGI documentation to resolve the ID.</p>
+<p><cite>int interface_list(uint32_t dgi_hndl, unsigned char* interfaces,
+unsigned char* count)</cite></p>
+<p>Should be able to hold minimum 10 elements, but a larger count should
+be used to be future proof. |
+| <em>count</em> | Pointer to a variable that will be set to the number of
+interfaces registered in buffer. |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of available interfaces</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>)</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_read_data">
+<code class="descname">interface_read_data</code><span class="sig-paren">(</span><em>interface_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_interface_communication.html#DGILibInterfaceCommunication.interface_read_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_read_data" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_read_data</cite>.</p>
+<p>Reads the data received on the specified interface. This should be
+called regularly to avoid overflows in the system. DGILib can buffer
+10M samples.</p>
+<p><cite>int interface_read_data(uint32_t dgi_hndl, int interface_id, unsigned
+char* buffer, unsigned long long* timestamp, int* length, unsigned int*
+ovf_index, unsigned int* ovf_length, unsigned int* ovf_entry_count)</cite></p>
+<p>have allocated 10M elements. |
+| <em>timestamp</em> | If timestamp is enabled for the interface, the buffer
+that will hold the received data. The buffer must have allocated 10M
+elements. Otherwise send 0. |
+| <em>length</em> | Pointer to a variable that will hold the count of
+elements received |
+| <em>ovf_index</em> | Reserved. Set to 0. |
+| <em>ovf_length</em> | Reserved. Set to 0. |
+| <em>ovf_entry_count</em> | Reserved. Set to 0. Could be set to a pointer to
+a variable that can be used as an indicator of overflows. Overflow
+would be indicated by non-zero value. |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of a list of received values and a list of ticks</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>), <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>))</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_set_configuration">
+<code class="descname">interface_set_configuration</code><span class="sig-paren">(</span><em>interface_id</em>, <em>config_id</em>, <em>config_value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_interface_communication.html#DGILibInterfaceCommunication.interface_set_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_set_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_set_configuration</cite>.</p>
+<p>Sets the given configuration fields for the specified interface.
+Consult the DGI documentation for details.</p>
+<p><cite>int interface_set_configuration(uint32_t dgi_hndl, int interface_id,
+unsigned int* config_id, unsigned int* config_value, unsigned int
+config_cnt)</cite></p>
+<p>items to set |
+| <em>config_value</em> | Buffer that holds the value field for the
+configuration items to set |
+| <em>config_cnt</em> | Number of items to set |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface</p></li>
+<li><p><strong>config_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>)</em>) – List that holds the ID field for the configuration
+items to set</p></li>
+<li><p><strong>config_value</strong> – List that holds the value field for the
+configuration items to set (must have the same number of elements</p></li>
+</ul>
+</dd>
+</dl>
+<p>as config_id)
+:type config_value: list(int)
+:raises: <code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceArgumentError</span></code>
+:raises: <code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_write_data">
+<code class="descname">interface_write_data</code><span class="sig-paren">(</span><em>interface_id</em>, <em>buffer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_interface_communication.html#DGILibInterfaceCommunication.interface_write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.interface_write_data" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>interface_write_data</cite>.</p>
+<p>Writes data to the specified interface. A maximum of 255 elements can
+be written each time. An error return code will be given if data
+hasn’t been written yet.</p>
+<p>TODO: A non-zero return value indicates an error. An error will be
+returned if the interface is still in the process of writing data.
+Wait a while and try again. The function get_connection_status can be
+used to verify if there is an error condition.</p>
+<p><cite>int interface_write_data(uint32_t dgi_hndl, int interface_id,
+unsigned char* buffer, int* length)</cite></p>
+<p>allocated 10M elements |
+| <em>length</em> | Pointer to a variable that will hold the count of
+elements received |
++————+————+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The ID of the interface</p></li>
+<li><p><strong>buffer</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Buffer that holds the data to write (defaults to None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeviceReturnError</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.verbose">
+<code class="descname">verbose</code><em class="property"> = None</em><a class="headerlink" href="#pydgilib.dgilib_interface_communication.DGILibInterfaceCommunication.verbose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydgilib">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pydgilib" title="Permalink to this headline">¶</a></h2>
+<p>This module provides Python bindings for DGILib.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

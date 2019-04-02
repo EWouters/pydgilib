@@ -1,0 +1,370 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib.dgilib &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pydgilib.dgilib</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pydgilib.dgilib</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides Python bindings for DGILib.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">getcwd</span><span class="p">,</span> <span class="n">getenv</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="n">cdll</span>
+
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">DLLError</span><span class="p">,</span> <span class="n">DeviceIndexError</span><span class="p">,</span> <span class="n">DeviceConnectionError</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_discovery</span> <span class="k">import</span> <span class="n">DGILibDiscovery</span>
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_housekeeping</span> <span class="k">import</span> <span class="n">DGILibHousekeeping</span>
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_interface_communication</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">DGILibInterfaceCommunication</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_auxiliary</span> <span class="k">import</span> <span class="n">DGILibAuxiliary</span>
+
+
+<div class="viewcode-block" id="DGILib"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILib">[docs]</a><span class="k">class</span> <span class="nc">DGILib</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Python bindings for DGILib.</span>
+
+<span class="sd">    DGILib is a Dynamic-Link Library (DLL) to help software applications</span>
+<span class="sd">    communicate with Data Gateway Interface (DGI) devices. See the Data Gateway</span>
+<span class="sd">    Interface user guide for further details. DGILib handles the low-level USB</span>
+<span class="sd">    communication and adds a level of buffering for minimizing the chance of</span>
+<span class="sd">    overflows.</span>
+<span class="sd">    The library helps parse data streams of high complexity. The timestamp</span>
+<span class="sd">    interface is parsed and split into separate buffers for each data source.</span>
+<span class="sd">    The power interface is optionally parsed and calibrated using an auxiliary</span>
+<span class="sd">    API.</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; with DGILib() as dgilib:</span>
+<span class="sd">    ...     dgilib.get_major_version()</span>
+<span class="sd">    5</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Add modules</span>
+    <span class="c1"># Discovery</span>
+    <span class="c1"># discovery = DGILibDiscovery</span>
+    <span class="n">discover</span> <span class="o">=</span> <span class="n">DGILibDiscovery</span><span class="o">.</span><span class="n">discover</span>
+    <span class="n">get_device_count</span> <span class="o">=</span> <span class="n">DGILibDiscovery</span><span class="o">.</span><span class="n">get_device_count</span>
+    <span class="n">get_device_name</span> <span class="o">=</span> <span class="n">DGILibDiscovery</span><span class="o">.</span><span class="n">get_device_name</span>
+    <span class="n">get_device_serial</span> <span class="o">=</span> <span class="n">DGILibDiscovery</span><span class="o">.</span><span class="n">get_device_serial</span>
+    <span class="n">is_msd_mode</span> <span class="o">=</span> <span class="n">DGILibDiscovery</span><span class="o">.</span><span class="n">is_msd_mode</span>
+    <span class="n">set_mode</span> <span class="o">=</span> <span class="n">DGILibDiscovery</span><span class="o">.</span><span class="n">set_mode</span>
+
+    <span class="c1"># Housekeeping</span>
+    <span class="c1"># housekeeping = DGILibHousekeeping</span>
+    <span class="n">connect</span> <span class="o">=</span> <span class="n">DGILibHousekeeping</span><span class="o">.</span><span class="n">connect</span>
+    <span class="n">disconnect</span> <span class="o">=</span> <span class="n">DGILibHousekeeping</span><span class="o">.</span><span class="n">disconnect</span>
+    <span class="n">connection_status</span> <span class="o">=</span> <span class="n">DGILibHousekeeping</span><span class="o">.</span><span class="n">connection_status</span>
+    <span class="n">get_major_version</span> <span class="o">=</span> <span class="n">DGILibHousekeeping</span><span class="o">.</span><span class="n">get_major_version</span>
+    <span class="n">get_minor_version</span> <span class="o">=</span> <span class="n">DGILibHousekeeping</span><span class="o">.</span><span class="n">get_minor_version</span>
+    <span class="n">get_build_number</span> <span class="o">=</span> <span class="n">DGILibHousekeeping</span><span class="o">.</span><span class="n">get_build_number</span>
+    <span class="n">get_fw_version</span> <span class="o">=</span> <span class="n">DGILibHousekeeping</span><span class="o">.</span><span class="n">get_fw_version</span>
+    <span class="n">start_polling</span> <span class="o">=</span> <span class="n">DGILibHousekeeping</span><span class="o">.</span><span class="n">start_polling</span>
+    <span class="n">stop_polling</span> <span class="o">=</span> <span class="n">DGILibHousekeeping</span><span class="o">.</span><span class="n">stop_polling</span>
+    <span class="n">target_reset</span> <span class="o">=</span> <span class="n">DGILibHousekeeping</span><span class="o">.</span><span class="n">target_reset</span>
+
+    <span class="c1"># Interface Communication</span>
+    <span class="c1"># interface_communication = DGILibInterfaceCommunication</span>
+    <span class="n">interface_list</span> <span class="o">=</span> <span class="n">DGILibInterfaceCommunication</span><span class="o">.</span><span class="n">interface_list</span>
+    <span class="n">interface_enable</span> <span class="o">=</span> <span class="n">DGILibInterfaceCommunication</span><span class="o">.</span><span class="n">interface_enable</span>
+    <span class="n">interface_disable</span> <span class="o">=</span> <span class="n">DGILibInterfaceCommunication</span><span class="o">.</span><span class="n">interface_disable</span>
+    <span class="n">interface_get_configuration</span> <span class="o">=</span> <span class="n">DGILibInterfaceCommunication</span><span class="o">.</span><span class="n">interface_get_configuration</span>
+    <span class="n">interface_set_configuration</span> <span class="o">=</span> <span class="n">DGILibInterfaceCommunication</span><span class="o">.</span><span class="n">interface_set_configuration</span>
+    <span class="n">interface_clear_buffer</span> <span class="o">=</span> <span class="n">DGILibInterfaceCommunication</span><span class="o">.</span><span class="n">interface_clear_buffer</span>
+    <span class="n">interface_read_data</span> <span class="o">=</span> <span class="n">DGILibInterfaceCommunication</span><span class="o">.</span><span class="n">interface_read_data</span>
+    <span class="n">interface_write_data</span> <span class="o">=</span> <span class="n">DGILibInterfaceCommunication</span><span class="o">.</span><span class="n">interface_write_data</span>
+
+    <span class="c1"># Auxiliary</span>
+    <span class="c1"># auxiliary = DGILibAuxiliary</span>
+    <span class="n">auxiliary_power_initialize</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_initialize</span>
+    <span class="n">auxiliary_power_uninitialize</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_uninitialize</span>
+    <span class="n">auxiliary_power_register_buffer_pointers</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_register_buffer_pointers</span>
+    <span class="n">auxiliary_power_unregister_buffer_pointers</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_unregister_buffer_pointers</span>
+    <span class="n">auxiliary_power_calibration_is_valid</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_calibration_is_valid</span>
+    <span class="n">auxiliary_power_trigger_calibration</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_trigger_calibration</span>
+    <span class="n">auxiliary_power_get_calibration</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_get_calibration</span>
+    <span class="n">auxiliary_power_get_circuit_type</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_get_circuit_type</span>
+    <span class="n">auxiliary_power_get_status</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_get_status</span>
+    <span class="n">auxiliary_power_start</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_start</span>
+    <span class="n">auxiliary_power_stop</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_stop</span>
+    <span class="n">auxiliary_power_lock_data_for_reading</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_lock_data_for_reading</span>
+    <span class="n">auxiliary_power_copy_data</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_copy_data</span>
+    <span class="n">auxiliary_power_free_data</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_free_data</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Instantiate DGILib object.</span>
+
+<span class="sd">        :param dgilib_path: Path to dgilib.dll (More info at:</span>
+<span class="sd">            https://www.microchip.com/developmenttools/ProductDetailsATPOWERDEBUGGER)</span>
+<span class="sd">        :type dgilib_path: str</span>
+<span class="sd">        :param device_index: index of the device to use, only usefull if</span>
+<span class="sd">            multiple devices are connected (default is None, will resolve to 0)</span>
+<span class="sd">        :type device_index: int or None</span>
+<span class="sd">        :param device_sn: the serial number of the device to use. Has higher</span>
+<span class="sd">            priority than device_index (default is None, will resolve to</span>
+<span class="sd">            serial number of device 0)</span>
+<span class="sd">        :type device_sn: str or None</span>
+<span class="sd">        :param verbose: set to a positive number to print more status messages</span>
+<span class="sd">            (default is 0)</span>
+<span class="sd">        :type verbose: int</span>
+<span class="sd">        :raises: :exc:`DLLError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load the dgilib.dll</span>
+        <span class="n">dgilib_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;dgilib_path&quot;</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span> <span class="k">else</span> <span class="s2">&quot;dgilib.dll&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">location</span> <span class="ow">in</span> <span class="p">(</span><span class="n">dgilib_path</span><span class="p">,</span> <span class="p">[</span><span class="n">dgilib_path</span><span class="p">],</span> <span class="p">[</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;dgilib.dll&quot;</span><span class="p">],</span>
+                         <span class="p">[</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">dgilib_path</span><span class="p">],</span> <span class="p">[</span><span class="n">getenv</span><span class="p">(</span>
+                             <span class="s2">&quot;programfiles(x86)&quot;</span><span class="p">),</span> <span class="s2">&quot;Atmel&quot;</span><span class="p">,</span> <span class="s2">&quot;Studio&quot;</span><span class="p">,</span> <span class="s2">&quot;7.0&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;Extensions&quot;</span><span class="p">,</span> <span class="s2">&quot;Application&quot;</span><span class="p">,</span> <span class="s2">&quot;dgilib.dll&quot;</span><span class="p">]):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">location</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DLLError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Could not find dgilib.dll. If you install Atmel Studio in &quot;</span> <span class="o">+</span>
+                <span class="n">f</span><span class="s2">&quot;the default location (&quot;</span> <span class="o">+</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;programfiles(x86)&quot;</span><span class="p">),</span> <span class="s2">&quot;Atmel&quot;</span><span class="p">,</span> <span class="s2">&quot;Studio&quot;</span><span class="p">,</span> <span class="s2">&quot;7.0&quot;</span><span class="p">)</span> <span class="o">+</span>
+                <span class="n">f</span><span class="s2">&quot;) it should get loaded automatically. Alternatively you &quot;</span> <span class="o">+</span>
+                <span class="n">f</span><span class="s2">&quot;can download it from https://www.microchip.com/mplab/avr-&quot;</span> <span class="o">+</span>
+                <span class="n">f</span><span class="s2">&quot;support/data-visualizer (download DGIlib dll, unzip the &quot;</span> <span class="o">+</span>
+                <span class="n">f</span><span class="s2">&quot;files and put the dll in {getcwd()}) or specify the path&quot;</span> <span class="o">+</span>
+                <span class="n">f</span><span class="s2">&quot;as the first argument or as a keyword argument &quot;</span> <span class="o">+</span>
+                <span class="n">f</span><span class="s2">&quot;(dgilib_path). Got dgilib_path=</span><span class="si">{dgilib_path}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Argument parsing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_index</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;device_index&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_sn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;device_sn&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Instantiate modules</span>
+        <span class="c1"># self.discovery(self)</span>
+        <span class="c1"># self.housekeeping(self)</span>
+        <span class="c1"># self.interface_communication(self)</span>
+        <span class="c1"># self.auxiliary(self)</span>
+
+<div class="viewcode-block" id="DGILib.__enter__"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILib.__enter__">[docs]</a>    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;For usage in `with DGILib() as dgilib:` syntax.&quot;&quot;&quot;</span>
+        <span class="c1"># Discovery</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">discover</span><span class="p">()</span>
+        <span class="n">device_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_device_count</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_sn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">device_index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_index</span> <span class="o">&gt;</span> <span class="n">device_count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">DeviceIndexError</span><span class="p">(</span>
+                    <span class="n">f</span><span class="s2">&quot;Discovered </span><span class="si">{device_count}</span><span class="s2"> devices so could not select &quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;device with index </span><span class="si">{self.device_index}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">device_sn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_device_serial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device_index</span><span class="p">)</span>
+
+        <span class="c1"># UNTESTED:</span>
+        <span class="c1"># if self.is_msd_mode(self.device_sn):</span>
+        <span class="c1">#     res = self.set_mode(self.device_sn, 1)</span>
+        <span class="c1">#     print(f&quot;\t{res} set_mode 1&quot;)</span>
+
+        <span class="c1"># Housekeeping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device_sn</span><span class="p">)</span>
+        <span class="n">c_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_status</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">c_status</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceConnectionError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Could not connect to device. Connection status: </span><span class="si">{c_status}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Interface communication</span>
+
+        <span class="c1"># Auxiliary</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="DGILib.__exit__"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILib.__exit__">[docs]</a>    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;For usage in `with DGILib() as dgilib:` syntax.&quot;&quot;&quot;</span>
+        <span class="c1"># Discovery</span>
+
+        <span class="c1"># Housekeeping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span></div></div>
+
+        <span class="c1"># Interface communication</span>
+
+        <span class="c1"># Auxiliary</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

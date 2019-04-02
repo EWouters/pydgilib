@@ -1,0 +1,566 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib.dgilib_interface_communication &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pydgilib.dgilib_interface_communication</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pydgilib.dgilib_interface_communication</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides Python bindings for the Interface Communication API of DGILib.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="p">(</span><span class="n">byref</span><span class="p">,</span> <span class="n">c_ubyte</span><span class="p">,</span> <span class="n">c_uint</span><span class="p">,</span> <span class="n">c_ulonglong</span><span class="p">)</span>
+
+
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_config</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">NUM_INTERFACES</span><span class="p">,</span> <span class="n">NUM_CONFIG_IDS</span><span class="p">,</span> <span class="n">BUFFER_SIZE</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">DeviceReturnError</span><span class="p">,</span> <span class="n">DeviceArgumentError</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DGILibInterfaceCommunication"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibInterfaceCommunication">[docs]</a><span class="k">class</span> <span class="nc">DGILibInterfaceCommunication</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Python bindings for DGILib Interface Communication.</span>
+
+<span class="sd">    DGILib is a Dynamic-Link Library (DLL) to help software applications</span>
+<span class="sd">    communicate with Data Gateway Interface (DGI) devices. See the Data</span>
+<span class="sd">    Gateway Interface user guide for further details. DGILib handles the</span>
+<span class="sd">    low-level USB communication and adds a level of buffering for minimizing</span>
+<span class="sd">    the chance of overflows. The library helps parse data streams of high</span>
+<span class="sd">    complexity. The timestamp interface is parsed and split into separate</span>
+<span class="sd">    buffers for each data source.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dgilib</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">dgi_hndl</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="DGILibInterfaceCommunication.interface_list"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibInterfaceCommunication.interface_list">[docs]</a>    <span class="k">def</span> <span class="nf">interface_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`interface_list`.</span>
+
+<span class="sd">        Queries the connected DGI device for available interfaces. Refer to</span>
+<span class="sd">        the DGI documentation to resolve the ID.</span>
+
+<span class="sd">        `int interface_list(uint32_t dgi_hndl, unsigned char* interfaces,</span>
+<span class="sd">        unsigned char* count)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *dgi_hndl* | Handle of the connection |</span>
+<span class="sd">        | *interfaces* | Buffer to hold the ID of the available interfaces.</span>
+<span class="sd">        Should be able to hold minimum 10 elements, but a larger count should</span>
+<span class="sd">        be used to be future proof. |</span>
+<span class="sd">        | *count* | Pointer to a variable that will be set to the number of</span>
+<span class="sd">        interfaces registered in buffer. |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :return: List of available interfaces</span>
+<span class="sd">        :rtype: list(int)</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">interfaces</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_ubyte</span> <span class="o">*</span> <span class="n">NUM_INTERFACES</span><span class="p">)()</span>
+        <span class="n">interfaceCount</span> <span class="o">=</span> <span class="n">c_ubyte</span><span class="p">()</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">interface_list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">interfaces</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">interfaceCount</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> interface_list: </span><span class="si">{interfaces[:interfaceCount.value]}</span><span class="s2">,&quot;</span>
+                <span class="n">f</span><span class="s2">&quot; interfaceCount: </span><span class="si">{interfaceCount.value}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;interface_list returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">interfaces</span><span class="p">[:</span><span class="n">interfaceCount</span><span class="o">.</span><span class="n">value</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceCommunication.interface_enable"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibInterfaceCommunication.interface_enable">[docs]</a>    <span class="k">def</span> <span class="nf">interface_enable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`interface_enable`.</span>
+
+<span class="sd">        Enables the specified interface. Note that no data acquisition will</span>
+<span class="sd">        begin until a session has been started.</span>
+
+<span class="sd">        `int interface_enable(uint32_t dgi_hndl, int interface_id, bool</span>
+<span class="sd">        timestamp)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *dgi_hndl* | Handle of the connection |</span>
+<span class="sd">        | *interface_id* | The ID of the interface to enable. |</span>
+<span class="sd">        | *timestamp* | Setting this to true will make the interface use</span>
+<span class="sd">        timestamping. Consult the DGI documentation for details on the</span>
+<span class="sd">        timestamping option. |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param interface_id: The ID of the interface to enable</span>
+<span class="sd">        :type interface_id: int</span>
+<span class="sd">        :param timestamp: Setting this to true will make the interface use</span>
+<span class="sd">            timestamping (defaults to True)</span>
+<span class="sd">        :type timestamp: bool</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">interface_enable</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> interface_enable: </span><span class="si">{interface_id}</span><span class="s2">, timestamp: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{timestamp}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;interface_enable: </span><span class="si">{interface_id}</span><span class="s2">, timestamp: </span><span class="si">{timestamp}</span><span class="s2"> &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceCommunication.interface_disable"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibInterfaceCommunication.interface_disable">[docs]</a>    <span class="k">def</span> <span class="nf">interface_disable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`interface_disable`.</span>
+
+<span class="sd">        Disables the specified interface.</span>
+
+<span class="sd">        `int interface_disable(uint32_t dgi_hndl, int interface_id)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *dgi_hndl* | Handle of the connection |</span>
+<span class="sd">        | *interface_id* | The ID of the interface to disable. |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param interface_id: The ID of the interface to disable</span>
+<span class="sd">        :type interface_id: int</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">interface_disable</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> interface_disable: </span><span class="si">{interface_id}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;interface_disable returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceCommunication.interface_get_configuration"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibInterfaceCommunication.interface_get_configuration">[docs]</a>    <span class="k">def</span> <span class="nf">interface_get_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`interface_get_configuration`.</span>
+
+<span class="sd">        Gets the configuration associated with the specified interface.</span>
+<span class="sd">        Consult the DGI documentation for details.</span>
+
+<span class="sd">        `int interface_get_configuration(uint32_t dgi_hndl, int interface_id,</span>
+<span class="sd">        unsigned int* config_id, unsigned int* config_value, unsigned int*</span>
+<span class="sd">        config_cnt)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *dgi_hndl* | Handle to connection |</span>
+<span class="sd">        | *interface_id* | The ID of the interface |</span>
+<span class="sd">        | *config_id* | Buffer that will hold the ID field for the</span>
+<span class="sd">        configuration item |</span>
+<span class="sd">        | *config_value* | Buffer that will hold the value field for the</span>
+<span class="sd">        configuration item |</span>
+<span class="sd">        | *config_cnt* | Pointer to variable that will hold the count of stored</span>
+<span class="sd">        configuration items |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param interface_id: The ID of the interface</span>
+<span class="sd">        :type interface_id: int</span>
+<span class="sd">        :return: Tuple of a list of configuration IDs and a list of</span>
+<span class="sd">            configuration values</span>
+<span class="sd">        :rtype: tuple(list(int), list(int))</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">config_id</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_uint</span> <span class="o">*</span> <span class="n">NUM_CONFIG_IDS</span><span class="p">)()</span>
+        <span class="n">config_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_uint</span> <span class="o">*</span> <span class="n">NUM_CONFIG_IDS</span><span class="p">)()</span>
+        <span class="n">config_cnt</span> <span class="o">=</span> <span class="n">c_uint</span><span class="p">()</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">interface_get_configuration</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span><span class="p">,</span>
+            <span class="n">interface_id</span><span class="p">,</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">config_id</span><span class="p">),</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">config_value</span><span class="p">),</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">config_cnt</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> interface_get_configuration: </span><span class="si">{interface_id}</span><span class="s2">, &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;config_cnt: </span><span class="si">{config_cnt.value}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">config_cnt</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">config_id: </span><span class="si">{config_id[i]}</span><span class="s2">,</span><span class="se">\t</span><span class="s2">value: &quot;</span>
+                        <span class="n">f</span><span class="s2">&quot;</span><span class="si">{config_value[i]}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> interface_get_configuration: </span><span class="si">{interface_id}</span><span class="s2">, &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;config_cnt: </span><span class="si">{config_cnt.value}</span><span class="s2"> returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">config_id</span><span class="p">[:</span><span class="n">config_cnt</span><span class="o">.</span><span class="n">value</span><span class="p">],</span> <span class="n">config_value</span><span class="p">[:</span><span class="n">config_cnt</span><span class="o">.</span><span class="n">value</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceCommunication.interface_set_configuration"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibInterfaceCommunication.interface_set_configuration">[docs]</a>    <span class="k">def</span> <span class="nf">interface_set_configuration</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">,</span> <span class="n">config_id</span><span class="p">,</span> <span class="n">config_value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`interface_set_configuration`.</span>
+
+<span class="sd">        Sets the given configuration fields for the specified interface.</span>
+<span class="sd">        Consult the DGI documentation for details.</span>
+
+<span class="sd">        `int interface_set_configuration(uint32_t dgi_hndl, int interface_id,</span>
+<span class="sd">        unsigned int* config_id, unsigned int* config_value, unsigned int</span>
+<span class="sd">        config_cnt)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *dgi_hndl* | Handle to connection |</span>
+<span class="sd">        | *interface_id* | The ID of the interface |</span>
+<span class="sd">        | *config_id* | Buffer that holds the ID field for the configuration</span>
+<span class="sd">        items to set |</span>
+<span class="sd">        | *config_value* | Buffer that holds the value field for the</span>
+<span class="sd">        configuration items to set |</span>
+<span class="sd">        | *config_cnt* | Number of items to set |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param interface_id: The ID of the interface</span>
+<span class="sd">        :type interface_id: int</span>
+<span class="sd">        :param config_id: List that holds the ID field for the configuration</span>
+<span class="sd">            items to set</span>
+<span class="sd">        :type config_id: list(int)</span>
+<span class="sd">        :param config_value: List that holds the value field for the</span>
+<span class="sd">            configuration items to set (must have the same number of elements</span>
+<span class="sd">        as config_id)</span>
+<span class="sd">        :type config_value: list(int)</span>
+<span class="sd">        :raises: :exc:`DeviceArgumentError`</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">config_id</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">config_value</span><span class="p">):</span>
+            <span class="n">config_cnt</span> <span class="o">=</span> <span class="n">c_uint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">config_id</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceArgumentError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;interface_set_configuration: the length of config_id list &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;({len(config_id)}) is not equal to the length of &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;config_value list ({len(config_value)})&quot;</span><span class="p">)</span>
+
+        <span class="n">config_id</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_uint</span> <span class="o">*</span> <span class="n">NUM_CONFIG_IDS</span><span class="p">)(</span><span class="o">*</span><span class="n">config_id</span><span class="p">)</span>
+        <span class="n">config_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_uint</span> <span class="o">*</span> <span class="n">NUM_CONFIG_IDS</span><span class="p">)(</span><span class="o">*</span><span class="n">config_value</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">interface_set_configuration</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span><span class="p">,</span>
+            <span class="n">interface_id</span><span class="p">,</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">config_id</span><span class="p">),</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">config_value</span><span class="p">),</span>
+            <span class="n">config_cnt</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> interface_set_configuration: </span><span class="si">{interface_id}</span><span class="s2">, &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;config_cnt: </span><span class="si">{config_cnt.value}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">config_cnt</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">config_id: </span><span class="si">{config_id[i]}</span><span class="s2">,</span><span class="se">\t</span><span class="s2">value: &quot;</span>
+                        <span class="n">f</span><span class="s2">&quot;</span><span class="si">{config_value[i]}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;interface_set_configuration: </span><span class="si">{interface_id}</span><span class="s2"> returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceCommunication.interface_clear_buffer"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibInterfaceCommunication.interface_clear_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">interface_clear_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`interface_clear_buffer`.</span>
+
+<span class="sd">        Clears the data in the buffers for the specified interface.</span>
+
+<span class="sd">        `int interface_clear_buffer(uint32_t dgi_hndl, int interface_id)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *dgi_hndl* | Handle of the connection |</span>
+<span class="sd">        | *interface_id* | The ID of the interface |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param interface_id: The ID of the interface</span>
+<span class="sd">        :type interface_id: int</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">interface_clear_buffer</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> interface_clear_buffer: </span><span class="si">{interface_id}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;interface_clear_buffer returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceCommunication.interface_read_data"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibInterfaceCommunication.interface_read_data">[docs]</a>    <span class="k">def</span> <span class="nf">interface_read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`interface_read_data`.</span>
+
+<span class="sd">        Reads the data received on the specified interface. This should be</span>
+<span class="sd">        called regularly to avoid overflows in the system. DGILib can buffer</span>
+<span class="sd">        10M samples.</span>
+
+<span class="sd">        `int interface_read_data(uint32_t dgi_hndl, int interface_id, unsigned</span>
+<span class="sd">        char* buffer, unsigned long long* timestamp, int* length, unsigned int*</span>
+<span class="sd">        ovf_index, unsigned int* ovf_length, unsigned int* ovf_entry_count)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *dgi_hndl* | Handle of the connection |</span>
+<span class="sd">        | *interface_id* | The ID of the interface |</span>
+<span class="sd">        | *buffer* | Buffer that will hold the received data. The buffer must</span>
+<span class="sd">        have allocated 10M elements. |</span>
+<span class="sd">        | *timestamp* | If timestamp is enabled for the interface, the buffer</span>
+<span class="sd">        that will hold the received data. The buffer must have allocated 10M</span>
+<span class="sd">        elements. Otherwise send 0. |</span>
+<span class="sd">        | *length* | Pointer to a variable that will hold the count of</span>
+<span class="sd">        elements received |</span>
+<span class="sd">        | *ovf_index* | Reserved. Set to 0. |</span>
+<span class="sd">        | *ovf_length* | Reserved. Set to 0. |</span>
+<span class="sd">        | *ovf_entry_count* | Reserved. Set to 0. Could be set to a pointer to</span>
+<span class="sd">        a variable that can be used as an indicator of overflows. Overflow</span>
+<span class="sd">        would be indicated by non-zero value. |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param interface_id: The ID of the interface</span>
+<span class="sd">        :type interface_id: int</span>
+<span class="sd">        :return: Tuple of a list of received values and a list of ticks</span>
+<span class="sd">        :rtype: tuple(list(int), list(int))</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">buffer</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_ubyte</span> <span class="o">*</span> <span class="n">BUFFER_SIZE</span><span class="p">)()</span>
+        <span class="n">ticks</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_ulonglong</span> <span class="o">*</span> <span class="n">BUFFER_SIZE</span><span class="p">)()</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">c_uint</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ovf_index</span> <span class="o">=</span> <span class="n">c_uint</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ovf_length</span> <span class="o">=</span> <span class="n">c_uint</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ovf_entry_count</span> <span class="o">=</span> <span class="n">c_uint</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">interface_read_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span><span class="p">,</span>
+            <span class="n">interface_id</span><span class="p">,</span>
+            <span class="n">buffer</span><span class="p">,</span>
+            <span class="n">ticks</span><span class="p">,</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">length</span><span class="p">),</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">ovf_index</span><span class="p">),</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">ovf_length</span><span class="p">),</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">ovf_entry_count</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> interface_read_data: </span><span class="si">{interface_id}</span><span class="s2">, length: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{length.value}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{i}</span><span class="s2">:</span><span class="se">\t</span><span class="s2">buffer: </span><span class="si">{buffer[i]}</span><span class="s2">,</span><span class="se">\t</span><span class="s2">tick: </span><span class="si">{ticks[i]}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;interface_read_data: </span><span class="si">{interface_id}</span><span class="s2"> returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ticks</span><span class="p">[:</span><span class="n">length</span><span class="o">.</span><span class="n">value</span><span class="p">],</span> <span class="n">buffer</span><span class="p">[:</span><span class="n">length</span><span class="o">.</span><span class="n">value</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DGILibInterfaceCommunication.interface_write_data"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibInterfaceCommunication.interface_write_data">[docs]</a>    <span class="k">def</span> <span class="nf">interface_write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`interface_write_data`.</span>
+
+<span class="sd">        Writes data to the specified interface. A maximum of 255 elements can</span>
+<span class="sd">        be written each time. An error return code will be given if data</span>
+<span class="sd">        hasn&#39;t been written yet.</span>
+
+<span class="sd">        TODO: A non-zero return value indicates an error. An error will be</span>
+<span class="sd">        returned if the interface is still in the process of writing data.</span>
+<span class="sd">        Wait a while and try again. The function get_connection_status can be</span>
+<span class="sd">        used to verify if there is an error condition.</span>
+
+<span class="sd">        `int interface_write_data(uint32_t dgi_hndl, int interface_id,</span>
+<span class="sd">        unsigned char* buffer, int* length)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *dgi_hndl* | Handle of the connection |</span>
+<span class="sd">        | *interface_id* | The ID of the interface |</span>
+<span class="sd">        | *buffer* | Buffer that holds the data to write. The buffer must have</span>
+<span class="sd">        allocated 10M elements |</span>
+<span class="sd">        | *length* | Pointer to a variable that will hold the count of</span>
+<span class="sd">        elements received |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param interface_id: The ID of the interface</span>
+<span class="sd">        :type interface_id: int</span>
+<span class="sd">        :param buffer: Buffer that holds the data to write (defaults to None)</span>
+<span class="sd">        :type buffer: int</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">c_uint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">buffer</span><span class="p">))</span>
+        <span class="n">buffer</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_ubyte</span> <span class="o">*</span> <span class="n">BUFFER_SIZE</span><span class="p">)(</span><span class="o">*</span><span class="n">buffer</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">interface_write_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span><span class="p">,</span> <span class="n">interface_id</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">buffer</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> interface_write_data: </span><span class="si">{interface_id}</span><span class="s2">, length: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{length.value}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{i}</span><span class="s2">:</span><span class="se">\t</span><span class="s2">buffer: </span><span class="si">{buffer[i]}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;TODO: interface_write_data: </span><span class="si">{interface_id}</span><span class="s2"> returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

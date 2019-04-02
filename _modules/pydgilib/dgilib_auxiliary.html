@@ -1,0 +1,758 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib.dgilib_auxiliary &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pydgilib.dgilib_auxiliary</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pydgilib.dgilib_auxiliary</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides Python bindings for the Auxiliary API of DGILib.&quot;&quot;&quot;</span>
+
+<span class="c1"># from ctypes import *</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="p">(</span><span class="n">byref</span><span class="p">,</span> <span class="n">c_uint</span><span class="p">,</span> <span class="n">c_float</span><span class="p">,</span> <span class="n">c_double</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_size_t</span><span class="p">,</span> <span class="n">c_ubyte</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_config</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">BUFFER_SIZE</span><span class="p">,</span> <span class="n">XAM</span><span class="p">,</span> <span class="n">NUM_CALIBRATION</span><span class="p">,</span> <span class="n">MAX_PRINT</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydgilib.dgilib_exceptions</span> <span class="k">import</span> <span class="n">DeviceReturnError</span>
+
+
+<div class="viewcode-block" id="DGILibAuxiliary"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary">[docs]</a><span class="k">class</span> <span class="nc">DGILibAuxiliary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Python bindings for DGILib Auxiliary.</span>
+
+<span class="sd">    DGILib is a Dynamic-Link Library (DLL) to help software applications</span>
+<span class="sd">    communicate with Data Gateway Interface (DGI) devices. See the Data Gateway</span>
+<span class="sd">    Interface user guide for further details. DGILib handles the low-level USB</span>
+<span class="sd">    communication and adds a level of buffering for minimizing the chance of</span>
+<span class="sd">    overflows. The library helps parse data streams of high complexity. The</span>
+<span class="sd">    timestamp interface is parsed and split into separate buffers for each</span>
+<span class="sd">    data source. The power interface is optionally parsed and calibrated using</span>
+<span class="sd">    an auxiliary API.</span>
+
+<span class="sd">    Power</span>
+<span class="sd">    The power interface (as found on some EDBG kits and Power Debugger) uses a</span>
+<span class="sd">    protocol stream and calibration scheme that can be tricky to get right. The</span>
+<span class="sd">    data rates are also relatively high and the calibration procedure could</span>
+<span class="sd">    cause issues if not handled efficiently. Therefore some auxiliary</span>
+<span class="sd">    functions to help with this have been made to perform parsing and</span>
+<span class="sd">    calibration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dgilib</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">dgi_hndl</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">power_hndl</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_initialize"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_initialize">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_initialize`.</span>
+
+<span class="sd">        Initializes the power parser.</span>
+
+<span class="sd">        `int auxiliary_power_initialize(uint32_t* power_hndl_p, uint32_t</span>
+<span class="sd">        dgi_hndl)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl_p* | Pointer to variable that will hold the handle to</span>
+<span class="sd">        the power parser |</span>
+<span class="sd">        | *dgi_hndl* | Handle of the connection |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :return: Handle of the power parser</span>
+<span class="sd">        :rtype: c_uint()</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">power_hndl</span> <span class="o">=</span> <span class="n">c_uint</span><span class="p">()</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_initialize</span><span class="p">(</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">power_hndl</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgi_hndl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_initialize&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_initialize returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">power_hndl</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_uninitialize"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_uninitialize">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_uninitialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_uninitialize`.</span>
+
+<span class="sd">        Uninitializes the power parser.</span>
+
+<span class="sd">        `int auxiliary_power_uninitialize(uint32_t power_hndl)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_uninitialize</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_uninitialize&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_uninitialize returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_register_buffer_pointers"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_register_buffer_pointers">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_register_buffer_pointers</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">power_type</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_count</span><span class="o">=</span><span class="n">BUFFER_SIZE</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_register_buffer_pointers`.</span>
+
+<span class="sd">        Registers a set of pointers to be used for storing the</span>
+<span class="sd">        calibrated power data. The buffers can then be locked by</span>
+<span class="sd">        auxiliary_power_lock_data_for_reading, and the data directly read from</span>
+<span class="sd">        the specified buffers.</span>
+<span class="sd">        Zero-pointers can be specified to get the buffers allocated within</span>
+<span class="sd">        DGILib. This requires the data to be fetched using</span>
+<span class="sd">        auxiliary_power_copy_data.</span>
+
+<span class="sd">        `int auxiliary_power_register_buffer_pointers(uint32_t power_hndl,</span>
+<span class="sd">        float* buffer, double* timestamp, size_t*</span>
+<span class="sd">        count, size_t max_count, int channel, int type)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        | *buffer* | Buffer that will hold the samples. Set to 0 for</span>
+<span class="sd">        automatically allocated. |</span>
+<span class="sd">        | *timestamp* | Buffer that will hold the timestamp for the samples.</span>
+<span class="sd">        Set to 0 for automatically allocated. |</span>
+<span class="sd">        | *count* | Pointer to a variable that will hold the count of samples.</span>
+<span class="sd">        Set to 0 for automatically allocated. |</span>
+<span class="sd">        | *max_count* | Number of samples that can fit into the specified</span>
+<span class="sd">        buffers. Or size of automatically allocated buffers. |</span>
+<span class="sd">        | *channel* | Power channel for this buffer: A = 0, B = 1 (Power</span>
+<span class="sd">        Debugger specific) |</span>
+<span class="sd">        | *type* | Type of power data: Current = 0, Voltage = 1, Range = 2 |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param channel: Power channel for this buffer: A = 0, B = 1 (defaults</span>
+<span class="sd">            to 0)</span>
+<span class="sd">        :type channel: int</span>
+<span class="sd">        :param power_type: Type of power data: Current = 0, Voltage = 1,</span>
+<span class="sd">            Range = 2 (defaults to 0)</span>
+<span class="sd">        :type power_type: int</span>
+<span class="sd">        :param max_count: Number of samples that can fit into the specified</span>
+<span class="sd">            buffers (defaults to BUFFER_SIZE)</span>
+<span class="sd">        :type max_count: int</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">powerBuffer</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_float</span> <span class="o">*</span> <span class="n">max_count</span><span class="p">)()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">powerTimestamp</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_double</span> <span class="o">*</span> <span class="n">max_count</span><span class="p">)()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">powerCount</span> <span class="o">=</span> <span class="n">c_size_t</span><span class="p">()</span>
+
+        <span class="n">max_count</span> <span class="o">=</span> <span class="n">c_size_t</span><span class="p">(</span><span class="n">max_count</span><span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="n">power_type</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">power_type</span><span class="p">)</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_register_buffer_pointers</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">,</span>
+            <span class="n">byref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">powerBuffer</span><span class="p">),</span>
+            <span class="n">byref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">powerTimestamp</span><span class="p">),</span>
+            <span class="n">byref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">powerCount</span><span class="p">),</span>
+            <span class="n">max_count</span><span class="p">,</span>
+            <span class="n">channel</span><span class="p">,</span>
+            <span class="n">power_type</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_register_buffer_pointers&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_register_buffer_pointers returned: </span><span class="si">{res}</span><span class="s2">&quot;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_unregister_buffer_pointers"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_unregister_buffer_pointers">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_unregister_buffer_pointers</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">power_type</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_unregister_buffer_pointers`.</span>
+
+<span class="sd">        Unregisters the pointers for the specified power channel.</span>
+
+<span class="sd">        `int auxiliary_power_unregister_buffer_pointers(uint32_t power_hndl,</span>
+<span class="sd">        int channel, int type)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        | *channel* | Power channel for this buffer: A = 0, B = 1 (Power</span>
+<span class="sd">        Debugger specific) |</span>
+<span class="sd">        | *type* | Type of power data: Current = 0, Voltage = 1, Range = 2 |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param channel: Power channel for this buffer: A = 0, B = 1 (defaults</span>
+<span class="sd">            to 0)</span>
+<span class="sd">        :type channel: int</span>
+<span class="sd">        :param power_type: Type of power data: Current = 0, Voltage = 1,</span>
+<span class="sd">            Range = 2 (defaults to 0)</span>
+<span class="sd">        :type power_type: int</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="n">power_type</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">power_type</span><span class="p">)</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_unregister_buffer_pointers</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">power_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_unregister_buffer_pointers, channel:&quot;</span>
+                <span class="n">f</span><span class="s2">&quot; </span><span class="si">{channel.value}</span><span class="s2">, power_type: </span><span class="si">{power_type.value}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_unregister_buffer_pointers, channel: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{channel.value}</span><span class="s2">, power_type: </span><span class="si">{power_type.value}</span><span class="s2"> returned: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_calibration_is_valid"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_calibration_is_valid">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_calibration_is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_calibration_is_valid`.</span>
+
+<span class="sd">        Checks the status of the stored calibration.</span>
+
+<span class="sd">        Returns true if the calibration is valid, false otherwise. Unity gain</span>
+<span class="sd">        and offset will be used.</span>
+
+<span class="sd">        `bool auxiliary_power_calibration_is_valid(uint32_t power_hndl)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :return: True if the calibration is valid, False otherwise</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">calibration_is_valid</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_calibration_is_valid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_calibration_is_valid: </span><span class="si">{calibration_is_valid}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">calibration_is_valid</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_trigger_calibration"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_trigger_calibration">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_trigger_calibration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit_type</span><span class="o">=</span><span class="n">XAM</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_trigger_calibration`.</span>
+
+<span class="sd">        Triggers a calibration of the specified type. This can take some time,</span>
+<span class="sd">        so use `auxiliary_power_get_status` to check for completion.</span>
+
+<span class="sd">        `int auxiliary_power_trigger_calibration(uint32_t power_hndl, int type)</span>
+<span class="sd">        `</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        | *type* | Type of calibration to trigger. See the DGI documentation</span>
+<span class="sd">        for details. |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param circuit_type: Type of calibration to trigger (defaults to XAM)</span>
+<span class="sd">        :type circuit_type: int</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">circuit_type</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">circuit_type</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_trigger_calibration</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">,</span> <span class="n">circuit_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_trigger_calibration&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_trigger_calibration returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_get_calibration"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_get_calibration">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_get_calibration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">NUM_CALIBRATION</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_get_calibration`.</span>
+
+<span class="sd">        Gets the raw calibration read from the tool.</span>
+
+<span class="sd">        `int auxiliary_power_get_calibration(uint32_t power_hndl, uint8_t*</span>
+<span class="sd">        data, size_t length)`</span>
+
+<span class="sd">        Note: actually returns the number of calibration samples, not an error</span>
+<span class="sd">        if non-zero. The length argument is not used.</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        | *data* | Buffer that will hold the read raw calibration data |</span>
+<span class="sd">        | *length* | Number of raw calibration bytes to fetch. See the DGI</span>
+<span class="sd">        documentation for number of bytes. |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param length: Number of raw calibration bytes to fetch. See the DGI</span>
+<span class="sd">            documentation for number of bytes. (defaults to NUM_CALIBRATION)</span>
+<span class="sd">        :type length: int</span>
+<span class="sd">        :return: List of the read raw calibration data</span>
+<span class="sd">        :rtype: list(int)</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_ubyte</span> <span class="o">*</span> <span class="n">length</span><span class="p">)()</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_get_calibration</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;auxiliary_power_get_calibration: </span><span class="si">{length}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{i}</span><span class="s2">:</span><span class="se">\t</span><span class="si">{data[i]}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span><span class="p">[:</span><span class="n">length</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_get_circuit_type"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_get_circuit_type">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_get_circuit_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_get_circuit_type`.</span>
+
+<span class="sd">        Gets the type of power circuit.</span>
+
+<span class="sd">        `int auxiliary_power_get_circuit_type(uint32_t power_hndl, int*</span>
+<span class="sd">        circuit)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        | *circuit* | Pointer to a variable that will hold the circuit type:</span>
+<span class="sd">        OLD_XAM = 0x00, XAM = 0x10, PAM = 0x11, UNKNOWN = 0xFF |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :return: The circuit type: OLD_XAM = 0x00, XAM = 0x10, PAM = 0x11,</span>
+<span class="sd">            UNKNOWN = 0xFF</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_get_circuit_type</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_get_circuit_type: </span><span class="si">{circuit.value}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_get_circuit_type: </span><span class="si">{circuit.value}</span><span class="s2"> returned: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">circuit</span><span class="o">.</span><span class="n">value</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_get_status"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_get_status">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_get_status`.</span>
+
+<span class="sd">        Gets the status of the power parser.</span>
+
+<span class="sd">        Return codes:</span>
+<span class="sd">        - `IDLE` = 0x00</span>
+<span class="sd">        - `RUNNING` = 0x01</span>
+<span class="sd">        - `DONE` = 0x02</span>
+<span class="sd">        - `CALIBRATING` = 0x03</span>
+<span class="sd">        - `INIT_FAILED` = 0x10</span>
+<span class="sd">        - `OVERFLOWED` = 0x11</span>
+<span class="sd">        - `USB_DISCONNECTED` = 0x12</span>
+<span class="sd">        - `CALIBRATION_FAILED` = 0x20</span>
+
+<span class="sd">        `int auxiliary_power_get_status(uint32_t power_hndl)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :return: The status of the power parser:</span>
+<span class="sd">            - `IDLE` = 0x00</span>
+<span class="sd">            - `RUNNING` = 0x01</span>
+<span class="sd">            - `DONE` = 0x02</span>
+<span class="sd">            - `CALIBRATING` = 0x03</span>
+<span class="sd">            - `INIT_FAILED` = 0x10</span>
+<span class="sd">            - `OVERFLOWED` = 0x11</span>
+<span class="sd">            - `USB_DISCONNECTED` = 0x12</span>
+<span class="sd">            - `CALIBRATION_FAILED` = 0x20</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_get_status</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;power_status: </span><span class="si">{status}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">status</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_start"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_start">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_start`.</span>
+
+<span class="sd">        Starts parsing of power data. The power and power sync interfaces are</span>
+<span class="sd">        enabled automatically, but note that it is necessary to start the</span>
+<span class="sd">        polling separately. This only starts the parser that consumes data</span>
+<span class="sd">        from the DGILib buffer.</span>
+
+<span class="sd">        `int auxiliary_power_start(uint32_t power_hndl, int mode, int</span>
+<span class="sd">        parameter)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        | *mode* | Sets the mode of capture. |</span>
+<span class="sd">        |  | 0 - continuous capturing which requires the user to periodically</span>
+<span class="sd">        consume the data. |</span>
+<span class="sd">        |  | 1 - oneshot capturing that captures data until the buffer has</span>
+<span class="sd">        been read once, has been filled or the time from the first received</span>
+<span class="sd">        sample in seconds equals the specified parameter. |</span>
+<span class="sd">        | *parameter* | Mode specific |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param mode: Sets the mode of capture (defaults to 0)</span>
+<span class="sd">            - 0: continuous capturing which requires the user to periodically</span>
+<span class="sd">                consume the data</span>
+<span class="sd">            - 1: oneshot capturing that captures data until the buffer has</span>
+<span class="sd">            been read once, has been filled or the time from the first</span>
+<span class="sd">                received sample in seconds equals the specified parameter</span>
+<span class="sd">        :type mode: int</span>
+<span class="sd">        :param parameter: Mode specific (defaults to 0)</span>
+<span class="sd">        :type parameter: int or None</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+        <span class="n">parameter</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_start</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">parameter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_start, mode: </span><span class="si">{mode.value}</span><span class="s2">, &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;parameter: </span><span class="si">{parameter.value}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_start, mode: </span><span class="si">{mode.value}</span><span class="s2">, parameter: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{parameter.value}</span><span class="s2"> returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_stop"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_stop">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_stop`.</span>
+
+<span class="sd">        Stops parsing of power data.</span>
+
+<span class="sd">        `int auxiliary_power_stop(uint32_t power_hndl)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_stop</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_stop&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;auxiliary_power_stop returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_lock_data_for_reading"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_lock_data_for_reading">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_lock_data_for_reading</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_lock_data_for_reading`.</span>
+
+<span class="sd">        Blocks the parsing thread from accessing all the buffers. This must be</span>
+<span class="sd">        called before the user application code accesses the buffers, or a</span>
+<span class="sd">        call to `auxiliary_power_copy_data` is made. Afterwards</span>
+<span class="sd">        `auxiliary_power_free_data` must be called. Minimize the amount of</span>
+<span class="sd">        time between locking and freeing to avoid buffer overflows.</span>
+
+<span class="sd">        `int auxiliary_power_lock_data_for_reading(uint32_t power_hndl)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_lock_data_for_reading</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_lock_data_for_reading&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_lock_data_for_reading returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_copy_data"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_copy_data">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_copy_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">power_type</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_count</span><span class="o">=</span><span class="n">BUFFER_SIZE</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_copy_data`.</span>
+
+<span class="sd">        Copies parsed power data into the specified buffer. Remember to lock</span>
+<span class="sd">        the buffers first. If the count parameter is the same as max_count</span>
+<span class="sd">        there is probably more data to be read. Do another read to get the</span>
+<span class="sd">        remaining data.</span>
+
+<span class="sd">        `int auxiliary_power_copy_data(uint32_t power_hndl, float* buffer,</span>
+<span class="sd">        double* timestamp, size_t* count, size_t max_count, int channel, int</span>
+<span class="sd">        type)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        | *buffer* | Buffer that will hold the samples. |</span>
+<span class="sd">        | *timestamp* | Buffer that will hold the timestamp for the samples. |</span>
+<span class="sd">        | *count* | Pointer to a variable that will hold the count of elements</span>
+<span class="sd">        copied |</span>
+<span class="sd">        | *max_count* | Maximum number of elements that the buffer can hold |</span>
+<span class="sd">        | *channel* | Power channel for this buffer: A = 0, B = 1 (Power</span>
+<span class="sd">        Debugger specific) |</span>
+<span class="sd">        | *type* | Type of power data: Current = 0, Voltage = 1, Range = 2 |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :param channel: Power channel for this buffer: A = 0, B = 1 (defaults</span>
+<span class="sd">            to 0)</span>
+<span class="sd">        :type channel: int</span>
+<span class="sd">        :param power_type: Type of power data: Current = 0, Voltage = 1,</span>
+<span class="sd">            Range = 2 (defaults to 0)</span>
+<span class="sd">        :type power_type: int</span>
+<span class="sd">        :param max_count: Maximum number of elements that the buffer can hold</span>
+<span class="sd">            (defaults to BUFFER_SIZE)</span>
+<span class="sd">        :type max_count: int</span>
+<span class="sd">        :return: Tuple of a list of samples and a list of the timestamps for</span>
+<span class="sd">            the samples</span>
+<span class="sd">        :rtype: tuple(list(int), list(int))</span>
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># buffer = (c_float * max_count)()</span>
+        <span class="c1"># timestamp = (c_double * max_count)()</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">c_size_t</span><span class="p">()</span>
+        <span class="n">max_count</span> <span class="o">=</span> <span class="n">c_size_t</span><span class="p">(</span><span class="n">max_count</span><span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="n">power_type</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">power_type</span><span class="p">)</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_copy_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">powerBuffer</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">powerTimestamp</span><span class="p">,</span>
+            <span class="c1"># byref(self.powerCount),</span>
+            <span class="c1"># buffer,</span>
+            <span class="c1"># timestamp,</span>
+            <span class="n">byref</span><span class="p">(</span><span class="n">count</span><span class="p">),</span>
+            <span class="n">max_count</span><span class="p">,</span>
+            <span class="n">channel</span><span class="p">,</span>
+            <span class="n">power_type</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_copy_data: </span><span class="si">{count.value}</span><span class="s2"> samples, &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;power_type: </span><span class="si">{power_type.value}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># f&quot;\t{res} auxiliary_power_copy_data: {self.powerCount.value} &quot;</span>
+            <span class="c1"># f&quot;samples, power_type: {power_type.value}&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">count</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">MAX_PRINT</span><span class="p">)):</span>
+                    <span class="c1"># for i in range(min(self.powerCount.value, MAX_PRINT)):</span>
+                    <span class="c1">#     print(f&quot;\t{i}: buffer: {buffer[i]}, timestamp: &quot;</span>
+                    <span class="c1">#         f&quot;{timestamp[i]}&quot;)</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{i}</span><span class="s2">: buffer: </span><span class="si">{self.powerBuffer[i]}</span><span class="s2">, timestamp: &quot;</span>
+                        <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self.powerTimestamp[i]}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_copy_data returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">powerTimestamp</span><span class="p">[:</span> <span class="n">count</span><span class="o">.</span><span class="n">value</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">powerBuffer</span><span class="p">[:</span><span class="n">count</span><span class="o">.</span><span class="n">value</span><span class="p">])</span></div>
+        <span class="c1"># return (self.powerTimestamp[: self.powerCount.value],</span>
+        <span class="c1">#         self.powerBuffer[:self.powerCount.value])</span>
+        <span class="c1"># return timestamp[:], buffer[:]</span>
+
+<div class="viewcode-block" id="DGILibAuxiliary.auxiliary_power_free_data"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILibAuxiliary.auxiliary_power_free_data">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_free_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`auxiliary_power_free_data`.</span>
+
+<span class="sd">        Clears the power data buffers and allows the power parser to continue.</span>
+
+<span class="sd">        `int auxiliary_power_free_data(uint32_t power_hndl)`</span>
+
+<span class="sd">        +------------+------------+</span>
+<span class="sd">        | Parameter  | Description |</span>
+<span class="sd">        +============+============+</span>
+<span class="sd">        | *power_hndl* | Handle of the power parser |</span>
+<span class="sd">        +------------+------------+</span>
+
+<span class="sd">        :raises: :exc:`DeviceReturnError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib</span><span class="o">.</span><span class="n">auxiliary_power_free_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power_hndl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{res}</span><span class="s2"> auxiliary_power_free_data&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceReturnError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;auxiliary_power_free_data returned: </span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

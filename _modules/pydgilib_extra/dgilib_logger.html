@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pydgilib_extra.dgilib_logger &mdash; pydgilib 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pydgilib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydgilib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pydgilib_extra.dgilib_logger</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pydgilib_extra.dgilib_logger</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module wraps the logging functionality for DGILibExtra.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">getcwd</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
+
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_data</span> <span class="k">import</span> <span class="n">LoggerData</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_extra_config</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">LOGGER_CSV</span><span class="p">,</span> <span class="n">LOGGER_OBJECT</span><span class="p">,</span> <span class="n">LOGGER_PLOT</span><span class="p">,</span> <span class="n">FILE_NAME_BASE</span><span class="p">,</span> <span class="n">POLLING</span><span class="p">,</span> <span class="n">POWER</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydgilib_extra.dgilib_plot</span> <span class="k">import</span> <span class="n">DGILibPlot</span>
+
+
+<div class="viewcode-block" id="DGILibLogger"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_logger.DGILibLogger">[docs]</a><span class="k">class</span> <span class="nc">DGILibLogger</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wraps the logging functionality for DGILibExtra.</span>
+
+<span class="sd">    Interfaces:</span>
+<span class="sd">        - GPIO mode</span>
+<span class="sd">        - Power mode</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Instantiate DGILibInterfacePower object.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;dgilib_extra&quot;</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Get enabled loggers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;loggers&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">default_loggers</span><span class="p">)</span>
+
+        <span class="c1"># Enable the csv logger if file_name_base or log_folder has been</span>
+        <span class="c1"># specified.</span>
+        <span class="k">if</span> <span class="n">LOGGER_CSV</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;file_name_base&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">or</span>
+                                               <span class="s2">&quot;log_folder&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LOGGER_CSV</span><span class="p">)</span>
+
+        <span class="c1"># file_name_base - merely the optional base of the filename</span>
+        <span class="c1">#     (Preferably leave standard).</span>
+        <span class="c1"># log_folder - where log files will be saved</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_name_base</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;file_name_base&quot;</span><span class="p">,</span> <span class="n">FILE_NAME_BASE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_folder</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log_folder&quot;</span><span class="p">,</span> <span class="n">getcwd</span><span class="p">())</span>
+
+        <span class="c1"># Enable the plot logger if figure has been specified.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">LOGGER_PLOT</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span> <span class="ow">and</span>
+                <span class="p">(</span><span class="s2">&quot;fig&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="s2">&quot;ax&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LOGGER_PLOT</span><span class="p">)</span>
+
+        <span class="c1"># Set self.figure if LOGGER_PLOT enabled</span>
+        <span class="c1"># Create axes self.axes if LOGGER_PLOT is enabled</span>
+        <span class="k">if</span> <span class="n">LOGGER_PLOT</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotobj</span> <span class="o">=</span> <span class="n">DGILibPlot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotobj</span><span class="o">.</span><span class="n">refresh_plot</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_still_exists</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotobj</span><span class="o">.</span><span class="n">plot_still_exists</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">keep_plot_alive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotobj</span><span class="o">.</span><span class="n">keep_plot_alive</span>
+
+            <span class="c1"># Force logging in object if logging in plot</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">LOGGER_OBJECT</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LOGGER_OBJECT</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DGILibLogger.start"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_logger.DGILibLogger.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Call to start logging.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">LOGGER_CSV</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">interface</span><span class="o">.</span><span class="n">init_csv_writer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_folder</span><span class="p">)</span>
+
+        <span class="c1"># Start the data polling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_polling</span><span class="p">()</span>
+
+        <span class="c1"># Create data structure self.data if LOGGER_OBJECT is enabled</span>
+        <span class="k">if</span> <span class="n">LOGGER_OBJECT</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">empty_data</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DGILibLogger.update_callback"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_logger.DGILibLogger.update_callback">[docs]</a>    <span class="k">def</span> <span class="nf">update_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Call to get new data.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">return_data</span><span class="p">:</span>
+            <span class="n">logger_data</span> <span class="o">=</span> <span class="n">LoggerData</span><span class="p">()</span>
+        <span class="c1"># Get data</span>
+        <span class="k">for</span> <span class="n">interface_id</span><span class="p">,</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Read from the interface</span>
+            <span class="n">interface_data</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="c1"># Check if any data has arrived</span>
+            <span class="k">if</span> <span class="n">interface_data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">LOGGER_CSV</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+                    <span class="n">interface</span><span class="o">.</span><span class="n">csv_write_rows</span><span class="p">(</span><span class="n">interface_data</span><span class="p">)</span>
+                <span class="c1"># Merge data into self.data if LOGGER_OBJECT is enabled</span>
+                <span class="k">if</span> <span class="n">LOGGER_OBJECT</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">interface_id</span><span class="p">]</span> <span class="o">+=</span> <span class="n">interface_data</span>
+                <span class="c1"># Update the plot if LOGGER_PLOT is enabled</span>
+                <span class="k">if</span> <span class="n">LOGGER_PLOT</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plotobj</span><span class="o">.</span><span class="n">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">return_data</span><span class="p">:</span>
+                    <span class="n">logger_data</span><span class="p">[</span><span class="n">interface_id</span><span class="p">]</span> <span class="o">+=</span> <span class="n">interface_data</span>
+
+        <span class="c1"># Return the data</span>
+        <span class="k">if</span> <span class="n">return_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">logger_data</span></div>
+
+<div class="viewcode-block" id="DGILibLogger.stop"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_logger.DGILibLogger.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Call to stop logging.&quot;&quot;&quot;</span>
+        <span class="c1"># Stop the data polling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_polling</span><span class="p">()</span>
+
+        <span class="c1"># Get last data from buffer</span>
+        <span class="k">if</span> <span class="n">LOGGER_OBJECT</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_callback</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_callback</span><span class="p">(</span><span class="n">return_data</span><span class="p">)</span>
+
+        <span class="c1"># Close file handle</span>
+        <span class="k">if</span> <span class="n">LOGGER_CSV</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">interface</span><span class="o">.</span><span class="n">close_csv_writer</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">LOGGER_OBJECT</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">elif</span> <span class="n">return_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="DGILibLogger.log"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_logger.DGILibLogger.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">stop_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_duration</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the logger for the specified amount of time.</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            duration {int} -- Amount of time to log data (default: {10}).</span>
+<span class="sd">            stop_function {callable} -- Function that will be evaluated on the</span>
+<span class="sd">                collected data. If it returns True the logging will be</span>
+<span class="sd">                stopped even if the duration has not been reached (default:</span>
+<span class="sd">                {None}).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            LoggerData -- Returns the logged data as a LoggerData object if</span>
+<span class="sd">                LOGGER_OBJECT was passed to the logger.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">LOGGER_PLOT</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+            <span class="c1"># So that the plot has xmax (being time) as big as duration now</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotobj</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="n">DGILibPlot</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">plotobj</span><span class="o">.</span><span class="n">xmax</span> <span class="o">=</span> <span class="n">duration</span>
+
+        <span class="n">cur_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">cur_time</span> <span class="o">+</span> <span class="n">duration</span>
+        <span class="n">min_time</span> <span class="o">=</span> <span class="n">cur_time</span> <span class="o">+</span> <span class="n">min_duration</span>
+
+        <span class="k">if</span> <span class="n">stop_function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">end_time</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_callback</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">LOGGER_OBJECT</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">cur_time</span> <span class="o">&lt;</span> <span class="n">end_time</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_callback</span><span class="p">()</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">cur_time</span> <span class="o">&gt;</span> <span class="n">min_time</span><span class="p">)</span> <span class="ow">and</span> \
+                        <span class="n">stop_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="n">cur_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">cur_time</span> <span class="o">&lt;</span> <span class="n">end_time</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">cur_time</span> <span class="o">&gt;</span> <span class="n">min_time</span><span class="p">)</span> <span class="ow">and</span> \
+                        <span class="n">stop_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_callback</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
+                    <span class="k">break</span>
+                <span class="n">cur_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">LOGGER_OBJECT</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loggers</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">data</span></div>
+
+<div class="viewcode-block" id="DGILibLogger.which_polling"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_logger.DGILibLogger.which_polling">[docs]</a>    <span class="k">def</span> <span class="nf">which_polling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;which_polling.</span>
+
+<span class="sd">        Determines on which polling types need to be started or stopped based</span>
+<span class="sd">        on the interface ids and instantiated interfaces in dgilib extra.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            interface_ids {list} -- List of interface ids (default: all</span>
+<span class="sd">                enabled interfaces)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple -- Tuple of bool that are true when that interface type</span>
+<span class="sd">                should be started or stopped</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">interface_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">interface_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">enabled_interfaces</span>
+        <span class="n">polling</span> <span class="o">=</span> <span class="n">power</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">interface_id</span> <span class="ow">in</span> <span class="n">interface_ids</span><span class="p">:</span>
+            <span class="n">polling</span> <span class="o">|=</span> <span class="n">POLLING</span> <span class="o">==</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="n">interface_id</span><span class="p">]</span><span class="o">.</span><span class="n">polling_type</span>
+            <span class="n">power</span> <span class="o">|=</span> <span class="n">POWER</span> <span class="o">==</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="n">interface_id</span><span class="p">]</span><span class="o">.</span><span class="n">polling_type</span>
+        <span class="k">return</span> <span class="n">polling</span><span class="p">,</span> <span class="n">power</span></div>
+
+<div class="viewcode-block" id="DGILibLogger.start_polling"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_logger.DGILibLogger.start_polling">[docs]</a>    <span class="k">def</span> <span class="nf">start_polling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;start_polling.</span>
+
+<span class="sd">        Starts polling on the specified interfaces. By default polling will be</span>
+<span class="sd">        started for all enabled interfaces.</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            interface_ids {list} -- List of interface ids (default: all</span>
+<span class="sd">                enabled interfaces)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">polling</span><span class="p">,</span> <span class="n">power</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_polling</span><span class="p">(</span><span class="n">interface_ids</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">polling</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">start_polling</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">power</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">auxiliary_power_start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DGILibLogger.stop_polling"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_logger.DGILibLogger.stop_polling">[docs]</a>    <span class="k">def</span> <span class="nf">stop_polling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;stop_polling.</span>
+
+<span class="sd">        Stops polling on the specified interfaces. By default polling will be</span>
+<span class="sd">        stopped for all enabled interfaces.</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            interface_ids {list} -- List of interface ids (default: all</span>
+<span class="sd">                enabled interfaces)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">polling</span><span class="p">,</span> <span class="n">power</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_polling</span><span class="p">(</span><span class="n">interface_ids</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">polling</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">stop_polling</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">power</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">auxiliary_power_stop</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Erik Wouters
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
