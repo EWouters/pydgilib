@@ -33,3 +33,15 @@ setup(
 # TODO: warn if atmel studio not installed.
 
 # NOTE: dev install: pip install -e .[docs,test]
+
+# Update docs:
+# cd docs/_build/html
+# If you have not cloned the gh-pages branch previously:
+# git clone --branch gh-pages https://github.com/EWouters/pydgilib.git
+# Generate the docs
+# cd ../..
+# make.bat html
+# cd _build/html
+# git add .
+# $ git commit - m 'Update docs.'
+# $ git push origin gh-pages
