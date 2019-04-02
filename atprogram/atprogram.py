@@ -91,7 +91,7 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
         is what the Atmel board of model `ATSAML11E16A` uses)
 
     interface : str, optional
-        Physical interface. Available options are: ``aWire``, 
+        Physical interface. Available options are: ``aWire``,
         ``debugWIRE``, ``HVPP``, ``HVSP``, ``ISP``, ``JTAG``, ``PDI``,
         ``UPDI``, ``TPI`` or ``SWD``. (the default is `"SWD"`, which is
         what the Atmel board of model `ATSAML11E16A` uses)
@@ -99,7 +99,8 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
     atmel_studio_path : str, optional
         Specify the location where Atmel Studio is installed. Note that the
         path usually ends in a folder name corresponding to the version name
-        e.g. 7.0 (the default is `"C:\\Program Files (x86)\\Atmel\\Studio\\7.0"`),
+        e.g. 7.0 
+        (the default is `"C:\\Program Files (x86)\\Atmel\\Studio\\7.0"`),
         which is the default installation location of Atmel Studio 7.0)
 
     make_path : str, optional
@@ -110,17 +111,18 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
 
     atprogram_path : str, optional
         Specify the location where `atprogram.exe` is installed. (the default
-        is `"C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\atbackend\\atprogram.exe"`,
-        as it is included with the installation of Atmel Studio)
+        is `"C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\atbackend\\
+        atprogram.exe"`, as it is included with the installation of
+        Atmel Studio)
 
     configuration : str, optional
         Specify which configuration of the Atmel Studio solution project should
-        be used for compilation, flashing, etc. Most common options are: 
+        be used for compilation, flashing, etc. Most common options are:
         `Release`, `Debug`. (the default is `"Debug"`)
 
     device_sn : str, optional
         The programmer/debugger's serial number. Must be
-        specified when more than one debugger is connected. (the default is 
+        specified when more than one debugger is connected. (the default is
         `None`, as it is common to have a single programmer/debugger connected)
 
     jobs : int, optional
@@ -143,7 +145,7 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
     return_output : bool, optional
         If `True` the return value will be the output, else it will be
         the return code (the default is `False`, which means the
-        return value is the return code of `atprogram`)
+        return value is the return code of ``atprogram.exe`` or ``make``)
 
     dry_run : bool, optional
         Whether to run the commands using the `subprocess`
@@ -158,10 +160,15 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
 
     Returns
     -------
-    int
-        A non-zero return value indicates the subprocess call returned
-        an error.
+    int or str
+        Depending on the `return_output` value, objects of different type
+        are returned by this function.
 
+        If the `return_output` value is `False`, then it returns a non-zero
+        return value indicates the subprocess call returned an error.
+
+        If `return_output` is `True`, then it returns a string holding the
+        text returned by ``atprogram.exe`` or ``make``.
     """
     elf_mode = False
     makefile_mode = False
@@ -242,11 +249,45 @@ def atprogram(project_path=None, device_name="ATSAML11E16A", verbose=0,
 
 
 class SavePrint(object):
+    """SavePrint
+
+    A class used to hold the text returned by ``atprogram.exe`` when
+    calling the :func:`~atprogram.atprogram` function.
+
+    Attributes
+    ----------
+    return_output : str
+        .. todo:: Didn't know what to write exactly.
+
+    output : str
+        .. todo:: Didn't know what to write exactly.
+    """
+
     def __init__(self, return_output):
+        """__init__
+
+        Called at instantiation of :class:`SavePrint`.
+
+        Parameters
+        ----------
+        return_output : str
+            .. todo:: Didn't know what to write exactly.
+        """
         self.return_output = return_output
         self.output = ""
 
     def print(self, s):
+        """print
+
+        .. todo:: Didn't know what to write exactly. Gotta write
+        in relation to the `atprogram` function.
+
+        Parameters
+        ----------
+        s : str
+            .. todo:: Didn't know what to write exactly.
+
+        """
         if self.return_output:
             self.output += s
         else:
@@ -258,53 +299,61 @@ def get_device_info(
         atmel_studio_path=path.join(
             getenv("programfiles(x86)"), "Atmel", "Studio", "7.0"),
         atprogram_path=None, device_sn=None):
-    """Polls the connected board for information, such as:  target voltage, general device information (name, JTAG ID, 
-    CPU architecture, board series, DAL (debug access levels fuses status) and memory information regarding  
-    the address space and fuses)
+    r"""Polls the connected board for information, such as:
+    target voltage, general device information (name, JTAG ID, CPU 
+    architecture,board series, DAL (debug access levels fuses status)
+    and memory information regarding the address space and fuses). 
 
     Parameters
     ----------
     device_name : str, optional
-        Device name. E.g. ``atxmega128a1`` or ``at32uc3a0256``. (the default is `ATSAML11E16A`, which [default_description])
+        Device name. E.g. `"atxmega128a1"` or `"at32uc3a0256"`.
+        (the default is ``"ATSAML11E16A"``, which is a variant of the
+        Atmel SAM L11 board)
 
     verbose : int, optional
-        Print most of `atprogram` output, if value is `1`, or print debugging information as well, if value is `2`
-        (the default is `0`, which is to print only compiler warnings and errors)
+        Print most of `atprogram` output, if value is `1`, and print
+        debugging information as well, if value is `2` (the default is `0`,
+        which is to print only compiler warnings and errors)
+
     tool : str, optional
-        [description] (the default is "EDBG", which [default_description])
+        Tool's name. Available options are: ``avrdragon``,
+        ``avrispmk2``, ``avrone``, ``jtagice3``, ``jtagicemkii``, ``qt600``,
+        ``stk500``, ``stk600``, ``samice``, ``edbg``, ``medbg``, ``nedbg``,
+        ``atmelice``, ``pickit4``, ``powerdebugger``, ``megadfu`` or ``flip``.
+        (the default is `"EDBG"`, being the Atmel® Embedded Debugger, which
+        is what the Atmel board of model `ATSAML11E16A` uses)
+
     interface : str, optional
-        [description] (the default is "SWD", which [default_description])
-    atmel_studio_path : [type], optional
-        [description] (the default is path.join(getenv("programfiles(x86)"), "Atmel", "Studio", "7.0"), which [default_description])
-    atprogram_path : [type], optional
-        [description] (the default is None, which [default_description])
-    device_sn : [type], optional
-        [description] (the default is None, which [default_description])
+        Physical interface. Available options are: ``aWire``,
+        ``debugWIRE``, ``HVPP``, ``HVSP``, ``ISP``, ``JTAG``, ``PDI``,
+        ``UPDI``, ``TPI`` or ``SWD``. (the default is `"SWD"`, which is
+        what the Atmel board of model `ATSAML11E16A` uses)
+
+    atmel_studio_path : str, optional
+        Specify the location where Atmel Studio is installed. Note that the
+        path usually ends in a folder name corresponding to the version
+        name e.g. 7.0 (the default is `"C:\\Program Files (x86)\\Atmel\\
+        Studio\\7.0"`), which is the default installation location of Atmel
+        Studio 7.0)
+
+    atprogram_path : str, optional
+        Specify the location where `atprogram.exe` is installed. (the default
+        is `"C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\atbackend\\
+        atprogram.exe"`, as it is included with the installation of
+        Atmel Studio)
+
+    device_sn : str, optional
+        The programmer/debugger's serial number. Must be
+        specified when more than one debugger is connected. (the default is
+        `None`, as it is common to have a single programmer/debugger connected)
+
+    Returns
+    -------
+    str
+        The device information.
 
     """
-    # """get_device_info.
-
-    # [description]
-
-    # Keyword Arguments:
-    #     device_name {str} -- Device name. E.g. atxmega128a1 or at32uc3a0256.
-    #         (default: {"ATSAML11E16A"})
-    #     verbose {int} -- Print results (default: {0})
-    #     tool {str} -- Tool name: avrdragon, avrispmk2, avrone, jtagice3,
-    #         jtagicemkii, qt600, stk500, stk600, samice, edbg, medbg, nedbg,
-    #         atmelice, pickit4, powerdebugger, megadfu or flip. (default:
-    #         {"EDBG"})
-    #     interface {str} -- Physical interface: aWire, debugWIRE, HVPP, HVSP,
-    #         ISP, JTAG, PDI, UPDI, TPI or SWD. (default: {"SWD"})
-    #     atmel_studio_path {[type]} -- Location where Atmel Studio is installed,
-    #         ending in the folder named after the version, e.g. 7.0. (default:
-    #         {path.join(getenv("programfiles(x86)"), "Atmel", "Studio", "7.0")})
-    #     atprogram_path {[type]} -- Location where `atprogram.exe` is installed
-    #         (default: {path.join(getenv("programfiles(x86)"), "Atmel", "Studio", "7.0", "atbackend", "atprogram.exe")})
-    #     device_sn {str} -- The programmer/debugger serialnumber. Must be
-    #         specified when more than one debugger is connected. (default:
-    #         {None})
-    # """
     atprogram_info = atprogram(
         atprogram_command="info", return_output=True, verbose=1,
         device_name=device_name, tool=tool, interface=interface,
@@ -346,37 +395,95 @@ def get_project_size(
             getenv("programfiles(x86)"), "Atmel", "Studio", "7.0"),
         make_path=None, configuration="Debug", device_sn=None,
         jobs=getenv("NUMBER_OF_PROCESSORS")):
-    """get_project_size.
+    """Returns a dictionary object with the information about the
+    sizes of the program segments/sections (text, data, BSS) that
+    usually make up a computer program, and that are in the ``.elf`` file
+    compiled from the Atmel Studio project at `project_path`.
 
-    Keyword Arguments:
-        project_path {str} -- Location where the project resides. If it ends in
-            `.elf` the elf file will be used. If it ends in `Makefile` the
-            Makefile will be used. Otherwise it should be a path to a folder
-            which holds the `Debug` folder.
-        device_name {str} -- Device name. E.g. atxmega128a1 or at32uc3a0256.
-            (default: {"ATSAML11E16A"})
-        verbose {int} -- Print results (default: {0})
-        tool {str} -- Tool name: avrdragon, avrispmk2, avrone, jtagice3,
-            jtagicemkii, qt600, stk500, stk600, samice, edbg, medbg, nedbg,
-            atmelice, pickit4, powerdebugger, megadfu or flip. (default:
-            {"EDBG"})
-        interface {str} -- Physical interface: aWire, debugWIRE, HVPP, HVSP,
-            ISP, JTAG, PDI, UPDI, TPI or SWD. (default: {"SWD"})
-        atmel_studio_path {[type]} -- Location where Atmel Studio is installed,
-            ending in the folder named after the version, e.g. 7.0. (default:
-            {path.join(getenv("programfiles(x86)"), "Atmel", "Studio", "7.0")})
-        make_path {[type]} -- Location where `make.exe` is installed. (default:
-            {path.join(getenv("programfiles(x86)"), "Atmel", "Studio", "7.0", "shellutils", "make.exe")})
-        configuration {str} -- Which configuration to use. (default: {"Debug"})
-        device_sn {str} -- The programmer/debugger serialnumber. Must be
-            specified when more than one debugger is connected. (default:
-            {None})
-        jobs {int} -- How many jobs *make* should use(default:
-            {getenv("NUMBER_OF_PROCESSORS")})
+    The dictionary object returned specifically contains the `text`, `data`
+    and `bss` sizes of the respective program segments, but also includes
+    `dec` and `hex` values which are the decimal and, respectively, the
+    hexadecimal value of the sum of `text`, `data` and `bss`, making up
+    to the whole program size to be flashed to the Atmel board.
 
-    Returns:
-        dict -- A dictionary of sizes of the sections, the total size and the
-            file name.
+    The returned dictionary object also contains the `filename` of the
+    ``.elf`` file.
+
+    .. note:: \
+        All of the information returned by this function is obtained after
+        a new compilation, of the Atmel project located at ``project_path``,
+        using the :func:`atprogram` function.
+
+
+    Parameters
+    ----------
+    project_path : str
+        Location where the project resides. If it ends in
+        ``.elf`` the elf file will be used. If it ends in ``Makefile`` the
+        Makefile will be used. Otherwise it should be a path to a folder
+        which holds the `Debug` folder. (the default is ``None``,
+        which will return an error)
+
+    device_name : str, optional
+        Device name. E.g. `"atxmega128a1"` or `"at32uc3a0256"`.
+        (the default is ``"ATSAML11E16A"``, which is a variant of the
+        Atmel SAM L11 board)
+
+    verbose : int, optional
+        Print most of `atprogram` output, if value is `1`, and print
+        debugging information as well, if value is `2` (the default is
+        `0`, which is to print only compiler warnings and errors)
+
+    tool : str, optional
+        Tool's name. Available options are: ``avrdragon``,
+        ``avrispmk2``, ``avrone``, ``jtagice3``, ``jtagicemkii``, ``qt600``,
+        ``stk500``, ``stk600``, ``samice``, ``edbg``, ``medbg``, ``nedbg``,
+        ``atmelice``, ``pickit4``, ``powerdebugger``, ``megadfu`` or ``flip``.
+        (the default is `"EDBG"`, being the Atmel® Embedded Debugger, which
+        is what the Atmel board of model `ATSAML11E16A` uses)
+
+    interface : str, optional
+        Physical interface. Available options are: ``aWire``,
+        ``debugWIRE``, ``HVPP``, ``HVSP``, ``ISP``, ``JTAG``, ``PDI``,
+        ``UPDI``, ``TPI`` or ``SWD``. (the default is `"SWD"`, which is
+        what the Atmel board of model `ATSAML11E16A` uses)
+
+    atmel_studio_path : str, optional
+        Specify the location where Atmel Studio is installed. Note that the
+        path usually ends in a folder name corresponding to the version
+        name e.g. 7.0 (the default is `"C:\\Program Files (x86)\\Atmel\\
+        Studio\\7.0"`), which is the default installation location of Atmel
+        Studio 7.0)
+
+    make_path : str, optional
+        Specify the path to `make.exe`, which should be the location of
+        a GNU make installation for Windows. (the default is
+        `"C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\shellutils\\
+        make.exe"`, as Atmel Studio already provides a GNU make
+        installation for Windows)
+
+    configuration : str, optional
+        Specify which configuration of the Atmel Studio solution project
+        should be used for compilation, flashing, etc. Most common
+        options are: `Release`, `Debug`. (the default is `"Debug"`)
+
+    device_sn : str, optional
+        The programmer/debugger's serial number. Must be
+        specified when more than one debugger is connected. (the default is
+        `None`, as it is common to have a single programmer/debugger
+        connected)
+
+    jobs : int, optional
+        How many jobs `make` should use (the default is
+        ``getenv("NUMBER_OF_PROCESSORS")``,
+        which takes your number of processor cores available)
+
+    Returns
+    -------
+    dict
+        A dictionary of sizes of the sections, the total size and the
+        file name. The keys of the dictionary are: ``"text"``, ``"data"``
+        ``"dss"``, ``"hex"`` and ``"filename"``.
 
     """
     (text, data, bss, dec, hex, filename) = size_regexp.findall(atprogram(
