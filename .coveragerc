@@ -26,4 +26,4 @@ fail_under = 90
 #ignore_errors = True
 
 [html]
-directory = htmlcov
+directory = docs/_build/html/htmlcov

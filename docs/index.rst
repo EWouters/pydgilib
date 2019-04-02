@@ -18,3 +18,8 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+Code Coverage Report
+====================
+
+`Code Coverage Report <htmlcov/index.html>`_
