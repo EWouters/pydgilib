@@ -19,6 +19,18 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+
+Installation
+============
+
+* Clone the repo:
+ ``git clone https://github.com/EWouters/pydgilib.git``
+* Install symlinked to repo:
+ ``pip install -e .``
+* If you want to be able to run the tests or compile the docs run instead:
+ ``pip install -e .[docs,test]``
+  
+
 Code Coverage Report
 ====================
 
