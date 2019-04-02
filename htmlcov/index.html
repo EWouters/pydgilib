@@ -1,0 +1,383 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Coverage report</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.ba-throttle-debounce.min.js"></script>
+    <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="jquery.hotkeys.js"></script>
+    <script type="text/javascript" src="coverage_html.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(coverage.index_ready);
+    </script>
+</head>
+<body class="indexfile">
+
+<div id="header">
+    <div class="content">
+        <h1>Coverage report:
+            <span class="pc_cov">92%</span>
+        </h1>
+
+        <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
+
+        <form id="filter_container">
+            <input id="filter" type="text" value="" placeholder="filter..." />
+        </form>
+    </div>
+</div>
+
+<div class="help_panel">
+    <img id="panel_icon" src="keybd_open.png" alt="Hide keyboard shortcuts" />
+    <p class="legend">Hot-keys on this page</p>
+    <div>
+    <p class="keyhelp">
+        <span class="key">n</span>
+        <span class="key">s</span>
+        <span class="key">m</span>
+        <span class="key">x</span>
+        
+        <span class="key">c</span> &nbsp; change column sorting
+    </p>
+    </div>
+</div>
+
+<div id="index">
+    <table class="index">
+        <thead>
+            
+            <tr class="tablehead" title="Click to sort">
+                <th class="name left headerSortDown shortkey_n">Module</th>
+                <th class="shortkey_s">statements</th>
+                <th class="shortkey_m">missing</th>
+                <th class="shortkey_x">excluded</th>
+                
+                <th class="right shortkey_c">coverage</th>
+            </tr>
+        </thead>
+        
+        <tfoot>
+            <tr class="total">
+                <td class="name left">Total</td>
+                <td>2083</td>
+                <td>159</td>
+                <td>28</td>
+                
+                <td class="right" data-ratio="1924 2083">92%</td>
+            </tr>
+        </tfoot>
+        <tbody>
+            
+            <tr class="file">
+                <td class="name left"><a href="atprogram___init___py.html">atprogram\__init__.py</a></td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 6">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="atprogram_atprogram_py.html">atprogram\atprogram.py</a></td>
+                <td>80</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="80 80">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib___init___py.html">pydgilib\__init__.py</a></td>
+                <td>8</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 8">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_dgilib_py.html">pydgilib\dgilib.py</a></td>
+                <td>76</td>
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="72 76">95%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_dgilib_auxiliary_py.html">pydgilib\dgilib_auxiliary.py</a></td>
+                <td>105</td>
+                <td>0</td>
+                <td>11</td>
+                
+                <td class="right" data-ratio="105 105">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_dgilib_config_py.html">pydgilib\dgilib_config.py</a></td>
+                <td>31</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="31 31">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_dgilib_discovery_py.html">pydgilib\dgilib_discovery.py</a></td>
+                <td>37</td>
+                <td>3</td>
+                <td>3</td>
+                
+                <td class="right" data-ratio="34 37">92%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_dgilib_exceptions_py.html">pydgilib\dgilib_exceptions.py</a></td>
+                <td>15</td>
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 15">87%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_dgilib_housekeeping_py.html">pydgilib\dgilib_housekeeping.py</a></td>
+                <td>63</td>
+                <td>0</td>
+                <td>6</td>
+                
+                <td class="right" data-ratio="63 63">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_dgilib_interface_communication_py.html">pydgilib\dgilib_interface_communication.py</a></td>
+                <td>80</td>
+                <td>1</td>
+                <td>8</td>
+                
+                <td class="right" data-ratio="79 80">99%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra___init___py.html">pydgilib_extra\__init__.py</a></td>
+                <td>16</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="16 16">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra_dgilib_calculations_py.html">pydgilib_extra\dgilib_calculations.py</a></td>
+                <td>82</td>
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="76 82">93%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra_dgilib_data_py.html">pydgilib_extra\dgilib_data.py</a></td>
+                <td>123</td>
+                <td>23</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="100 123">81%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra_dgilib_extra_py.html">pydgilib_extra\dgilib_extra.py</a></td>
+                <td>63</td>
+                <td>1</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="62 63">98%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra_dgilib_extra_config_py.html">pydgilib_extra\dgilib_extra_config.py</a></td>
+                <td>10</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 10">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra_dgilib_extra_exceptions_py.html">pydgilib_extra\dgilib_extra_exceptions.py</a></td>
+                <td>7</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="7 7">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra_dgilib_interface_py.html">pydgilib_extra\dgilib_interface.py</a></td>
+                <td>61</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="54 61">89%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra_dgilib_interface_gpio_py.html">pydgilib_extra\dgilib_interface_gpio.py</a></td>
+                <td>69</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="60 69">87%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra_dgilib_interface_power_py.html">pydgilib_extra\dgilib_interface_power.py</a></td>
+                <td>74</td>
+                <td>12</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="62 74">84%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra_dgilib_logger_py.html">pydgilib_extra\dgilib_logger.py</a></td>
+                <td>101</td>
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="97 101">96%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="pydgilib_extra_dgilib_plot_py.html">pydgilib_extra\dgilib_plot.py</a></td>
+                <td>337</td>
+                <td>84</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="253 337">75%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests___init___py.html">tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests_test_atprogram_py.html">tests\test_atprogram.py</a></td>
+                <td>33</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="33 33">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests_test_benchmarks_py.html">tests\test_benchmarks.py</a></td>
+                <td>28</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="28 28">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests_test_dgilib_auxiliary_py.html">tests\test_dgilib_auxiliary.py</a></td>
+                <td>72</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="72 72">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests_test_dgilib_discovery_py.html">tests\test_dgilib_discovery.py</a></td>
+                <td>35</td>
+                <td>3</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="32 35">91%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests_test_dgilib_extra_py.html">tests\test_dgilib_extra.py</a></td>
+                <td>50</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="50 50">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests_test_dgilib_housekeeping_py.html">tests\test_dgilib_housekeeping.py</a></td>
+                <td>71</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="71 71">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests_test_dgilib_interface_communication_py.html">tests\test_dgilib_interface_communication.py</a></td>
+                <td>120</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="120 120">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests_test_interface_data_py.html">tests\test_interface_data.py</a></td>
+                <td>144</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="144 144">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests_test_logger_data_py.html">tests\test_logger_data.py</a></td>
+                <td>78</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="78 78">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="tests_test_pydgilib_py.html">tests\test_pydgilib.py</a></td>
+                <td>8</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 8">100%</td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <p id="no_rows">
+        No items found using the specified filter.
+    </p>
+</div>
+
+<div id="footer">
+    <div class="content">
+        <p>
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.3</a>,
+            created at 2019-04-02 15:35
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
