@@ -22,7 +22,7 @@ Features
 
 The main features of this library are:
 
-* It wraps the C functions of the DLL in python `functions <source/pydgilib.html#pydgilib.dgilib.DGILib>`_
+* It wraps the C functions of DGILib in python `functions <source/pydgilib.html#pydgilib.dgilib.DGILib>`_
 
 * It provides a `class <source/pydgilib_extra.html#module-pydgilib_extra.dgilib_extra>`_ to easily log data from the power and gpio interfaces to a `.csv` file or a plot (using `matplotlib <https://matplotlib.org/>`_)
 
@@ -32,6 +32,8 @@ The documentation of all the functions can be found in this `overview <py-modind
 
 Installation
 ============
+
+You will need to install pydgilib in a 32-bit python environment on Windows because DGILib.dll is compiled for 32-bit.
 
 Static Installation
 -------------------
@@ -54,6 +56,28 @@ Development Installation
  If you want to be able to run the tests or compile the docs run instead::
 
     $ pip install -e .[test,docs]
+
+Getting Started
+===============
+
+1. Connect your device that supports DGI
+
+2. Print the serial number of your device::
+
+    >>> from pydgilib import DGILib
+    >>> with DGILib() as dgilib:
+    ...     print(dgilib.device_sn)
+    ...
+    b'ATML3138061800001604'
+
+3. Log the current of the board and the states of the gpio pins for one second and write the results to `.csv` files::
+
+    >>> from pydgilib_extra import DGILibExtra
+    >>> with DGILibExtra() as dgilib:
+    ...     dgilib.logger.log(1)
+    ...
+
+ Check the results in `log_power.csv` and `log_gpio.csv`.
 
 Indices and tables
 ==================
