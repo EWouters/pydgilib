@@ -164,10 +164,34 @@ in the <code class="docutils literal notranslate"><span class="pre">atprogram</s
 <dt id="atprogram.atprogram.SavePrint">
 <em class="property">class </em><code class="descclassname">atprogram.atprogram.</code><code class="descname">SavePrint</code><span class="sig-paren">(</span><em>return_output</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/atprogram/atprogram.html#SavePrint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#atprogram.atprogram.SavePrint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A helper class to store standard output or print if <cite>return_output</cite>
+is false.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>return_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If <cite>True</cite>, the output is returned but not printed. If <cite>False</cite>,
+the output is printed.</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="atprogram.atprogram.SavePrint.output">
+<code class="descname">output</code><a class="headerlink" href="#atprogram.atprogram.SavePrint.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Holds the text that was taken from standard output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="method">
 <dt id="atprogram.atprogram.SavePrint.print">
 <code class="descname">print</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/atprogram/atprogram.html#SavePrint.print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#atprogram.atprogram.SavePrint.print" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A string to be added to the output.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -233,15 +257,17 @@ is what the Atmel board of model <cite>ATSAML11E16A</cite> uses)</p></li>
 what the Atmel board of model <cite>ATSAML11E16A</cite> uses)</p></li>
 <li><p><strong>atmel_studio_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Specify the location where Atmel Studio is installed. Note that the
 path usually ends in a folder name corresponding to the version name
-e.g. 7.0 (the default is <cite>“C:\Program Files (x86)\Atmel\Studio\7.0”</cite>),
+e.g. 7.0
+(the default is <cite>“C:\Program Files (x86)\Atmel\Studio\7.0”</cite>),
 which is the default installation location of Atmel Studio 7.0)</p></li>
 <li><p><strong>make_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Specify the path to <cite>make.exe</cite>, which should be the location of
 a GNU make installation for Windows. (the default is
 <cite>“C:\Program Files (x86)\Atmel\Studio\7.0\shellutils\make.exe”</cite>,
 as Atmel Studio already provides a GNU make installation for Windows)</p></li>
 <li><p><strong>atprogram_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Specify the location where <cite>atprogram.exe</cite> is installed. (the default
-is <cite>“C:\Program Files (x86)\Atmel\Studio\7.0\atbackend\atprogram.exe”</cite>,
-as it is included with the installation of Atmel Studio)</p></li>
+is <cite>“C:\Program Files (x86)\Atmel\Studio\7.0\atbackend\
+atprogram.exe”</cite>, as it is included with the installation of
+Atmel Studio)</p></li>
 <li><p><strong>configuration</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Specify which configuration of the Atmel Studio solution project should
 be used for compilation, flashing, etc. Most common options are:
 <cite>Release</cite>, <cite>Debug</cite>. (the default is <cite>“Debug”</cite>)</p></li>
@@ -261,7 +287,7 @@ arguments. This will be passed as:
 (the  default is <cite>None</cite>, which means no extra commands/options)</p></li>
 <li><p><strong>return_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite> the return value will be the output, else it will be
 the return code (the default is <cite>False</cite>, which means the
-return value is the return code of <cite>atprogram</cite>)</p></li>
+return value is the return code of <code class="docutils literal notranslate"><span class="pre">atprogram.exe</span></code> or <code class="docutils literal notranslate"><span class="pre">make</span></code>)</p></li>
 <li><p><strong>dry_run</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to run the commands using the <cite>subprocess</cite>
 module or just print the commands. (the default is <cite>False</cite>, which
 means the commands are indeed run using the <cite>subprocess</cite> module)</p></li>
@@ -272,11 +298,16 @@ means the commands are indeed run using the <cite>subprocess</cite> module)</p><
     <cite>make_command</cite> or <cite>atprogram_command</cite>.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A non-zero return value indicates the subprocess call returned
-an error.</p>
+<dd class="field-odd"><p><p>Depending on the <cite>return_output</cite> value, objects of different type
+are returned by this function.</p>
+<p>If the <cite>return_output</cite> value is <cite>False</cite>, then it returns a non-zero
+return value indicates the subprocess call returned an error.</p>
+<p>If <cite>return_output</cite> is <cite>True</cite>, then it returns a string holding the
+text returned by <code class="docutils literal notranslate"><span class="pre">atprogram.exe</span></code> or <code class="docutils literal notranslate"><span class="pre">make</span></code>.</p>
+</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -284,21 +315,48 @@ an error.</p>
 <dl class="function">
 <dt id="atprogram.atprogram.get_device_info">
 <code class="descclassname">atprogram.atprogram.</code><code class="descname">get_device_info</code><span class="sig-paren">(</span><em>device_name='ATSAML11E16A'</em>, <em>verbose=0</em>, <em>tool='EDBG'</em>, <em>interface='SWD'</em>, <em>atmel_studio_path='C:\\Program Files (x86)\\Atmel\\Studio\\7.0'</em>, <em>atprogram_path=None</em>, <em>device_sn=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/atprogram/atprogram.html#get_device_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#atprogram.atprogram.get_device_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Polls the connected board for information, such as:  target voltage, general device information (name, JTAG ID,
-CPU architecture, board series, DAL (debug access levels fuses status) and memory information regarding
-the address space and fuses)</p>
+<dd><p>Polls the connected board for information, such as:
+target voltage, general device information (name, JTAG ID, CPU
+architecture,board series, DAL (debug access levels fuses status)
+and memory information regarding the address space and fuses).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>device_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Device name. E.g. <code class="docutils literal notranslate"><span class="pre">atxmega128a1</span></code> or <code class="docutils literal notranslate"><span class="pre">at32uc3a0256</span></code>. (the default is <cite>ATSAML11E16A</cite>, which [default_description])</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Print most of <cite>atprogram</cite> output, if value is <cite>1</cite>, or print debugging information as well, if value is <cite>2</cite>
-(the default is <cite>0</cite>, which is to print only compiler warnings and errors)</p></li>
-<li><p><strong>tool</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – [description] (the default is “EDBG”, which [default_description])</p></li>
-<li><p><strong>interface</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – [description] (the default is “SWD”, which [default_description])</p></li>
-<li><p><strong>atmel_studio_path</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.7)"><em>type</em></a><em>]</em><em>, </em><em>optional</em>) – [description] (the default is path.join(getenv(“programfiles(x86)”), “Atmel”, “Studio”, “7.0”), which [default_description])</p></li>
-<li><p><strong>atprogram_path</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.7)"><em>type</em></a><em>]</em><em>, </em><em>optional</em>) – [description] (the default is None, which [default_description])</p></li>
-<li><p><strong>device_sn</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.7)"><em>type</em></a><em>]</em><em>, </em><em>optional</em>) – [description] (the default is None, which [default_description])</p></li>
+<li><p><strong>device_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Device name. E.g. <cite>“atxmega128a1”</cite> or <cite>“at32uc3a0256”</cite>.
+(the default is <code class="docutils literal notranslate"><span class="pre">&quot;ATSAML11E16A&quot;</span></code>, which is a variant of the
+Atmel SAM L11 board)</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Print most of <cite>atprogram</cite> output, if value is <cite>1</cite>, and print
+debugging information as well, if value is <cite>2</cite> (the default is <cite>0</cite>,
+which is to print only compiler warnings and errors)</p></li>
+<li><p><strong>tool</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Tool’s name. Available options are: <code class="docutils literal notranslate"><span class="pre">avrdragon</span></code>,
+<code class="docutils literal notranslate"><span class="pre">avrispmk2</span></code>, <code class="docutils literal notranslate"><span class="pre">avrone</span></code>, <code class="docutils literal notranslate"><span class="pre">jtagice3</span></code>, <code class="docutils literal notranslate"><span class="pre">jtagicemkii</span></code>, <code class="docutils literal notranslate"><span class="pre">qt600</span></code>,
+<code class="docutils literal notranslate"><span class="pre">stk500</span></code>, <code class="docutils literal notranslate"><span class="pre">stk600</span></code>, <code class="docutils literal notranslate"><span class="pre">samice</span></code>, <code class="docutils literal notranslate"><span class="pre">edbg</span></code>, <code class="docutils literal notranslate"><span class="pre">medbg</span></code>, <code class="docutils literal notranslate"><span class="pre">nedbg</span></code>,
+<code class="docutils literal notranslate"><span class="pre">atmelice</span></code>, <code class="docutils literal notranslate"><span class="pre">pickit4</span></code>, <code class="docutils literal notranslate"><span class="pre">powerdebugger</span></code>, <code class="docutils literal notranslate"><span class="pre">megadfu</span></code> or <code class="docutils literal notranslate"><span class="pre">flip</span></code>.
+(the default is <cite>“EDBG”</cite>, being the Atmel® Embedded Debugger, which
+is what the Atmel board of model <cite>ATSAML11E16A</cite> uses)</p></li>
+<li><p><strong>interface</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Physical interface. Available options are: <code class="docutils literal notranslate"><span class="pre">aWire</span></code>,
+<code class="docutils literal notranslate"><span class="pre">debugWIRE</span></code>, <code class="docutils literal notranslate"><span class="pre">HVPP</span></code>, <code class="docutils literal notranslate"><span class="pre">HVSP</span></code>, <code class="docutils literal notranslate"><span class="pre">ISP</span></code>, <code class="docutils literal notranslate"><span class="pre">JTAG</span></code>, <code class="docutils literal notranslate"><span class="pre">PDI</span></code>,
+<code class="docutils literal notranslate"><span class="pre">UPDI</span></code>, <code class="docutils literal notranslate"><span class="pre">TPI</span></code> or <code class="docutils literal notranslate"><span class="pre">SWD</span></code>. (the default is <cite>“SWD”</cite>, which is
+what the Atmel board of model <cite>ATSAML11E16A</cite> uses)</p></li>
+<li><p><strong>atmel_studio_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Specify the location where Atmel Studio is installed. Note that the
+path usually ends in a folder name corresponding to the version
+name e.g. 7.0 (the default is <cite>“C:\Program Files (x86)\Atmel\
+Studio\7.0”</cite>), which is the default installation location of Atmel
+Studio 7.0)</p></li>
+<li><p><strong>atprogram_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Specify the location where <cite>atprogram.exe</cite> is installed. (the default
+is <cite>“C:\Program Files (x86)\Atmel\Studio\7.0\atbackend\
+atprogram.exe”</cite>, as it is included with the installation of
+Atmel Studio)</p></li>
+<li><p><strong>device_sn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The programmer/debugger’s serial number. Must be
+specified when more than one debugger is connected. (the default is
+<cite>None</cite>, as it is common to have a single programmer/debugger connected)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The device information.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -306,47 +364,74 @@ the address space and fuses)</p>
 <dl class="function">
 <dt id="atprogram.atprogram.get_project_size">
 <code class="descclassname">atprogram.atprogram.</code><code class="descname">get_project_size</code><span class="sig-paren">(</span><em>project_path</em>, <em>device_name='ATSAML11E16A'</em>, <em>verbose=0</em>, <em>tool='EDBG'</em>, <em>interface='SWD'</em>, <em>atmel_studio_path='C:\\Program Files (x86)\\Atmel\\Studio\\7.0'</em>, <em>make_path=None</em>, <em>configuration='Debug'</em>, <em>device_sn=None</em>, <em>jobs='8'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/atprogram/atprogram.html#get_project_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#atprogram.atprogram.get_project_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>get_project_size.</p>
-<dl>
-<dt>Keyword Arguments:</dt><dd><dl class="simple">
-<dt>project_path {str} – Location where the project resides. If it ends in</dt><dd><p><cite>.elf</cite> the elf file will be used. If it ends in <cite>Makefile</cite> the
+<dd><p>Returns a dictionary object with the information about the
+sizes of the program segments/sections (text, data, BSS) that
+usually make up a computer program, and that are in the <code class="docutils literal notranslate"><span class="pre">.elf</span></code> file
+compiled from the Atmel Studio project at <cite>project_path</cite>.</p>
+<p>The dictionary object returned specifically contains the <cite>text</cite>, <cite>data</cite>
+and <cite>bss</cite> sizes of the respective program segments, but also includes
+<cite>dec</cite> and <cite>hex</cite> values which are the decimal and, respectively, the
+hexadecimal value of the sum of <cite>text</cite>, <cite>data</cite> and <cite>bss</cite>, making up
+to the whole program size to be flashed to the Atmel board.</p>
+<p>The returned dictionary object also contains the <cite>filename</cite> of the
+<code class="docutils literal notranslate"><span class="pre">.elf</span></code> file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All of the information returned by this function is obtained after
+a new compilation, of the Atmel project located at <code class="docutils literal notranslate"><span class="pre">project_path</span></code>,
+using the <a class="reference internal" href="#module-atprogram" title="atprogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">atprogram()</span></code></a> function.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Location where the project resides. If it ends in
+<code class="docutils literal notranslate"><span class="pre">.elf</span></code> the elf file will be used. If it ends in <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> the
 Makefile will be used. Otherwise it should be a path to a folder
-which holds the <cite>Debug</cite> folder.</p>
+which holds the <cite>Debug</cite> folder. (the default is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+which will return an error)</p></li>
+<li><p><strong>device_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Device name. E.g. <cite>“atxmega128a1”</cite> or <cite>“at32uc3a0256”</cite>.
+(the default is <code class="docutils literal notranslate"><span class="pre">&quot;ATSAML11E16A&quot;</span></code>, which is a variant of the
+Atmel SAM L11 board)</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Print most of <cite>atprogram</cite> output, if value is <cite>1</cite>, and print
+debugging information as well, if value is <cite>2</cite> (the default is
+<cite>0</cite>, which is to print only compiler warnings and errors)</p></li>
+<li><p><strong>tool</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Tool’s name. Available options are: <code class="docutils literal notranslate"><span class="pre">avrdragon</span></code>,
+<code class="docutils literal notranslate"><span class="pre">avrispmk2</span></code>, <code class="docutils literal notranslate"><span class="pre">avrone</span></code>, <code class="docutils literal notranslate"><span class="pre">jtagice3</span></code>, <code class="docutils literal notranslate"><span class="pre">jtagicemkii</span></code>, <code class="docutils literal notranslate"><span class="pre">qt600</span></code>,
+<code class="docutils literal notranslate"><span class="pre">stk500</span></code>, <code class="docutils literal notranslate"><span class="pre">stk600</span></code>, <code class="docutils literal notranslate"><span class="pre">samice</span></code>, <code class="docutils literal notranslate"><span class="pre">edbg</span></code>, <code class="docutils literal notranslate"><span class="pre">medbg</span></code>, <code class="docutils literal notranslate"><span class="pre">nedbg</span></code>,
+<code class="docutils literal notranslate"><span class="pre">atmelice</span></code>, <code class="docutils literal notranslate"><span class="pre">pickit4</span></code>, <code class="docutils literal notranslate"><span class="pre">powerdebugger</span></code>, <code class="docutils literal notranslate"><span class="pre">megadfu</span></code> or <code class="docutils literal notranslate"><span class="pre">flip</span></code>.
+(the default is <cite>“EDBG”</cite>, being the Atmel® Embedded Debugger, which
+is what the Atmel board of model <cite>ATSAML11E16A</cite> uses)</p></li>
+<li><p><strong>interface</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Physical interface. Available options are: <code class="docutils literal notranslate"><span class="pre">aWire</span></code>,
+<code class="docutils literal notranslate"><span class="pre">debugWIRE</span></code>, <code class="docutils literal notranslate"><span class="pre">HVPP</span></code>, <code class="docutils literal notranslate"><span class="pre">HVSP</span></code>, <code class="docutils literal notranslate"><span class="pre">ISP</span></code>, <code class="docutils literal notranslate"><span class="pre">JTAG</span></code>, <code class="docutils literal notranslate"><span class="pre">PDI</span></code>,
+<code class="docutils literal notranslate"><span class="pre">UPDI</span></code>, <code class="docutils literal notranslate"><span class="pre">TPI</span></code> or <code class="docutils literal notranslate"><span class="pre">SWD</span></code>. (the default is <cite>“SWD”</cite>, which is
+what the Atmel board of model <cite>ATSAML11E16A</cite> uses)</p></li>
+<li><p><strong>atmel_studio_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Specify the location where Atmel Studio is installed. Note that the
+path usually ends in a folder name corresponding to the version
+name e.g. 7.0 (the default is <cite>“C:Program Files (x86)AtmelStudio7.0”</cite>), which is the default installation location of Atmel
+Studio 7.0)</p></li>
+<li><p><strong>make_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Specify the path to <cite>make.exe</cite>, which should be the location of
+a GNU make installation for Windows. (the default is
+<cite>“C:Program Files (x86)AtmelStudio7.0shellutilsmake.exe”</cite>, as Atmel Studio already provides a GNU make
+installation for Windows)</p></li>
+<li><p><strong>configuration</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Specify which configuration of the Atmel Studio solution project
+should be used for compilation, flashing, etc. Most common
+options are: <cite>Release</cite>, <cite>Debug</cite>. (the default is <cite>“Debug”</cite>)</p></li>
+<li><p><strong>device_sn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The programmer/debugger’s serial number. Must be
+specified when more than one debugger is connected. (the default is
+<cite>None</cite>, as it is common to have a single programmer/debugger
+connected)</p></li>
+<li><p><strong>jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – How many jobs <cite>make</cite> should use (the default is
+<code class="docutils literal notranslate"><span class="pre">getenv(&quot;NUMBER_OF_PROCESSORS&quot;)</span></code>,
+which takes your number of processor cores available)</p></li>
+</ul>
 </dd>
-<dt>device_name {str} – Device name. E.g. atxmega128a1 or at32uc3a0256.</dt><dd><p>(default: {“ATSAML11E16A”})</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of sizes of the sections, the total size and the
+file name. The keys of the dictionary are: <code class="docutils literal notranslate"><span class="pre">&quot;text&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;data&quot;</span></code>
+<code class="docutils literal notranslate"><span class="pre">&quot;dss&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;hex&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;filename&quot;</span></code>.</p>
 </dd>
-</dl>
-<p>verbose {int} – Print results (default: {0})
-tool {str} – Tool name: avrdragon, avrispmk2, avrone, jtagice3,</p>
-<blockquote>
-<div><p>jtagicemkii, qt600, stk500, stk600, samice, edbg, medbg, nedbg,
-atmelice, pickit4, powerdebugger, megadfu or flip. (default:
-{“EDBG”})</p>
-</div></blockquote>
-<dl class="simple">
-<dt>interface {str} – Physical interface: aWire, debugWIRE, HVPP, HVSP,</dt><dd><p>ISP, JTAG, PDI, UPDI, TPI or SWD. (default: {“SWD”})</p>
-</dd>
-<dt>atmel_studio_path {[type]} – Location where Atmel Studio is installed,</dt><dd><p>ending in the folder named after the version, e.g. 7.0. (default:
-{path.join(getenv(“programfiles(x86)”), “Atmel”, “Studio”, “7.0”)})</p>
-</dd>
-<dt>make_path {[type]} – Location where <cite>make.exe</cite> is installed. (default:</dt><dd><p>{path.join(getenv(“programfiles(x86)”), “Atmel”, “Studio”, “7.0”, “shellutils”, “make.exe”)})</p>
-</dd>
-</dl>
-<p>configuration {str} – Which configuration to use. (default: {“Debug”})
-device_sn {str} – The programmer/debugger serialnumber. Must be</p>
-<blockquote>
-<div><p>specified when more than one debugger is connected. (default:
-{None})</p>
-</div></blockquote>
-<dl class="simple">
-<dt>jobs {int} – How many jobs <em>make</em> should use(default:</dt><dd><p>{getenv(“NUMBER_OF_PROCESSORS”)})</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>dict – A dictionary of sizes of the sections, the total size and the</dt><dd><p>file name.</p>
-</dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>

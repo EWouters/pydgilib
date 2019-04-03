@@ -234,7 +234,7 @@
 <span class="sd">        is what the Atmel board of model `ATSAML11E16A` uses)</span>
 
 <span class="sd">    interface : str, optional</span>
-<span class="sd">        Physical interface. Available options are: ``aWire``, </span>
+<span class="sd">        Physical interface. Available options are: ``aWire``,</span>
 <span class="sd">        ``debugWIRE``, ``HVPP``, ``HVSP``, ``ISP``, ``JTAG``, ``PDI``,</span>
 <span class="sd">        ``UPDI``, ``TPI`` or ``SWD``. (the default is `&quot;SWD&quot;`, which is</span>
 <span class="sd">        what the Atmel board of model `ATSAML11E16A` uses)</span>
@@ -242,7 +242,8 @@
 <span class="sd">    atmel_studio_path : str, optional</span>
 <span class="sd">        Specify the location where Atmel Studio is installed. Note that the</span>
 <span class="sd">        path usually ends in a folder name corresponding to the version name</span>
-<span class="sd">        e.g. 7.0 (the default is `&quot;C:\\Program Files (x86)\\Atmel\\Studio\\7.0&quot;`),</span>
+<span class="sd">        e.g. 7.0 </span>
+<span class="sd">        (the default is `&quot;C:\\Program Files (x86)\\Atmel\\Studio\\7.0&quot;`),</span>
 <span class="sd">        which is the default installation location of Atmel Studio 7.0)</span>
 
 <span class="sd">    make_path : str, optional</span>
@@ -253,17 +254,18 @@
 
 <span class="sd">    atprogram_path : str, optional</span>
 <span class="sd">        Specify the location where `atprogram.exe` is installed. (the default</span>
-<span class="sd">        is `&quot;C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\atbackend\\atprogram.exe&quot;`,</span>
-<span class="sd">        as it is included with the installation of Atmel Studio)</span>
+<span class="sd">        is `&quot;C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\atbackend\\</span>
+<span class="sd">        atprogram.exe&quot;`, as it is included with the installation of</span>
+<span class="sd">        Atmel Studio)</span>
 
 <span class="sd">    configuration : str, optional</span>
 <span class="sd">        Specify which configuration of the Atmel Studio solution project should</span>
-<span class="sd">        be used for compilation, flashing, etc. Most common options are: </span>
+<span class="sd">        be used for compilation, flashing, etc. Most common options are:</span>
 <span class="sd">        `Release`, `Debug`. (the default is `&quot;Debug&quot;`)</span>
 
 <span class="sd">    device_sn : str, optional</span>
 <span class="sd">        The programmer/debugger&#39;s serial number. Must be</span>
-<span class="sd">        specified when more than one debugger is connected. (the default is </span>
+<span class="sd">        specified when more than one debugger is connected. (the default is</span>
 <span class="sd">        `None`, as it is common to have a single programmer/debugger connected)</span>
 
 <span class="sd">    jobs : int, optional</span>
@@ -286,7 +288,7 @@
 <span class="sd">    return_output : bool, optional</span>
 <span class="sd">        If `True` the return value will be the output, else it will be</span>
 <span class="sd">        the return code (the default is `False`, which means the</span>
-<span class="sd">        return value is the return code of `atprogram`)</span>
+<span class="sd">        return value is the return code of ``atprogram.exe`` or ``make``)</span>
 
 <span class="sd">    dry_run : bool, optional</span>
 <span class="sd">        Whether to run the commands using the `subprocess`</span>
@@ -301,10 +303,15 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    int</span>
-<span class="sd">        A non-zero return value indicates the subprocess call returned</span>
-<span class="sd">        an error.</span>
+<span class="sd">    int or str</span>
+<span class="sd">        Depending on the `return_output` value, objects of different type</span>
+<span class="sd">        are returned by this function.</span>
 
+<span class="sd">        If the `return_output` value is `False`, then it returns a non-zero</span>
+<span class="sd">        return value indicates the subprocess call returned an error.</span>
+
+<span class="sd">        If `return_output` is `True`, then it returns a string holding the</span>
+<span class="sd">        text returned by ``atprogram.exe`` or ``make``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">elf_mode</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">makefile_mode</span> <span class="o">=</span> <span class="kc">False</span>
@@ -385,11 +392,36 @@
 
 
 <div class="viewcode-block" id="SavePrint"><a class="viewcode-back" href="../../source/atprogram.html#atprogram.atprogram.SavePrint">[docs]</a><span class="k">class</span> <span class="nc">SavePrint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;SavePrint</span>
+
+<span class="sd">    A helper class to store standard output or print if `return_output`</span>
+<span class="sd">    is false.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    return_output : bool</span>
+<span class="sd">        If `True`, the output is returned but not printed. If `False`, </span>
+<span class="sd">        the output is printed.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    output : str</span>
+<span class="sd">        Holds the text that was taken from standard output.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_output</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">return_output</span> <span class="o">=</span> <span class="n">return_output</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
 <div class="viewcode-block" id="SavePrint.print"><a class="viewcode-back" href="../../source/atprogram.html#atprogram.atprogram.SavePrint.print">[docs]</a>    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;print</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        s : str</span>
+<span class="sd">            A string to be added to the output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_output</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">+=</span> <span class="n">s</span>
         <span class="k">else</span><span class="p">:</span>
@@ -401,53 +433,61 @@
         <span class="n">atmel_studio_path</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;programfiles(x86)&quot;</span><span class="p">),</span> <span class="s2">&quot;Atmel&quot;</span><span class="p">,</span> <span class="s2">&quot;Studio&quot;</span><span class="p">,</span> <span class="s2">&quot;7.0&quot;</span><span class="p">),</span>
         <span class="n">atprogram_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_sn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Polls the connected board for information, such as:  target voltage, general device information (name, JTAG ID, </span>
-<span class="sd">    CPU architecture, board series, DAL (debug access levels fuses status) and memory information regarding  </span>
-<span class="sd">    the address space and fuses)</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Polls the connected board for information, such as:</span>
+<span class="sd">    target voltage, general device information (name, JTAG ID, CPU </span>
+<span class="sd">    architecture,board series, DAL (debug access levels fuses status)</span>
+<span class="sd">    and memory information regarding the address space and fuses). </span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    device_name : str, optional</span>
-<span class="sd">        Device name. E.g. ``atxmega128a1`` or ``at32uc3a0256``. (the default is `ATSAML11E16A`, which [default_description])</span>
+<span class="sd">        Device name. E.g. `&quot;atxmega128a1&quot;` or `&quot;at32uc3a0256&quot;`.</span>
+<span class="sd">        (the default is ``&quot;ATSAML11E16A&quot;``, which is a variant of the</span>
+<span class="sd">        Atmel SAM L11 board)</span>
 
 <span class="sd">    verbose : int, optional</span>
-<span class="sd">        Print most of `atprogram` output, if value is `1`, or print debugging information as well, if value is `2`</span>
-<span class="sd">        (the default is `0`, which is to print only compiler warnings and errors)</span>
+<span class="sd">        Print most of `atprogram` output, if value is `1`, and print</span>
+<span class="sd">        debugging information as well, if value is `2` (the default is `0`,</span>
+<span class="sd">        which is to print only compiler warnings and errors)</span>
+
 <span class="sd">    tool : str, optional</span>
-<span class="sd">        [description] (the default is &quot;EDBG&quot;, which [default_description])</span>
+<span class="sd">        Tool&#39;s name. Available options are: ``avrdragon``,</span>
+<span class="sd">        ``avrispmk2``, ``avrone``, ``jtagice3``, ``jtagicemkii``, ``qt600``,</span>
+<span class="sd">        ``stk500``, ``stk600``, ``samice``, ``edbg``, ``medbg``, ``nedbg``,</span>
+<span class="sd">        ``atmelice``, ``pickit4``, ``powerdebugger``, ``megadfu`` or ``flip``.</span>
+<span class="sd">        (the default is `&quot;EDBG&quot;`, being the Atmel® Embedded Debugger, which</span>
+<span class="sd">        is what the Atmel board of model `ATSAML11E16A` uses)</span>
+
 <span class="sd">    interface : str, optional</span>
-<span class="sd">        [description] (the default is &quot;SWD&quot;, which [default_description])</span>
-<span class="sd">    atmel_studio_path : [type], optional</span>
-<span class="sd">        [description] (the default is path.join(getenv(&quot;programfiles(x86)&quot;), &quot;Atmel&quot;, &quot;Studio&quot;, &quot;7.0&quot;), which [default_description])</span>
-<span class="sd">    atprogram_path : [type], optional</span>
-<span class="sd">        [description] (the default is None, which [default_description])</span>
-<span class="sd">    device_sn : [type], optional</span>
-<span class="sd">        [description] (the default is None, which [default_description])</span>
+<span class="sd">        Physical interface. Available options are: ``aWire``,</span>
+<span class="sd">        ``debugWIRE``, ``HVPP``, ``HVSP``, ``ISP``, ``JTAG``, ``PDI``,</span>
+<span class="sd">        ``UPDI``, ``TPI`` or ``SWD``. (the default is `&quot;SWD&quot;`, which is</span>
+<span class="sd">        what the Atmel board of model `ATSAML11E16A` uses)</span>
+
+<span class="sd">    atmel_studio_path : str, optional</span>
+<span class="sd">        Specify the location where Atmel Studio is installed. Note that the</span>
+<span class="sd">        path usually ends in a folder name corresponding to the version</span>
+<span class="sd">        name e.g. 7.0 (the default is `&quot;C:\\Program Files (x86)\\Atmel\\</span>
+<span class="sd">        Studio\\7.0&quot;`), which is the default installation location of Atmel</span>
+<span class="sd">        Studio 7.0)</span>
+
+<span class="sd">    atprogram_path : str, optional</span>
+<span class="sd">        Specify the location where `atprogram.exe` is installed. (the default</span>
+<span class="sd">        is `&quot;C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\atbackend\\</span>
+<span class="sd">        atprogram.exe&quot;`, as it is included with the installation of</span>
+<span class="sd">        Atmel Studio)</span>
+
+<span class="sd">    device_sn : str, optional</span>
+<span class="sd">        The programmer/debugger&#39;s serial number. Must be</span>
+<span class="sd">        specified when more than one debugger is connected. (the default is</span>
+<span class="sd">        `None`, as it is common to have a single programmer/debugger connected)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The device information.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># &quot;&quot;&quot;get_device_info.</span>
-
-    <span class="c1"># [description]</span>
-
-    <span class="c1"># Keyword Arguments:</span>
-    <span class="c1">#     device_name {str} -- Device name. E.g. atxmega128a1 or at32uc3a0256.</span>
-    <span class="c1">#         (default: {&quot;ATSAML11E16A&quot;})</span>
-    <span class="c1">#     verbose {int} -- Print results (default: {0})</span>
-    <span class="c1">#     tool {str} -- Tool name: avrdragon, avrispmk2, avrone, jtagice3,</span>
-    <span class="c1">#         jtagicemkii, qt600, stk500, stk600, samice, edbg, medbg, nedbg,</span>
-    <span class="c1">#         atmelice, pickit4, powerdebugger, megadfu or flip. (default:</span>
-    <span class="c1">#         {&quot;EDBG&quot;})</span>
-    <span class="c1">#     interface {str} -- Physical interface: aWire, debugWIRE, HVPP, HVSP,</span>
-    <span class="c1">#         ISP, JTAG, PDI, UPDI, TPI or SWD. (default: {&quot;SWD&quot;})</span>
-    <span class="c1">#     atmel_studio_path {[type]} -- Location where Atmel Studio is installed,</span>
-    <span class="c1">#         ending in the folder named after the version, e.g. 7.0. (default:</span>
-    <span class="c1">#         {path.join(getenv(&quot;programfiles(x86)&quot;), &quot;Atmel&quot;, &quot;Studio&quot;, &quot;7.0&quot;)})</span>
-    <span class="c1">#     atprogram_path {[type]} -- Location where `atprogram.exe` is installed</span>
-    <span class="c1">#         (default: {path.join(getenv(&quot;programfiles(x86)&quot;), &quot;Atmel&quot;, &quot;Studio&quot;, &quot;7.0&quot;, &quot;atbackend&quot;, &quot;atprogram.exe&quot;)})</span>
-    <span class="c1">#     device_sn {str} -- The programmer/debugger serialnumber. Must be</span>
-    <span class="c1">#         specified when more than one debugger is connected. (default:</span>
-    <span class="c1">#         {None})</span>
-    <span class="c1"># &quot;&quot;&quot;</span>
     <span class="n">atprogram_info</span> <span class="o">=</span> <span class="n">atprogram</span><span class="p">(</span>
         <span class="n">atprogram_command</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">return_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">device_name</span><span class="o">=</span><span class="n">device_name</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="n">tool</span><span class="p">,</span> <span class="n">interface</span><span class="o">=</span><span class="n">interface</span><span class="p">,</span>
@@ -489,37 +529,95 @@
             <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;programfiles(x86)&quot;</span><span class="p">),</span> <span class="s2">&quot;Atmel&quot;</span><span class="p">,</span> <span class="s2">&quot;Studio&quot;</span><span class="p">,</span> <span class="s2">&quot;7.0&quot;</span><span class="p">),</span>
         <span class="n">make_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">configuration</span><span class="o">=</span><span class="s2">&quot;Debug&quot;</span><span class="p">,</span> <span class="n">device_sn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">jobs</span><span class="o">=</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;NUMBER_OF_PROCESSORS&quot;</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;get_project_size.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a dictionary object with the information about the</span>
+<span class="sd">    sizes of the program segments/sections (text, data, BSS) that</span>
+<span class="sd">    usually make up a computer program, and that are in the ``.elf`` file</span>
+<span class="sd">    compiled from the Atmel Studio project at `project_path`.</span>
 
-<span class="sd">    Keyword Arguments:</span>
-<span class="sd">        project_path {str} -- Location where the project resides. If it ends in</span>
-<span class="sd">            `.elf` the elf file will be used. If it ends in `Makefile` the</span>
-<span class="sd">            Makefile will be used. Otherwise it should be a path to a folder</span>
-<span class="sd">            which holds the `Debug` folder.</span>
-<span class="sd">        device_name {str} -- Device name. E.g. atxmega128a1 or at32uc3a0256.</span>
-<span class="sd">            (default: {&quot;ATSAML11E16A&quot;})</span>
-<span class="sd">        verbose {int} -- Print results (default: {0})</span>
-<span class="sd">        tool {str} -- Tool name: avrdragon, avrispmk2, avrone, jtagice3,</span>
-<span class="sd">            jtagicemkii, qt600, stk500, stk600, samice, edbg, medbg, nedbg,</span>
-<span class="sd">            atmelice, pickit4, powerdebugger, megadfu or flip. (default:</span>
-<span class="sd">            {&quot;EDBG&quot;})</span>
-<span class="sd">        interface {str} -- Physical interface: aWire, debugWIRE, HVPP, HVSP,</span>
-<span class="sd">            ISP, JTAG, PDI, UPDI, TPI or SWD. (default: {&quot;SWD&quot;})</span>
-<span class="sd">        atmel_studio_path {[type]} -- Location where Atmel Studio is installed,</span>
-<span class="sd">            ending in the folder named after the version, e.g. 7.0. (default:</span>
-<span class="sd">            {path.join(getenv(&quot;programfiles(x86)&quot;), &quot;Atmel&quot;, &quot;Studio&quot;, &quot;7.0&quot;)})</span>
-<span class="sd">        make_path {[type]} -- Location where `make.exe` is installed. (default:</span>
-<span class="sd">            {path.join(getenv(&quot;programfiles(x86)&quot;), &quot;Atmel&quot;, &quot;Studio&quot;, &quot;7.0&quot;, &quot;shellutils&quot;, &quot;make.exe&quot;)})</span>
-<span class="sd">        configuration {str} -- Which configuration to use. (default: {&quot;Debug&quot;})</span>
-<span class="sd">        device_sn {str} -- The programmer/debugger serialnumber. Must be</span>
-<span class="sd">            specified when more than one debugger is connected. (default:</span>
-<span class="sd">            {None})</span>
-<span class="sd">        jobs {int} -- How many jobs *make* should use(default:</span>
-<span class="sd">            {getenv(&quot;NUMBER_OF_PROCESSORS&quot;)})</span>
+<span class="sd">    The dictionary object returned specifically contains the `text`, `data`</span>
+<span class="sd">    and `bss` sizes of the respective program segments, but also includes</span>
+<span class="sd">    `dec` and `hex` values which are the decimal and, respectively, the</span>
+<span class="sd">    hexadecimal value of the sum of `text`, `data` and `bss`, making up</span>
+<span class="sd">    to the whole program size to be flashed to the Atmel board.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        dict -- A dictionary of sizes of the sections, the total size and the</span>
-<span class="sd">            file name.</span>
+<span class="sd">    The returned dictionary object also contains the `filename` of the</span>
+<span class="sd">    ``.elf`` file.</span>
+
+<span class="sd">    .. note:: \</span>
+<span class="sd">        All of the information returned by this function is obtained after</span>
+<span class="sd">        a new compilation, of the Atmel project located at ``project_path``,</span>
+<span class="sd">        using the :func:`atprogram` function.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    project_path : str</span>
+<span class="sd">        Location where the project resides. If it ends in</span>
+<span class="sd">        ``.elf`` the elf file will be used. If it ends in ``Makefile`` the</span>
+<span class="sd">        Makefile will be used. Otherwise it should be a path to a folder</span>
+<span class="sd">        which holds the `Debug` folder. (the default is ``None``,</span>
+<span class="sd">        which will return an error)</span>
+
+<span class="sd">    device_name : str, optional</span>
+<span class="sd">        Device name. E.g. `&quot;atxmega128a1&quot;` or `&quot;at32uc3a0256&quot;`.</span>
+<span class="sd">        (the default is ``&quot;ATSAML11E16A&quot;``, which is a variant of the</span>
+<span class="sd">        Atmel SAM L11 board)</span>
+
+<span class="sd">    verbose : int, optional</span>
+<span class="sd">        Print most of `atprogram` output, if value is `1`, and print</span>
+<span class="sd">        debugging information as well, if value is `2` (the default is</span>
+<span class="sd">        `0`, which is to print only compiler warnings and errors)</span>
+
+<span class="sd">    tool : str, optional</span>
+<span class="sd">        Tool&#39;s name. Available options are: ``avrdragon``,</span>
+<span class="sd">        ``avrispmk2``, ``avrone``, ``jtagice3``, ``jtagicemkii``, ``qt600``,</span>
+<span class="sd">        ``stk500``, ``stk600``, ``samice``, ``edbg``, ``medbg``, ``nedbg``,</span>
+<span class="sd">        ``atmelice``, ``pickit4``, ``powerdebugger``, ``megadfu`` or ``flip``.</span>
+<span class="sd">        (the default is `&quot;EDBG&quot;`, being the Atmel® Embedded Debugger, which</span>
+<span class="sd">        is what the Atmel board of model `ATSAML11E16A` uses)</span>
+
+<span class="sd">    interface : str, optional</span>
+<span class="sd">        Physical interface. Available options are: ``aWire``,</span>
+<span class="sd">        ``debugWIRE``, ``HVPP``, ``HVSP``, ``ISP``, ``JTAG``, ``PDI``,</span>
+<span class="sd">        ``UPDI``, ``TPI`` or ``SWD``. (the default is `&quot;SWD&quot;`, which is</span>
+<span class="sd">        what the Atmel board of model `ATSAML11E16A` uses)</span>
+
+<span class="sd">    atmel_studio_path : str, optional</span>
+<span class="sd">        Specify the location where Atmel Studio is installed. Note that the</span>
+<span class="sd">        path usually ends in a folder name corresponding to the version</span>
+<span class="sd">        name e.g. 7.0 (the default is `&quot;C:\\Program Files (x86)\\Atmel\\</span>
+<span class="sd">        Studio\\7.0&quot;`), which is the default installation location of Atmel</span>
+<span class="sd">        Studio 7.0)</span>
+
+<span class="sd">    make_path : str, optional</span>
+<span class="sd">        Specify the path to `make.exe`, which should be the location of</span>
+<span class="sd">        a GNU make installation for Windows. (the default is</span>
+<span class="sd">        `&quot;C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\shellutils\\</span>
+<span class="sd">        make.exe&quot;`, as Atmel Studio already provides a GNU make</span>
+<span class="sd">        installation for Windows)</span>
+
+<span class="sd">    configuration : str, optional</span>
+<span class="sd">        Specify which configuration of the Atmel Studio solution project</span>
+<span class="sd">        should be used for compilation, flashing, etc. Most common</span>
+<span class="sd">        options are: `Release`, `Debug`. (the default is `&quot;Debug&quot;`)</span>
+
+<span class="sd">    device_sn : str, optional</span>
+<span class="sd">        The programmer/debugger&#39;s serial number. Must be</span>
+<span class="sd">        specified when more than one debugger is connected. (the default is</span>
+<span class="sd">        `None`, as it is common to have a single programmer/debugger</span>
+<span class="sd">        connected)</span>
+
+<span class="sd">    jobs : int, optional</span>
+<span class="sd">        How many jobs `make` should use (the default is</span>
+<span class="sd">        ``getenv(&quot;NUMBER_OF_PROCESSORS&quot;)``,</span>
+<span class="sd">        which takes your number of processor cores available)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary of sizes of the sections, the total size and the</span>
+<span class="sd">        file name. The keys of the dictionary are: ``&quot;text&quot;``, ``&quot;data&quot;``</span>
+<span class="sd">        ``&quot;dss&quot;``, ``&quot;hex&quot;`` and ``&quot;filename&quot;``.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bss</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="nb">hex</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">=</span> <span class="n">size_regexp</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">atprogram</span><span class="p">(</span>
