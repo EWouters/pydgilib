@@ -178,7 +178,7 @@ and point pydgilib to the location where you downloaded the file.</p>
 </div>
 <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>You will need to install pydgilib in a 32-bit python environment on Windows because DGILib.dll is compiled for 32-bit.</p>
+<p>You will need to install pydgilib in a <strong>32-bit Python</strong> environment on Windows because <cite>DGILib.dll</cite> is compiled for 32-bit. Other operating systems are not supported.</p>
 <div class="section" id="static-installation">
 <h2>Static Installation<a class="headerlink" href="#static-installation" title="Permalink to this headline">¶</a></h2>
 <p>If you want to install a static copy you can run:</p>
@@ -229,9 +229,21 @@ and point pydgilib to the location where you downloaded the file.</p>
 </pre></div>
 </div>
 </li>
+<li><p>Log the current of the board and the states of the gpio pins for one second and show a plot of the results:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydgilib_extra</span> <span class="k">import</span> <span class="n">DGILibExtra</span><span class="p">,</span> <span class="n">LOGGER_PLOT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">DGILibExtra</span><span class="p">(</span><span class="n">loggers</span><span class="o">=</span><span class="p">[</span><span class="n">LOGGER_PLOT</span><span class="p">])</span> <span class="k">as</span> <span class="n">dgilib</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">dgilib</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">{48: &lt;pydgilib_extra.dgilib_data.InterfaceData object at 0x00F22A90&gt;, 256: &lt;pydgilib_extra.dgilib_data.InterfaceData object at 0x00F229F0&gt;}</span>
+</pre></div>
+</div>
+</li>
 </ol>
 <blockquote>
-<div><p>Check the results in <cite>log_power.csv</cite> and <cite>log_gpio.csv</cite>.</p>
+<div><div class="figure align-center" id="id2">
+<img alt="plot example" src="_images/plot_example.png" />
+<p class="caption"><span class="caption-text">Plot of a SAML11 board running the unit test project.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
 </div></blockquote>
 </div>
 <div class="section" id="indices-and-tables">
@@ -248,8 +260,8 @@ and point pydgilib to the location where you downloaded the file.</p>
 </div>
 <div class="section" id="disclaimer">
 <h1>Disclaimer<a class="headerlink" href="#disclaimer" title="Permalink to this headline">¶</a></h1>
-<p>Atmel® is a trademark of Microchip Technology, which is not affiliated with the makers of this product.
-Atmel Studio and DGILib are products of Microchip Technology.</p>
+<p>Atmel® is a trademark of  Atmel Corporation, which is not affiliated with the makers of this product.
+Atmel Studio and DGILib are products of Atmel Corporation.</p>
 </div>
 
 
