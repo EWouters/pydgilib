@@ -33,7 +33,7 @@ The documentation of all the functions can be found in this `overview <py-modind
 Installation
 ============
 
-You will need to install pydgilib in a 32-bit python environment on Windows because DGILib.dll is compiled for 32-bit.
+You will need to install pydgilib in a **32-bit Python** environment on Windows because `DGILib.dll` is compiled for 32-bit. Other operating systems are not supported.
 
 Static Installation
 -------------------
@@ -77,7 +77,18 @@ Getting Started
     ...     dgilib.logger.log(1)
     ...
 
- Check the results in `log_power.csv` and `log_gpio.csv`.
+4. Log the current of the board and the states of the gpio pins for one second and show a plot of the results::
+
+    >>> from pydgilib_extra import DGILibExtra, LOGGER_PLOT
+    >>> with DGILibExtra(loggers=[LOGGER_PLOT]) as dgilib:
+    ...     dgilib.logger.log(1)
+    ...
+    {48: <pydgilib_extra.dgilib_data.InterfaceData object at 0x00F22A90>, 256: <pydgilib_extra.dgilib_data.InterfaceData object at 0x00F229F0>}
+
+ .. figure:: source/images/plot_example.png
+    :alt: plot example
+
+    Plot of a SAML11 board running the unit test project.
 
 Indices and tables
 ==================
