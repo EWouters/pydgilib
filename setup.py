@@ -13,7 +13,7 @@ setup(
     description="This module provides Python bindings for DGILib.",
     url="https://github.com/EWouters/pydgilib",
     author="Erik Wouters",
-    author_email="ehwo(at)kth.se",
+    author_email="ehwo@kth.se",
     license="MIT",
     packages=["pydgilib", "pydgilib_extra", "atprogram"],
     dependency_links=[
