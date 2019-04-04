@@ -12,14 +12,14 @@ pytest_runner = ["pytest-runner", "pytest-benchmark",
 
 setup(
     name="pydgilib",
-    version="0.2.2",
+    version="0.2.3",
     description="This module provides Python bindings for DGILib.",
     long_description=long_description,
     long_description_content_type="text/x-rst",
     url="https://github.com/EWouters/pydgilib",
     author="Erik Wouters",
     author_email="ehwo@kth.se",
-    license="MIT",
+    license="BSD-3-Clause",
     packages=["pydgilib", "pydgilib_extra", "atprogram"],
     dependency_links=[
         "https://www.microchip.com/developmenttools/ProductDetails/" +
