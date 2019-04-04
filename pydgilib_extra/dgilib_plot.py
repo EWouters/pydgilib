@@ -123,26 +123,75 @@ class DGILibPlot(object):
     """DGILibPlot
    
     The `DGILibPlot` class is responsible with plotting the electrical current
-    (Amperes) data and gpio states data (values of `1`/`0`) obtained from an
+    (Amperes) data and gpio state data (values of `1`/`0`) obtained from an
     Atmel board.
 
-    There are two methods that the gpio states can be shown. One is the `line`
-    method and one is the `highlight` method. The `line` method shows a square
-    waveform typical to the logic states that gpio pins usually give. The
-    `highlight` method highlights only particular parts of the plot with
-    semi-transparent vertical rectangles, where the pins have a value of
-    interest (set using the ``plot_pins_values`` argument of the class).
+    The X axis represents time in seconds, while the Y axis represents
+    the electrical current in Amperes.
+
+    There are two methods that the gpio state can be shown along with the
+    electrical current. One is the `line` method and one is the `highlight`
+    method. The `line` method shows a square waveform typical to the logic
+    states that gpio pins usually give. The `highlight` method highlights only
+    particular parts of the plot with semi-transparent highlighted areas,
+    where the pins have a value of interest (set using the ``plot_pins_values``
+    argument of the class).
 
     Here are some examples of `DGILibPlot` and the two methods of gpio
-    states drawing it has (`line`/`highlight`):
+    states drawing it has (`line`/`highlight`).
 
-    .. image: ..\\media\\dgilib_plot_highlight_1.png
+    **Example plots using line method:**
+
+    .. figure:: images/plot_line_1.png
+       :scale: 60%
+
+       Figure 1: Example of plot with line method of drawing pins chosen.
+       All of the pins are being plotted, so you can always see their True/
+       False values.
+
+    .. figure:: images/plot_line_2.png
+       :scale: 60%
+
+       Figure 2: The same plot with the same data as figure 1, only zoomed in.
+
+    .. figure:: images/plot_line_3.png
+       :scale: 60%
+
+       Figure 3: The same plot with the same data as figure 1 and 2, only even
+       more zoomed in. Here we can clearly see that gpio pins 0, 2 and 3 have
+       defaulted on a single value all along the program's execution on the
+       board. We can however clearly see the toggling of pin 1,
+       represented in orange.
+
+    **Example plots using highlight method:**
+
+    .. figure:: images/plot_highlight_1.png
+       :scale: 60%
+
+       Figure 4: Example of plot with highlight method of drawing pins chosen.
+       The time the pins are holding the value of interest (in this case,
+       `True` value) is small every time. This is why we can see the
+       semi-transparent highlighted areas looking more like lines when zoomed
+       out like this. The only pin being toggled by the program on the board is
+       pin 1, hence it's why we only see one color of highlighted areas.
+
+    .. figure:: images/plot_highlight_2.png
+       :scale: 60%
+
+       Figure 5: The same plot with the same data as figure 1, only zoomed in.
+
+    .. figure:: images/plot_highlight_3.png
+       :scale: 60%
+
+       Figure 6: The same plot with the same data as figure 1 and 2, only even 
+       more zoomed in. Now we can see one of the the semi-transparent highlight
+       area in its proper form.
 
     Parameters
     ----------
     dgilib_extra : DGILibExtra
         A `DGILibExtra` object can be specified, from where the plot can obtain
-        the electrical current and gpio states data. If a `DGILibExtra` object
+        the electrical current and gpio state data. If a `DGILibExtra` object
         is not desired to be specified however, then it should be set to
         `None`.
 
@@ -150,7 +199,7 @@ class DGILibPlot(object):
         If it is wanted so that the data is to be plotted on an already
         existing `matplotlib` figure, then the object representing the already
         instantiated figure can be specified for this parameter. For example,
-        the electrical current data and gpio states data can be plotted
+        the electrical current data and gpio state data can be plotted
         in a subplot of a figure window that holds other plots as well.
         (the default is `None`, meaning that a new figure object will be
         created internally)
@@ -167,7 +216,7 @@ class DGILibPlot(object):
         existing `matplotlib` `Lines2D` object, then the object representing
         the already instantiated `Lines2D` object can be specified for this
         parameter.
-        (the default is `None`, meaning that a new `Lines2D` object will be 
+        (the default is `None`, meaning that a new `Lines2D` object will be
         created internally)
 
     window_title : str, optional
@@ -176,28 +225,60 @@ class DGILibPlot(object):
         (the default is ``Plot of current (in amperes) and gpio pins``)
 
     plot_xmax : int, optional
-        This `**initializes**` the figure view to a maximum of `plot_xmax` on 
+        This *initializes* the figure view to a maximum of `plot_xmax` on
         the X axis, where the data to be plotted. Later, the user can change
         the figure view using the bottom sliders of the plot figure.
         (the default is an arbitrary `10`)
 
     plot_ymax : int, optional
-        This `**initializes**` the figure view to a maximum of `plot_xmax` on
+        This *initializes* the figure view to a maximum of `plot_xmax` on
         the Y axis, where the data to be plotted. Later, the user can change
         the figure view using the bottom sliders of the plot figure.
-        (the default is `0.005`, meaning 5 mA, so that something as 
+        (the default is `0.005`, meaning 5 mA, so that something as
         energy consuming as a blinking LED can be shown by a `DGILibPlot`
         with default settings)
- 
+
     plot_pins : list(bool, bool, bool, bool), optional
         Set the pins to be drawn in the plot, out of the 4 GPIO available pins
         that the Atmel board gives data about to be sent through the computer
-        through the Atmel Embedded Debugger (EDBG) Data Gateway Interface 
+        through the Atmel Embedded Debugger (EDBG) Data Gateway Interface
         (DGI).
         (the default is `[True, True, True, True]`, meaning all pins are
         drawn)
 
-    plot_pins_method : list
+    plot_pins_method : str, optional
+        Set the *method* of drawing the pin. The values can be either
+        ``"line"`` or ``"highlight"``. Refer to the above figures to see
+        the differences.
+        (the default is `"highlight"`)
+
+    plot_pins_colors : list(str, str, str, str), optional
+        Set the colors of the semi-transparent highlight areas drawn when using
+        the `highlight` method, or the lines when using the `lines` method of
+        drawing pins. (the default is `["red", "orange", "blue", "green"]`,
+        meaning that pin 0 will have a `red` semi-transparent highlight area or
+        line, pin 1 will have `orange` ones, and so on)
+
+    automove_method : str, optional
+        When the plot is receiving data live from the measurements taken in
+        real-time from the board (as opposed to receiving all the data to be
+        plotted at once, say, when reading the data from saved csv files), and
+        `plot_xmax` is smaller than the expected size of the data in the end,
+        then at some point the data will update past the figure view.
+        `DGILibPlot` automatically moves the figure view to the last timestamp
+        of the latest data received, and it can do so in two ways, depending on
+        the value of ``automove_method``.
+
+        The `page` method changes the figure view in increments of
+        ``plot_ymax``, when the data updates past the figure view, as if the
+        plot is turning one "page" at a time. The `latest_data` method makes
+        the figure view always have the latest data in view, meaning that it
+        moves in small increments so that it always keeps the latest data point
+        `0.15` seconds away from the right edge of the figure view. The `0.15`
+        seconds value is an arbitrary hard-coded value, chosen after some
+        experiments.
+
+
     """
 
     def __init__(self, dgilib_extra=None, *args, **kwargs):
@@ -257,9 +338,6 @@ class DGILibPlot(object):
         self.last_xpos = 0
         self.xylim_mutex = Lock()
 
-        # We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example
-        #self.plot_pins_correction_forward = kwargs.get("plot_pins_correction_forward", 0.00075)
-        #self.plot_pins_interval_shrink = kwargs.get("plot_pins_interval_shrink", 0.0010)
         self.refresh_plot_pause_secs = kwargs.get("refresh_plot_pause_secs", 0.00000001)
 
         if self.plot_pins_method == "highlight":
@@ -282,7 +360,8 @@ class DGILibPlot(object):
         self.plot_xmin = 0
         self.plot_ymin = 0
 
-        # We absolutely need these values from the user (or from the superior class), hence no default values
+        # We need these values from the user (or from the superior class), 
+        #   hence no default values
         # TODO: Are they really needed though?
         self.plot_xdiv = kwargs.get("plot_xdiv", min(5, self.plot_xmax))
         self.plot_xstep = kwargs.get("plot_xstep", 0.5)
