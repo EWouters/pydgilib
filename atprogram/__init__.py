@@ -4,7 +4,7 @@ __author__ = "EWouters <ehwo(at)kth.se>"
 __url__ = "https://github.com/EWouters/Atmel-SAML11/tree/master/Python/" + \
     "pydgilib"
 __credits__ = ""
-__license__ = "MIT"
+__license__ = "BSD-3-Clause"
 __version__ = "0.1"
 __docformat__ = "reStructuredText"
 #__all__ = ["atprogram"]
