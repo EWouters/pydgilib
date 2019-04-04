@@ -7,6 +7,7 @@ from pydgilib_extra.dgilib_calculations import StreamingCalculation
 #from tests_plot.dgilib_averages import HoldTimes
 
 import matplotlib.pyplot as plt; plt.ion()
+import matplotlib
 from matplotlib.widgets import Slider, Button, TextBox
 
 from threading import Lock
@@ -119,23 +120,101 @@ class HoldTimes(StreamingCalculation):
         return hold_times_list
 
 class DGILibPlot(object):
+    """DGILibPlot
+   
+    The `DGILibPlot` class is responsible with plotting the electrical current
+    (Amperes) data and gpio states data (values of `1`/`0`) obtained from an
+    Atmel board.
 
-    def __init__(self, dgilib_extra = None, *args, **kwargs):
+    There are two methods that the gpio states can be shown. One is the `line`
+    method and one is the `highlight` method. The `line` method shows a square
+    waveform typical to the logic states that gpio pins usually give. The
+    `highlight` method highlights only particular parts of the plot with
+    semi-transparent vertical rectangles, where the pins have a value of
+    interest (set using the ``plot_pins_values`` argument of the class).
+
+    Here are some examples of `DGILibPlot` and the two methods of gpio
+    states drawing it has (`line`/`highlight`):
+
+    .. image: ..\\media\\dgilib_plot_highlight_1.png
+
+    Parameters
+    ----------
+    dgilib_extra : DGILibExtra
+        A `DGILibExtra` object can be specified, from where the plot can obtain
+        the electrical current and gpio states data. If a `DGILibExtra` object
+        is not desired to be specified however, then it should be set to
+        `None`.
+
+    fig : matplotlib.pyplot.figure, optional
+        If it is wanted so that the data is to be plotted on an already
+        existing `matplotlib` figure, then the object representing the already
+        instantiated figure can be specified for this parameter. For example,
+        the electrical current data and gpio states data can be plotted
+        in a subplot of a figure window that holds other plots as well.
+        (the default is `None`, meaning that a new figure object will be
+        created internally)
+
+    ax : matplotlib.pyplot.axes, optional
+        If it is wanted so that the data is to be plotted on an already
+        existing `matplotlib` axes, then the object representing the already
+        instantiated axes can be specified for this parameter.
+        (the default is `None`, meaning that a new axes object will be
+        created internally)
+
+    ln : matplotlib.pyplot.lines2d, optional
+        If it is wanted so that the data is to be plotted on an already
+        existing `matplotlib` `Lines2D` object, then the object representing
+        the already instantiated `Lines2D` object can be specified for this
+        parameter.
+        (the default is `None`, meaning that a new `Lines2D` object will be 
+        created internally)
+
+    window_title : str, optional
+        If another window title than the default is desired to be used, it can
+        be specified here.
+        (the default is ``Plot of current (in amperes) and gpio pins``)
+
+    plot_xmax : int, optional
+        This `**initializes**` the figure view to a maximum of `plot_xmax` on 
+        the X axis, where the data to be plotted. Later, the user can change
+        the figure view using the bottom sliders of the plot figure.
+        (the default is an arbitrary `10`)
+
+    plot_ymax : int, optional
+        This `**initializes**` the figure view to a maximum of `plot_xmax` on
+        the Y axis, where the data to be plotted. Later, the user can change
+        the figure view using the bottom sliders of the plot figure.
+        (the default is `0.005`, meaning 5 mA, so that something as 
+        energy consuming as a blinking LED can be shown by a `DGILibPlot`
+        with default settings)
+ 
+    plot_pins : list(bool, bool, bool, bool), optional
+        Set the pins to be drawn in the plot, out of the 4 GPIO available pins
+        that the Atmel board gives data about to be sent through the computer
+        through the Atmel Embedded Debugger (EDBG) Data Gateway Interface 
+        (DGI).
+        (the default is `[True, True, True, True]`, meaning all pins are
+        drawn)
+
+    plot_pins_method : list
+    """
+
+    def __init__(self, dgilib_extra=None, *args, **kwargs):
         self.dgilib_extra = dgilib_extra
 
-        # Maybe the user wants to put the power figure along with other figures he wants
-        # if "fig" in kwargs: # It seems the second argument of kwargs.get
-            # always gets called, so this check prevents an extra figure from
-            # being created
+        # Maybe the user wants to put the power figure along with 
+        # other figures he wants
         self.fig = kwargs.get("fig")
         if self.fig is None:
             self.fig = plt.figure(figsize=(8, 6))
-        # Set window title if supplied
-        if "window_title" in kwargs:
-            self.fig.canvas.set_window_title(kwargs["window_title"])
-        # if "ax" in kwargs: # It seems the second argument of kwargs.get
-            # always gets called, so this check prevents an extra axis from
-            # being created
+            
+        # Set window title if supplied, if not set a default
+        self.window_title = kwargs.get("window_title",
+                                       "Plot of current (in amperes) and" +
+                                       "gpio pins")
+        self.fig.canvas.set_window_title(self.window_title)
+
         self.ax = kwargs.get("ax")
         if self.ax is None:
             self.ax = self.fig.add_subplot(1, 1, 1)
@@ -399,12 +478,7 @@ class DGILibPlot(object):
 
         if data is None:
             data = self.dgilib_extra.data
-            #if verbose: print("dgilib_plot.update_plot: Expected 'data', got an empty object.")
-            #return
 
-        # In this if, the smart DGILibData object tests if it has data inside
-        # TODO: Make 'if data: return' work for if data has no actual values in it.
-        # ... Right now is if it has no interfaces.
         if (not data):
             if verbose: print("dgilib_plot.update_plot: Expected 'data' containing interfaces. Got 'data' with no interfaces. Returning from call with no work done.")
             return
@@ -448,59 +522,59 @@ class DGILibPlot(object):
             pos = self.spos.val
             width = self.swidth.val
 
-            #self.set_axis(pos, pos + width, self.plot_ymin, self.plot_ymax, "update_plot function")
             self.ax.axis([pos, pos + width, self.plot_ymin, self.plot_ymax])
             self.last_xpos = pos
 
             self.xylim_mutex.release()
 
-        # visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000
-        # all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000
         self.refresh_plot()
 
         self.draw_pins(data)
     
     def clear_pins(self):
+        """
+        Clears the highlighted areas on the plot that represent the state of the gpio pins
+        (as seen in figure TODO: ??). Using this method only makes sense if the `highlight`
+        method of drawing pins was used.
+        
+        Raises
+        ------
+        ValueError
+            [description]
+        
+        Returns
+        -------
+        [type]
+            [description]
+        """
         if self.axvspans is None: return
         
         for axvsp in self.axvspans:
             axvsp.remove()
 
     def draw_pins(self, data):
-        # Here we set defaults (with or ...)
+        # Here we set defaults (with 'or' keyword ...)
         ax = self.ax
         plot_pins = self.plot_pins
         plot_pins_values = self.plot_pins_values
-        plot_pins_method = self.plot_pins_method or "highlight"
-        # plot_pins_correction_forward = self.plot_pins_correction_forward or 0.00
-        # plot_pins_interval_shrink = self.plot_pins_interval_shrink or 0.00
+        #plot_pins_method = self.plot_pins_method or "highlight"
         plot_pins_colors = self.plot_pins_colors
-        #average_function = self.average_function or "leftpoint"
 
         # Here we do checks and stop drawing pins if something is unset
         if ax is None:                                      return
         if plot_pins is None:                               return
-        # if plot_pins_values is None:                        return
-        # if plot_pins_method is None:                        return
-        # if plot_pins_correction_forward is None:            return
-        # if plot_pins_interval_shrink is None:               return
-        # if plot_pins_colors is None:                        return
-        # if average_function is None:                        return
             
         verbose=self.verbose
 
         no_of_pins = len(self.plot_pins)
 
-        if plot_pins_method == "highlight":
+        if self.plot_pins_method == "highlight":
 
             for pin_idx in range(no_of_pins): # For every pin number (0,1,2,3)
 
                 if plot_pins[pin_idx] == True: # If we want them plotted
                         
                     hold_times = self.hold_times_obj.identify_hold_times(pin_idx, plot_pins_values[pin_idx], data.gpio)
-
-                    # print("Hold times:" + str(hold_times))
-                    # print("Power: " + str(data.power.timestamps))
 
                     if hold_times is not None:
                         for ht in hold_times:
@@ -512,9 +586,12 @@ class DGILibPlot(object):
                             annon = ax.annotate(str(self.iterations[pin_idx] + 1), xy=(x_halfway, y_halfway))
                             self.annotations[pin_idx].append(annon)
                             
-                            #average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1], start_index)
                             self.iterations[pin_idx] += 1
                             self.preprocessed_averages_data[pin_idx].append((self.iterations[pin_idx], ht, 0, None))
+            
+            # This should be in update_plot()
+            self.ax.set_title(
+                f"Logging. Collected {len(data.power)} power samples and {len(data.gpio)} gpio samples.")
 
         elif self.plot_pins_method == "line":
             extend_gpio = data.gpio.timestamps[-1] < data.power.timestamps[-1]
