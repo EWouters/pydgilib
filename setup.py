@@ -50,3 +50,9 @@ setup(
 # git add .
 # $ git commit - m 'Update docs.'
 # $ git push origin gh-pages
+
+# Push release:
+# Set version tag in setup.py and docs/conf.py
+# Generate docs
+# $ python setup.py sdist bdist_wheel
+# $ twine upload dist/*
