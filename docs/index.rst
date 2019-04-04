@@ -94,5 +94,5 @@ Code Coverage Report
 Disclaimer
 ==========
 
-Atmel® is a trademark of Microchip Technology, which is not affiliated with the makers of this product.
-Atmel Studio and DGILib are products of Microchip Technology.
+Atmel® is a trademark of  Atmel Corporation, which is not affiliated with the makers of this product.
+Atmel Studio and DGILib are products of Atmel Corporation.
