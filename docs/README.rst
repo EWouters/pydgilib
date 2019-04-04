@@ -31,7 +31,7 @@ You will need to install pydgilib in a **32-bit Python** environment on Windows 
 Installation via Pip
 --------------------
 
-This package is hosted `here <https://pypi.org/manage/project/pydgilib>`_ on PyPI. The easiest way to install it is via pip. ::
+This package is hosted `here <https://pypi.org/project/pydgilib>`_ on PyPI. The easiest way to install it is via pip. ::
 
     $ pip install pydgilib
 
