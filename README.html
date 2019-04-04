@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Features &mdash; pydgilib 0.2.3 documentation</title>
+  <title>Documentation &mdash; pydgilib 0.2.3 documentation</title>
   
 
   
@@ -84,9 +84,10 @@
             
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Features</a></li>
+<li><a class="reference internal" href="#">Documentation</a></li>
+<li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#installation">Installation</a><ul>
-<li><a class="reference internal" href="#installation-via-pip">Installation via pip</a></li>
+<li><a class="reference internal" href="#installation-via-pip">Installation via Pip</a></li>
 <li><a class="reference internal" href="#static-installation">Static Installation</a></li>
 <li><a class="reference internal" href="#development-installation">Development Installation</a></li>
 </ul>
@@ -137,7 +138,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Features</li>
+      <li>Documentation</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -162,22 +163,26 @@ for further details. This package works best if you have <a class="reference ext
 installed. If you do it will automatically make use of the installed files it requires. Otherwise you can
 download the required DLL from Atmel <a class="reference external" href="https://www.microchip.com/developmenttools/ProductDetails/ATPOWERDEBUGGER">here</a>
 and point pydgilib to the location where you downloaded the file.</p>
+<div class="section" id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+<p>The full documentation can be found <a class="reference external" href="https://ewouters.github.io/pydgilib/">here</a>.</p>
+</div>
 <div class="section" id="features">
 <h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
 <p>The main features of this library are:</p>
 <ul class="simple">
-<li><p>It wraps the C functions of DGILib in python <a class="reference external" href="source/pydgilib.html#pydgilib.dgilib.DGILib">functions</a></p></li>
-<li><p>It provides a <a class="reference external" href="source/pydgilib_extra.html#module-pydgilib_extra.dgilib_extra">class</a> to easily log data from the power and gpio interfaces to a <cite>.csv</cite> file or a plot (using <a class="reference external" href="https://matplotlib.org/">matplotlib</a>)</p></li>
-<li><p>It provides a <a class="reference external" href="source/atprogram.html#atprogram-package">function</a> that wraps <cite>atprogram.exe</cite> and <cite>make.exe</cite> so it can compile projects and flash them to a board</p></li>
+<li><p>It wraps the C functions of DGILib in python <a class="reference external" href="https://ewouters.github.io/pydgilib/source/pydgilib.html#pydgilib.dgilib.DGILib">functions</a></p></li>
+<li><p>It provides a <a class="reference external" href="https://ewouters.github.io/pydgilib/source/pydgilib_extra.html#module-pydgilib_extra.dgilib_extra">class</a> to easily log data from the power and gpio interfaces to a <cite>.csv</cite> file or a plot (using <a class="reference external" href="https://matplotlib.org/">matplotlib</a>)</p></li>
+<li><p>It provides a <a class="reference external" href="https://ewouters.github.io/pydgilib/source/atprogram.html#atprogram-package">function</a> that wraps <cite>atprogram.exe</cite> and <cite>make.exe</cite> so it can compile projects and flash them to a board</p></li>
 </ul>
-<p>The documentation of all the functions can be found in this <a class="reference external" href="py-modindex.html">overview</a> or this <a class="reference external" href="genindex.html">list</a>.</p>
+<p>The documentation of all the functions can be found in this <a class="reference external" href="https://ewouters.github.io/pydgilib/py-modindex.html">overview</a> or this <a class="reference external" href="https://ewouters.github.io/pydgilib/genindex.html">list</a>.</p>
 </div>
 <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>You will need to install pydgilib in a <strong>32-bit Python</strong> environment on Windows because <cite>DGILib.dll</cite> is compiled for 32-bit. Other operating systems are not supported.</p>
 <div class="section" id="installation-via-pip">
-<h2>Installation via pip<a class="headerlink" href="#installation-via-pip" title="Permalink to this headline">¶</a></h2>
-<p>Normal installation:</p>
+<h2>Installation via Pip<a class="headerlink" href="#installation-via-pip" title="Permalink to this headline">¶</a></h2>
+<p>This package is hosted <a class="reference external" href="https://pypi.org/project/pydgilib">here</a> on PyPI. The easiest way to install it is via pip.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install pydgilib
 </pre></div>
 </div>
@@ -243,9 +248,9 @@ and point pydgilib to the location where you downloaded the file.</p>
 </li>
 </ol>
 <blockquote>
-<div><div class="figure align-center" id="id1">
+<div><div class="figure align-center" id="id3">
 <img alt="plot example" src="_images/plot_example.png" />
-<p class="caption"><span class="caption-text">Plot of a SAML11 board running the unit test project.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Plot of a SAML11 board running the unit test project.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 </div></blockquote>
 </div>

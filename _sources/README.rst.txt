@@ -5,28 +5,33 @@ installed. If you do it will automatically make use of the installed files it re
 download the required DLL from Atmel `here <https://www.microchip.com/developmenttools/ProductDetails/ATPOWERDEBUGGER>`_
 and point pydgilib to the location where you downloaded the file.
 
+Documentation
+=============
+
+The full documentation can be found `here <https://ewouters.github.io/pydgilib/>`_.
+
 Features
 ========
 
 The main features of this library are:
 
-* It wraps the C functions of DGILib in python `functions <source/pydgilib.html#pydgilib.dgilib.DGILib>`_
+* It wraps the C functions of DGILib in python `functions <https://ewouters.github.io/pydgilib/source/pydgilib.html#pydgilib.dgilib.DGILib>`_
 
-* It provides a `class <source/pydgilib_extra.html#module-pydgilib_extra.dgilib_extra>`_ to easily log data from the power and gpio interfaces to a `.csv` file or a plot (using `matplotlib <https://matplotlib.org/>`_)
+* It provides a `class <https://ewouters.github.io/pydgilib/source/pydgilib_extra.html#module-pydgilib_extra.dgilib_extra>`_ to easily log data from the power and gpio interfaces to a `.csv` file or a plot (using `matplotlib <https://matplotlib.org/>`_)
 
-* It provides a `function <source/atprogram.html#atprogram-package>`_ that wraps `atprogram.exe` and `make.exe` so it can compile projects and flash them to a board
+* It provides a `function <https://ewouters.github.io/pydgilib/source/atprogram.html#atprogram-package>`_ that wraps `atprogram.exe` and `make.exe` so it can compile projects and flash them to a board
 
-The documentation of all the functions can be found in this `overview <py-modindex.html>`_ or this `list <genindex.html>`_.
+The documentation of all the functions can be found in this `overview <https://ewouters.github.io/pydgilib/py-modindex.html>`_ or this `list <https://ewouters.github.io/pydgilib/genindex.html>`_.
 
 Installation
 ============
 
 You will need to install pydgilib in a **32-bit Python** environment on Windows because `DGILib.dll` is compiled for 32-bit. Other operating systems are not supported.
 
-Installation via pip
+Installation via Pip
 --------------------
 
-Normal installation::
+This package is hosted `here <https://pypi.org/project/pydgilib>`_ on PyPI. The easiest way to install it is via pip. ::
 
     $ pip install pydgilib
 
