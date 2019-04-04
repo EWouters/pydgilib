@@ -23,10 +23,17 @@ Installation
 
 You will need to install pydgilib in a **32-bit Python** environment on Windows because `DGILib.dll` is compiled for 32-bit. Other operating systems are not supported.
 
+Installation via pip
+--------------------
+
+Normal installation::
+
+    $ pip install pydgilib
+
 Static Installation
 -------------------
 
-If you want to install a static copy you can run::
+If you want to install a static copy of the master you can run::
 
     $ pip install git+https://github.com/EWouters/pydgilib
 
