@@ -3,14 +3,19 @@
 import sys
 from setuptools import setup
 
+with open("docs/README.rst", "r") as fh:
+    long_description = fh.read()
+
 needs_pytest = {"pytest", "test", "ptr"}.intersection(sys.argv)
 pytest_runner = ["pytest-runner", "pytest-benchmark",
                  "pytest-cov"] if needs_pytest else []
 
 setup(
     name="pydgilib",
-    version="0.2",
+    version="0.2.2",
     description="This module provides Python bindings for DGILib.",
+    long_description=long_description,
+    long_description_content_type="text/x-rst",
     url="https://github.com/EWouters/pydgilib",
     author="Erik Wouters",
     author_email="ehwo@kth.se",
