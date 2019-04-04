@@ -73,6 +73,7 @@ Getting Started
     ...
     {48: <pydgilib_extra.dgilib_data.InterfaceData object at 0x00F22A90>, 256: <pydgilib_extra.dgilib_data.InterfaceData object at 0x00F229F0>}
 
-  |plotexample|
-  
-  *Plot of a SAML11 board running the unit test project.*
+ .. figure:: source/images/plot_example.png
+    :alt: plot example
+
+    Plot of a SAML11 board running the unit test project.

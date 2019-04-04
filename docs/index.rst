@@ -12,9 +12,6 @@ Welcome to pydgilib's documentation!
 
 .. include:: README.rst
 
-.. |plotexample| image:: source/images/plot_example.png
-    :alt: plot example
-
 Indices and tables
 ==================
 
