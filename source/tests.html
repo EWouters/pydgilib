@@ -83,16 +83,16 @@
 <li><a class="reference internal" href="#">tests package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#tests-debug-module">tests.debug module</a></li>
-<li><a class="reference internal" href="#tests-test-atprogram-module">tests.test_atprogram module</a></li>
-<li><a class="reference internal" href="#tests-test-benchmarks-module">tests.test_benchmarks module</a></li>
-<li><a class="reference internal" href="#tests-test-dgilib-auxiliary-module">tests.test_dgilib_auxiliary module</a></li>
-<li><a class="reference internal" href="#tests-test-dgilib-discovery-module">tests.test_dgilib_discovery module</a></li>
-<li><a class="reference internal" href="#tests-test-dgilib-extra-module">tests.test_dgilib_extra module</a></li>
-<li><a class="reference internal" href="#tests-test-dgilib-housekeeping-module">tests.test_dgilib_housekeeping module</a></li>
-<li><a class="reference internal" href="#tests-test-dgilib-interface-communication-module">tests.test_dgilib_interface_communication module</a></li>
-<li><a class="reference internal" href="#tests-test-interface-data-module">tests.test_interface_data module</a></li>
-<li><a class="reference internal" href="#tests-test-logger-data-module">tests.test_logger_data module</a></li>
-<li><a class="reference internal" href="#tests-test-pydgilib-module">tests.test_pydgilib module</a></li>
+<li><a class="reference internal" href="#module-tests.test_atprogram">tests.test_atprogram module</a></li>
+<li><a class="reference internal" href="#module-tests.test_benchmarks">tests.test_benchmarks module</a></li>
+<li><a class="reference internal" href="#module-tests.test_dgilib_auxiliary">tests.test_dgilib_auxiliary module</a></li>
+<li><a class="reference internal" href="#module-tests.test_dgilib_discovery">tests.test_dgilib_discovery module</a></li>
+<li><a class="reference internal" href="#module-tests.test_dgilib_extra">tests.test_dgilib_extra module</a></li>
+<li><a class="reference internal" href="#module-tests.test_dgilib_housekeeping">tests.test_dgilib_housekeeping module</a></li>
+<li><a class="reference internal" href="#module-tests.test_dgilib_interface_communication">tests.test_dgilib_interface_communication module</a></li>
+<li><a class="reference internal" href="#module-tests.test_interface_data">tests.test_interface_data module</a></li>
+<li><a class="reference internal" href="#module-tests.test_logger_data">tests.test_logger_data module</a></li>
+<li><a class="reference internal" href="#module-tests.test_pydgilib">tests.test_pydgilib module</a></li>
 <li><a class="reference internal" href="#module-tests">Module contents</a></li>
 </ul>
 </li>
@@ -168,38 +168,490 @@
 <div class="section" id="tests-debug-module">
 <h2>tests.debug module<a class="headerlink" href="#tests-debug-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="tests-test-atprogram-module">
-<h2>tests.test_atprogram module<a class="headerlink" href="#tests-test-atprogram-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-tests.test_atprogram">
+<span id="tests-test-atprogram-module"></span><h2>tests.test_atprogram module<a class="headerlink" href="#module-tests.test_atprogram" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the automated tests for atprogram.</p>
+<dl class="function">
+<dt id="tests.test_atprogram.test_atprogram">
+<code class="descclassname">tests.test_atprogram.</code><code class="descname">test_atprogram</code><span class="sig-paren">(</span><em>verbose</em>, <em>clean</em>, <em>build</em>, <em>erase</em>, <em>program</em>, <em>verify</em>, <em>return_output</em>, <em>dry_run</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_atprogram.html#test_atprogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_atprogram.test_atprogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_atprogram.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_atprogram.test_atprogram_command">
+<code class="descclassname">tests.test_atprogram.</code><code class="descname">test_atprogram_command</code><span class="sig-paren">(</span><em>make_command</em>, <em>atprogram_command</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_atprogram.html#test_atprogram_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_atprogram.test_atprogram_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_atprogram_command.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_atprogram.test_atprogram_invalid_command">
+<code class="descclassname">tests.test_atprogram.</code><code class="descname">test_atprogram_invalid_command</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_atprogram.html#test_atprogram_invalid_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_atprogram.test_atprogram_invalid_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_atprogram_not_a_command.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_atprogram.test_atprogram_simple">
+<code class="descclassname">tests.test_atprogram.</code><code class="descname">test_atprogram_simple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_atprogram.html#test_atprogram_simple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_atprogram.test_atprogram_simple" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_atprogram_simple.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_atprogram.test_get_device_info">
+<code class="descclassname">tests.test_atprogram.</code><code class="descname">test_get_device_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_atprogram.html#test_get_device_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_atprogram.test_get_device_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_get_device_info.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_atprogram.test_get_project_size">
+<code class="descclassname">tests.test_atprogram.</code><code class="descname">test_get_project_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_atprogram.html#test_get_project_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_atprogram.test_get_project_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_get_project_size.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="tests-test-benchmarks-module">
-<h2>tests.test_benchmarks module<a class="headerlink" href="#tests-test-benchmarks-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-tests.test_benchmarks">
+<span id="tests-test-benchmarks-module"></span><h2>tests.test_benchmarks module<a class="headerlink" href="#module-tests.test_benchmarks" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the benchmark tests for DGILibExtra.</p>
+<dl class="function">
+<dt id="tests.test_benchmarks.data_iadd_speed">
+<code class="descclassname">tests.test_benchmarks.</code><code class="descname">data_iadd_speed</code><span class="sig-paren">(</span><em>num_iterations=10</em>, <em>num_values=1000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_benchmarks.html#data_iadd_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_benchmarks.data_iadd_speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_data_iadd_speed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_benchmarks.data_no_class_speed">
+<code class="descclassname">tests.test_benchmarks.</code><code class="descname">data_no_class_speed</code><span class="sig-paren">(</span><em>num_iterations=10</em>, <em>num_values=1000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_benchmarks.html#data_no_class_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_benchmarks.data_no_class_speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>data_no_class_speed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_benchmarks.test_data_iadd_speed">
+<code class="descclassname">tests.test_benchmarks.</code><code class="descname">test_data_iadd_speed</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_benchmarks.html#test_data_iadd_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_benchmarks.test_data_iadd_speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Benchmark iadd speed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_benchmarks.test_data_no_class_speed">
+<code class="descclassname">tests.test_benchmarks.</code><code class="descname">test_data_no_class_speed</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_benchmarks.html#test_data_no_class_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_benchmarks.test_data_no_class_speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Benchmark no_class speed.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="tests-test-dgilib-auxiliary-module">
-<h2>tests.test_dgilib_auxiliary module<a class="headerlink" href="#tests-test-dgilib-auxiliary-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-tests.test_dgilib_auxiliary">
+<span id="tests-test-dgilib-auxiliary-module"></span><h2>tests.test_dgilib_auxiliary module<a class="headerlink" href="#module-tests.test_dgilib_auxiliary" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the automated tests for DGILib Auxiliary.</p>
+<dl class="function">
+<dt id="tests.test_dgilib_auxiliary.test_auxiliary_power_calibration_is_valid">
+<code class="descclassname">tests.test_dgilib_auxiliary.</code><code class="descname">test_auxiliary_power_calibration_is_valid</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_auxiliary.html#test_auxiliary_power_calibration_is_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_auxiliary.test_auxiliary_power_calibration_is_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_auxiliary_power_calibration_is_valid.</p>
+<p>DGILibAuxiliary.auxiliary_power_calibration_is_valid</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_auxiliary.test_auxiliary_power_get_calibration">
+<code class="descclassname">tests.test_dgilib_auxiliary.</code><code class="descname">test_auxiliary_power_get_calibration</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_auxiliary.html#test_auxiliary_power_get_calibration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_auxiliary.test_auxiliary_power_get_calibration" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_auxiliary_power_get_calibration.</p>
+<p>DGILibAuxiliary.auxiliary_power_get_calibration</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_auxiliary.test_auxiliary_power_get_circuit_type">
+<code class="descclassname">tests.test_dgilib_auxiliary.</code><code class="descname">test_auxiliary_power_get_circuit_type</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_auxiliary.html#test_auxiliary_power_get_circuit_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_auxiliary.test_auxiliary_power_get_circuit_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_auxiliary_power_get_circuit_type.</p>
+<p>DGILibAuxiliary.auxiliary_power_get_circuit_type</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_auxiliary.test_auxiliary_power_get_status">
+<code class="descclassname">tests.test_dgilib_auxiliary.</code><code class="descname">test_auxiliary_power_get_status</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_auxiliary.html#test_auxiliary_power_get_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_auxiliary.test_auxiliary_power_get_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_auxiliary_power_get_status.</p>
+<p>DGILibAuxiliary.auxiliary_power_get_status</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_auxiliary.test_auxiliary_power_initialize">
+<code class="descclassname">tests.test_dgilib_auxiliary.</code><code class="descname">test_auxiliary_power_initialize</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_auxiliary.html#test_auxiliary_power_initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_auxiliary.test_auxiliary_power_initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_auxiliary_power_initialize.</p>
+<p>DGILibAuxiliary.auxiliary_power_initialize</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_auxiliary.test_auxiliary_power_lock_data_for_reading_copy_data_free_data">
+<code class="descclassname">tests.test_dgilib_auxiliary.</code><code class="descname">test_auxiliary_power_lock_data_for_reading_copy_data_free_data</code><span class="sig-paren">(</span><em>channel</em>, <em>power_type</em>, <em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_auxiliary.html#test_auxiliary_power_lock_data_for_reading_copy_data_free_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_auxiliary.test_auxiliary_power_lock_data_for_reading_copy_data_free_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_auxiliary_power_lock_data_for_reading_copy_data_free_data.</p>
+<p>DGILibAuxiliary.auxiliary_power_lock_data_for_reading
+DGILibAuxiliary.auxiliary_power_copy_data
+DGILibAuxiliary.auxiliary_power_free_data</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_auxiliary.test_auxiliary_power_register_unregister_buffer_pointers">
+<code class="descclassname">tests.test_dgilib_auxiliary.</code><code class="descname">test_auxiliary_power_register_unregister_buffer_pointers</code><span class="sig-paren">(</span><em>channel</em>, <em>power_type</em>, <em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_auxiliary.html#test_auxiliary_power_register_unregister_buffer_pointers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_auxiliary.test_auxiliary_power_register_unregister_buffer_pointers" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_auxiliary_power_register_unregister_buffer_pointers.</p>
+<p>DGILibAuxiliary.auxiliary_power_register_buffer_pointers
+DGILibAuxiliary.auxiliary_power_unregister_buffer_pointers</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_auxiliary.test_auxiliary_power_start_stop">
+<code class="descclassname">tests.test_dgilib_auxiliary.</code><code class="descname">test_auxiliary_power_start_stop</code><span class="sig-paren">(</span><em>channel</em>, <em>power_type</em>, <em>mode</em>, <em>parameter</em>, <em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_auxiliary.html#test_auxiliary_power_start_stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_auxiliary.test_auxiliary_power_start_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_auxiliary_power_start_stop.</p>
+<p>DGILibAuxiliary.auxiliary_power_start
+DGILibAuxiliary.auxiliary_power_stop</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_auxiliary.test_auxiliary_power_trigger_calibration">
+<code class="descclassname">tests.test_dgilib_auxiliary.</code><code class="descname">test_auxiliary_power_trigger_calibration</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_auxiliary.html#test_auxiliary_power_trigger_calibration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_auxiliary.test_auxiliary_power_trigger_calibration" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_auxiliary_power_trigger_calibration.</p>
+<p>DGILibAuxiliary.auxiliary_power_trigger_calibration</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_auxiliary.test_auxiliary_power_uninitialize">
+<code class="descclassname">tests.test_dgilib_auxiliary.</code><code class="descname">test_auxiliary_power_uninitialize</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_auxiliary.html#test_auxiliary_power_uninitialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_auxiliary.test_auxiliary_power_uninitialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_auxiliary_power_uninitialize.</p>
+<p>DGILibAuxiliary.auxiliary_power_uninitialize</p>
+</dd></dl>
+
 </div>
-<div class="section" id="tests-test-dgilib-discovery-module">
-<h2>tests.test_dgilib_discovery module<a class="headerlink" href="#tests-test-dgilib-discovery-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-tests.test_dgilib_discovery">
+<span id="tests-test-dgilib-discovery-module"></span><h2>tests.test_dgilib_discovery module<a class="headerlink" href="#module-tests.test_dgilib_discovery" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the automated tests for DGILib Discovery.</p>
+<dl class="function">
+<dt id="tests.test_dgilib_discovery.test_discover">
+<code class="descclassname">tests.test_dgilib_discovery.</code><code class="descname">test_discover</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_discovery.html#test_discover"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_discovery.test_discover" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_discover.</p>
+<p>DGILibDiscovery.discover</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_discovery.test_get_device_count">
+<code class="descclassname">tests.test_dgilib_discovery.</code><code class="descname">test_get_device_count</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_discovery.html#test_get_device_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_discovery.test_get_device_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_get_device_count.</p>
+<p>DGILibDiscovery.get_device_count</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_discovery.test_get_device_name">
+<code class="descclassname">tests.test_dgilib_discovery.</code><code class="descname">test_get_device_name</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_discovery.html#test_get_device_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_discovery.test_get_device_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_get_device_name.</p>
+<p>DGILibDiscovery.get_device_name</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_discovery.test_get_device_serial">
+<code class="descclassname">tests.test_dgilib_discovery.</code><code class="descname">test_get_device_serial</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_discovery.html#test_get_device_serial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_discovery.test_get_device_serial" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_get_device_serial.</p>
+<p>DGILibDiscovery.get_device_serial</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_discovery.test_is_msd_mode">
+<code class="descclassname">tests.test_dgilib_discovery.</code><code class="descname">test_is_msd_mode</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_discovery.html#test_is_msd_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_discovery.test_is_msd_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_is_msd_mode.</p>
+<p>DGILibDiscovery.is_msd_mode</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_discovery.test_set_mode">
+<code class="descclassname">tests.test_dgilib_discovery.</code><code class="descname">test_set_mode</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_discovery.html#test_set_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_discovery.test_set_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_set_mode.</p>
+<p>DGILibDiscovery.set_mode</p>
+</dd></dl>
+
 </div>
-<div class="section" id="tests-test-dgilib-extra-module">
-<h2>tests.test_dgilib_extra module<a class="headerlink" href="#tests-test-dgilib-extra-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-tests.test_dgilib_extra">
+<span id="tests-test-dgilib-extra-module"></span><h2>tests.test_dgilib_extra module<a class="headerlink" href="#module-tests.test_dgilib_extra" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the automated tests for DGILibExtra.</p>
+<dl class="function">
+<dt id="tests.test_dgilib_extra.test_device_reset">
+<code class="descclassname">tests.test_dgilib_extra.</code><code class="descname">test_device_reset</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_extra.html#test_device_reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_extra.test_device_reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_device_reset.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_extra.test_info">
+<code class="descclassname">tests.test_dgilib_extra.</code><code class="descname">test_info</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_extra.html#test_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_extra.test_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_info.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_extra.test_int2bool2int">
+<code class="descclassname">tests.test_dgilib_extra.</code><code class="descname">test_int2bool2int</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_extra.html#test_int2bool2int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_extra.test_int2bool2int" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_int2bool2int.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_extra.test_plot">
+<code class="descclassname">tests.test_dgilib_extra.</code><code class="descname">test_plot</code><span class="sig-paren">(</span><em>config</em>, <em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_extra.html#test_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_extra.test_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_plot.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_extra.test_plot_simple">
+<code class="descclassname">tests.test_dgilib_extra.</code><code class="descname">test_plot_simple</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_extra.html#test_plot_simple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_extra.test_plot_simple" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_plot_simple.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="tests-test-dgilib-housekeeping-module">
-<h2>tests.test_dgilib_housekeeping module<a class="headerlink" href="#tests-test-dgilib-housekeeping-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-tests.test_dgilib_housekeeping">
+<span id="tests-test-dgilib-housekeeping-module"></span><h2>tests.test_dgilib_housekeeping module<a class="headerlink" href="#module-tests.test_dgilib_housekeeping" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the automated tests for DGILib Housekeeping.</p>
+<dl class="function">
+<dt id="tests.test_dgilib_housekeeping.test_connect">
+<code class="descclassname">tests.test_dgilib_housekeeping.</code><code class="descname">test_connect</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_housekeeping.html#test_connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_housekeeping.test_connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_connect.</p>
+<p>DGILibHousekeeping.connect</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_housekeeping.test_connection_status">
+<code class="descclassname">tests.test_dgilib_housekeeping.</code><code class="descname">test_connection_status</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_housekeeping.html#test_connection_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_housekeeping.test_connection_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_connection_status.</p>
+<p>DGILibHousekeeping.connection_status</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_housekeeping.test_disconnect">
+<code class="descclassname">tests.test_dgilib_housekeeping.</code><code class="descname">test_disconnect</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_housekeeping.html#test_disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_housekeeping.test_disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_disconnect.</p>
+<p>DGILibHousekeeping.disconnect</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_housekeeping.test_get_build_number">
+<code class="descclassname">tests.test_dgilib_housekeeping.</code><code class="descname">test_get_build_number</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_housekeeping.html#test_get_build_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_housekeeping.test_get_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_get_build_number.</p>
+<p>DGILibHousekeeping.get_build_number</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_housekeeping.test_get_fw_version">
+<code class="descclassname">tests.test_dgilib_housekeeping.</code><code class="descname">test_get_fw_version</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_housekeeping.html#test_get_fw_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_housekeeping.test_get_fw_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_get_fw_version.</p>
+<p>DGILibHousekeeping.get_fw_version</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_housekeeping.test_get_major_version">
+<code class="descclassname">tests.test_dgilib_housekeeping.</code><code class="descname">test_get_major_version</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_housekeeping.html#test_get_major_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_housekeeping.test_get_major_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_get_major_version.</p>
+<p>DGILibHousekeeping.get_major_version</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_housekeeping.test_get_minor_version">
+<code class="descclassname">tests.test_dgilib_housekeeping.</code><code class="descname">test_get_minor_version</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_housekeeping.html#test_get_minor_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_housekeeping.test_get_minor_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_get_minor_version.</p>
+<p>DGILibHousekeeping.get_minor_version</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_housekeeping.test_start_polling">
+<code class="descclassname">tests.test_dgilib_housekeeping.</code><code class="descname">test_start_polling</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_housekeeping.html#test_start_polling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_housekeeping.test_start_polling" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_start_polling.</p>
+<p>DGILibHousekeeping.start_polling</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_housekeeping.test_stop_polling">
+<code class="descclassname">tests.test_dgilib_housekeeping.</code><code class="descname">test_stop_polling</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_housekeeping.html#test_stop_polling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_housekeeping.test_stop_polling" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_stop_polling.</p>
+<p>DGILibHousekeeping.stop_polling</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_housekeeping.test_target_reset">
+<code class="descclassname">tests.test_dgilib_housekeeping.</code><code class="descname">test_target_reset</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_housekeeping.html#test_target_reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_housekeeping.test_target_reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_target_reset.</p>
+<p>DGILibHousekeeping.target_reset</p>
+</dd></dl>
+
 </div>
-<div class="section" id="tests-test-dgilib-interface-communication-module">
-<h2>tests.test_dgilib_interface_communication module<a class="headerlink" href="#tests-test-dgilib-interface-communication-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-tests.test_dgilib_interface_communication">
+<span id="tests-test-dgilib-interface-communication-module"></span><h2>tests.test_dgilib_interface_communication module<a class="headerlink" href="#module-tests.test_dgilib_interface_communication" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the automated tests for DGILib Interface Communication.</p>
+<dl class="function">
+<dt id="tests.test_dgilib_interface_communication.test_interface_clear_buffer">
+<code class="descclassname">tests.test_dgilib_interface_communication.</code><code class="descname">test_interface_clear_buffer</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_interface_communication.html#test_interface_clear_buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_interface_communication.test_interface_clear_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_interface_clear_buffer.</p>
+<p>DGILibInterfaceCommunication.interface_clear_buffer</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_interface_communication.test_interface_disable">
+<code class="descclassname">tests.test_dgilib_interface_communication.</code><code class="descname">test_interface_disable</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_interface_communication.html#test_interface_disable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_interface_communication.test_interface_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_interface_disable.</p>
+<p>DGILibInterfaceCommunication.interface_disable</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_interface_communication.test_interface_enable">
+<code class="descclassname">tests.test_dgilib_interface_communication.</code><code class="descname">test_interface_enable</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_interface_communication.html#test_interface_enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_interface_communication.test_interface_enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_interface_enable.</p>
+<p>DGILibInterfaceCommunication.interface_enable</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_interface_communication.test_interface_get_configuration">
+<code class="descclassname">tests.test_dgilib_interface_communication.</code><code class="descname">test_interface_get_configuration</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_interface_communication.html#test_interface_get_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_interface_communication.test_interface_get_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_interface_get_configuration.</p>
+<p>DGILibInterfaceCommunication.interface_get_configuration</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_interface_communication.test_interface_list">
+<code class="descclassname">tests.test_dgilib_interface_communication.</code><code class="descname">test_interface_list</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_interface_communication.html#test_interface_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_interface_communication.test_interface_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_interface_list.</p>
+<p>DGILibInterfaceCommunication.interface_list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_interface_communication.test_interface_read_data">
+<code class="descclassname">tests.test_dgilib_interface_communication.</code><code class="descname">test_interface_read_data</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_interface_communication.html#test_interface_read_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_interface_communication.test_interface_read_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_interface_read_data.</p>
+<p>DGILibInterfaceCommunication.interface_read_data</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_interface_communication.test_interface_set_configuration">
+<code class="descclassname">tests.test_dgilib_interface_communication.</code><code class="descname">test_interface_set_configuration</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_interface_communication.html#test_interface_set_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_interface_communication.test_interface_set_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_interface_set_configuration.</p>
+<p>DGILibInterfaceCommunication.interface_set_configuration</p>
+<p>Gets the configuration and sets it to the same values.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_dgilib_interface_communication.test_interface_write_data">
+<code class="descclassname">tests.test_dgilib_interface_communication.</code><code class="descname">test_interface_write_data</code><span class="sig-paren">(</span><em>verbose</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_dgilib_interface_communication.html#test_interface_write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_dgilib_interface_communication.test_interface_write_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_interface_write_data.</p>
+<p>DGILibInterfaceCommunication.interface_write_data</p>
+</dd></dl>
+
 </div>
-<div class="section" id="tests-test-interface-data-module">
-<h2>tests.test_interface_data module<a class="headerlink" href="#tests-test-interface-data-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-tests.test_interface_data">
+<span id="tests-test-interface-data-module"></span><h2>tests.test_interface_data module<a class="headerlink" href="#module-tests.test_interface_data" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the automated tests for InterfaceData.</p>
+<dl class="function">
+<dt id="tests.test_interface_data.test__add__">
+<code class="descclassname">tests.test_interface_data.</code><code class="descname">test__add__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_interface_data.html#test__add__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_interface_data.test__add__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for __add__ function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_interface_data.test__contains__">
+<code class="descclassname">tests.test_interface_data.</code><code class="descname">test__contains__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_interface_data.html#test__contains__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_interface_data.test__contains__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for __contains__ function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_interface_data.test__getattr__">
+<code class="descclassname">tests.test_interface_data.</code><code class="descname">test__getattr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_interface_data.html#test__getattr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_interface_data.test__getattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for timestamps and values functionality.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_interface_data.test__getitem__">
+<code class="descclassname">tests.test_interface_data.</code><code class="descname">test__getitem__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_interface_data.html#test__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_interface_data.test__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for __getitem__ function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_interface_data.test__iadd__">
+<code class="descclassname">tests.test_interface_data.</code><code class="descname">test__iadd__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_interface_data.html#test__iadd__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_interface_data.test__iadd__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for __iadd__ function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_interface_data.test__len__">
+<code class="descclassname">tests.test_interface_data.</code><code class="descname">test__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_interface_data.html#test__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_interface_data.test__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for __len__ function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_interface_data.test__setattr__">
+<code class="descclassname">tests.test_interface_data.</code><code class="descname">test__setattr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_interface_data.html#test__setattr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_interface_data.test__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for timestamps and values functionality.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_interface_data.test_extend">
+<code class="descclassname">tests.test_interface_data.</code><code class="descname">test_extend</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_interface_data.html#test_extend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_interface_data.test_extend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for extend function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_interface_data.test_new_interface_data">
+<code class="descclassname">tests.test_interface_data.</code><code class="descname">test_new_interface_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_interface_data.html#test_new_interface_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_interface_data.test_new_interface_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test instantiations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_interface_data.test_valid_interface_data">
+<code class="descclassname">tests.test_interface_data.</code><code class="descname">test_valid_interface_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_interface_data.html#test_valid_interface_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_interface_data.test_valid_interface_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for valid_interface_data function.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="tests-test-logger-data-module">
-<h2>tests.test_logger_data module<a class="headerlink" href="#tests-test-logger-data-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-tests.test_logger_data">
+<span id="tests-test-logger-data-module"></span><h2>tests.test_logger_data module<a class="headerlink" href="#module-tests.test_logger_data" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the automated tests for LoggerData.</p>
+<dl class="function">
+<dt id="tests.test_logger_data.test__add__">
+<code class="descclassname">tests.test_logger_data.</code><code class="descname">test__add__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_logger_data.html#test__add__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_logger_data.test__add__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for __add__ function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_logger_data.test__getattr__">
+<code class="descclassname">tests.test_logger_data.</code><code class="descname">test__getattr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_logger_data.html#test__getattr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_logger_data.test__getattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for __getattr__ function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_logger_data.test__iadd__">
+<code class="descclassname">tests.test_logger_data.</code><code class="descname">test__iadd__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_logger_data.html#test__iadd__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_logger_data.test__iadd__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for __iadd__ function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_logger_data.test__setattr__">
+<code class="descclassname">tests.test_logger_data.</code><code class="descname">test__setattr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_logger_data.html#test__setattr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_logger_data.test__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for __setattr__ function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_logger_data.test_extend">
+<code class="descclassname">tests.test_logger_data.</code><code class="descname">test_extend</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_logger_data.html#test_extend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_logger_data.test_extend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for extend function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_logger_data.test_init_logger_data">
+<code class="descclassname">tests.test_logger_data.</code><code class="descname">test_init_logger_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_logger_data.html#test_init_logger_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_logger_data.test_init_logger_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test instantiations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tests.test_logger_data.test_length">
+<code class="descclassname">tests.test_logger_data.</code><code class="descname">test_length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_logger_data.html#test_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_logger_data.test_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests for length function.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="tests-test-pydgilib-module">
-<h2>tests.test_pydgilib module<a class="headerlink" href="#tests-test-pydgilib-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-tests.test_pydgilib">
+<span id="tests-test-pydgilib-module"></span><h2>tests.test_pydgilib module<a class="headerlink" href="#module-tests.test_pydgilib" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the automated tests for DGILib.</p>
+<dl class="function">
+<dt id="tests.test_pydgilib.test_logger_log">
+<code class="descclassname">tests.test_pydgilib.</code><code class="descname">test_logger_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tests/test_pydgilib.html#test_logger_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_pydgilib.test_logger_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>test_logger_log.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-tests">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests" title="Permalink to this headline">¶</a></h2>
+<p>This module provides Python tests for DGILib.</p>
 </div>
 </div>
 

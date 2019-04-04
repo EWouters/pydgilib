@@ -150,6 +150,7 @@
 <span class="c1">#from tests_plot.dgilib_averages import HoldTimes</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span><span class="p">;</span> <span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">from</span> <span class="nn">matplotlib.widgets</span> <span class="k">import</span> <span class="n">Slider</span><span class="p">,</span> <span class="n">Button</span><span class="p">,</span> <span class="n">TextBox</span>
 
 <span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Lock</span>
@@ -262,23 +263,101 @@
         <span class="k">return</span> <span class="n">hold_times_list</span></div></div>
 
 <div class="viewcode-block" id="DGILibPlot"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot">[docs]</a><span class="k">class</span> <span class="nc">DGILibPlot</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;DGILibPlot</span>
+<span class="sd">   </span>
+<span class="sd">    The `DGILibPlot` class is responsible with plotting the electrical current</span>
+<span class="sd">    (Amperes) data and gpio states data (values of `1`/`0`) obtained from an</span>
+<span class="sd">    Atmel board.</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dgilib_extra</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="sd">    There are two methods that the gpio states can be shown. One is the `line`</span>
+<span class="sd">    method and one is the `highlight` method. The `line` method shows a square</span>
+<span class="sd">    waveform typical to the logic states that gpio pins usually give. The</span>
+<span class="sd">    `highlight` method highlights only particular parts of the plot with</span>
+<span class="sd">    semi-transparent vertical rectangles, where the pins have a value of</span>
+<span class="sd">    interest (set using the ``plot_pins_values`` argument of the class).</span>
+
+<span class="sd">    Here are some examples of `DGILibPlot` and the two methods of gpio</span>
+<span class="sd">    states drawing it has (`line`/`highlight`):</span>
+
+<span class="sd">    .. image: ..\\media\\dgilib_plot_highlight_1.png</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dgilib_extra : DGILibExtra</span>
+<span class="sd">        A `DGILibExtra` object can be specified, from where the plot can obtain</span>
+<span class="sd">        the electrical current and gpio states data. If a `DGILibExtra` object</span>
+<span class="sd">        is not desired to be specified however, then it should be set to</span>
+<span class="sd">        `None`.</span>
+
+<span class="sd">    fig : matplotlib.pyplot.figure, optional</span>
+<span class="sd">        If it is wanted so that the data is to be plotted on an already</span>
+<span class="sd">        existing `matplotlib` figure, then the object representing the already</span>
+<span class="sd">        instantiated figure can be specified for this parameter. For example,</span>
+<span class="sd">        the electrical current data and gpio states data can be plotted</span>
+<span class="sd">        in a subplot of a figure window that holds other plots as well.</span>
+<span class="sd">        (the default is `None`, meaning that a new figure object will be</span>
+<span class="sd">        created internally)</span>
+
+<span class="sd">    ax : matplotlib.pyplot.axes, optional</span>
+<span class="sd">        If it is wanted so that the data is to be plotted on an already</span>
+<span class="sd">        existing `matplotlib` axes, then the object representing the already</span>
+<span class="sd">        instantiated axes can be specified for this parameter.</span>
+<span class="sd">        (the default is `None`, meaning that a new axes object will be</span>
+<span class="sd">        created internally)</span>
+
+<span class="sd">    ln : matplotlib.pyplot.lines2d, optional</span>
+<span class="sd">        If it is wanted so that the data is to be plotted on an already</span>
+<span class="sd">        existing `matplotlib` `Lines2D` object, then the object representing</span>
+<span class="sd">        the already instantiated `Lines2D` object can be specified for this</span>
+<span class="sd">        parameter.</span>
+<span class="sd">        (the default is `None`, meaning that a new `Lines2D` object will be </span>
+<span class="sd">        created internally)</span>
+
+<span class="sd">    window_title : str, optional</span>
+<span class="sd">        If another window title than the default is desired to be used, it can</span>
+<span class="sd">        be specified here.</span>
+<span class="sd">        (the default is ``Plot of current (in amperes) and gpio pins``)</span>
+
+<span class="sd">    plot_xmax : int, optional</span>
+<span class="sd">        This `**initializes**` the figure view to a maximum of `plot_xmax` on </span>
+<span class="sd">        the X axis, where the data to be plotted. Later, the user can change</span>
+<span class="sd">        the figure view using the bottom sliders of the plot figure.</span>
+<span class="sd">        (the default is an arbitrary `10`)</span>
+
+<span class="sd">    plot_ymax : int, optional</span>
+<span class="sd">        This `**initializes**` the figure view to a maximum of `plot_xmax` on</span>
+<span class="sd">        the Y axis, where the data to be plotted. Later, the user can change</span>
+<span class="sd">        the figure view using the bottom sliders of the plot figure.</span>
+<span class="sd">        (the default is `0.005`, meaning 5 mA, so that something as </span>
+<span class="sd">        energy consuming as a blinking LED can be shown by a `DGILibPlot`</span>
+<span class="sd">        with default settings)</span>
+<span class="sd"> </span>
+<span class="sd">    plot_pins : list(bool, bool, bool, bool), optional</span>
+<span class="sd">        Set the pins to be drawn in the plot, out of the 4 GPIO available pins</span>
+<span class="sd">        that the Atmel board gives data about to be sent through the computer</span>
+<span class="sd">        through the Atmel Embedded Debugger (EDBG) Data Gateway Interface </span>
+<span class="sd">        (DGI).</span>
+<span class="sd">        (the default is `[True, True, True, True]`, meaning all pins are</span>
+<span class="sd">        drawn)</span>
+
+<span class="sd">    plot_pins_method : list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dgilib_extra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span> <span class="o">=</span> <span class="n">dgilib_extra</span>
 
-        <span class="c1"># Maybe the user wants to put the power figure along with other figures he wants</span>
-        <span class="c1"># if &quot;fig&quot; in kwargs: # It seems the second argument of kwargs.get</span>
-            <span class="c1"># always gets called, so this check prevents an extra figure from</span>
-            <span class="c1"># being created</span>
+        <span class="c1"># Maybe the user wants to put the power figure along with </span>
+        <span class="c1"># other figures he wants</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fig&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-        <span class="c1"># Set window title if supplied</span>
-        <span class="k">if</span> <span class="s2">&quot;window_title&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">set_window_title</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;window_title&quot;</span><span class="p">])</span>
-        <span class="c1"># if &quot;ax&quot; in kwargs: # It seems the second argument of kwargs.get</span>
-            <span class="c1"># always gets called, so this check prevents an extra axis from</span>
-            <span class="c1"># being created</span>
+            
+        <span class="c1"># Set window title if supplied, if not set a default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_title</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;window_title&quot;</span><span class="p">,</span>
+                                       <span class="s2">&quot;Plot of current (in amperes) and&quot;</span> <span class="o">+</span>
+                                       <span class="s2">&quot;gpio pins&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">set_window_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window_title</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ax&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -542,12 +621,7 @@
 
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">data</span>
-            <span class="c1">#if verbose: print(&quot;dgilib_plot.update_plot: Expected &#39;data&#39;, got an empty object.&quot;)</span>
-            <span class="c1">#return</span>
 
-        <span class="c1"># In this if, the smart DGILibData object tests if it has data inside</span>
-        <span class="c1"># TODO: Make &#39;if data: return&#39; work for if data has no actual values in it.</span>
-        <span class="c1"># ... Right now is if it has no interfaces.</span>
         <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">data</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dgilib_plot.update_plot: Expected &#39;data&#39; containing interfaces. Got &#39;data&#39; with no interfaces. Returning from call with no work done.&quot;</span><span class="p">)</span>
             <span class="k">return</span>
@@ -591,59 +665,59 @@
             <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spos</span><span class="o">.</span><span class="n">val</span>
             <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swidth</span><span class="o">.</span><span class="n">val</span>
 
-            <span class="c1">#self.set_axis(pos, pos + width, self.plot_ymin, self.plot_ymax, &quot;update_plot function&quot;)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="n">pos</span><span class="p">,</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymax</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">last_xpos</span> <span class="o">=</span> <span class="n">pos</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 
-        <span class="c1"># visible_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, i, i+width) * 1000</span>
-        <span class="c1"># all_average = calculate_average_midpoint_multiple_intervals([xdata,ydata], all_hold_times, min(xdata), max(xdata)) * 1000</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">draw_pins</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="DGILibPlot.clear_pins"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.clear_pins">[docs]</a>    <span class="k">def</span> <span class="nf">clear_pins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clears the highlighted areas on the plot that represent the state of the gpio pins</span>
+<span class="sd">        (as seen in figure TODO: ??). Using this method only makes sense if the `highlight`</span>
+<span class="sd">        method of drawing pins was used.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            [description]</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        [type]</span>
+<span class="sd">            [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axvspans</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span>
         
         <span class="k">for</span> <span class="n">axvsp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axvspans</span><span class="p">:</span>
             <span class="n">axvsp</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="DGILibPlot.draw_pins"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.draw_pins">[docs]</a>    <span class="k">def</span> <span class="nf">draw_pins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="c1"># Here we set defaults (with or ...)</span>
+        <span class="c1"># Here we set defaults (with &#39;or&#39; keyword ...)</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span>
         <span class="n">plot_pins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins</span>
         <span class="n">plot_pins_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_values</span>
-        <span class="n">plot_pins_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_method</span> <span class="ow">or</span> <span class="s2">&quot;highlight&quot;</span>
-        <span class="c1"># plot_pins_correction_forward = self.plot_pins_correction_forward or 0.00</span>
-        <span class="c1"># plot_pins_interval_shrink = self.plot_pins_interval_shrink or 0.00</span>
+        <span class="c1">#plot_pins_method = self.plot_pins_method or &quot;highlight&quot;</span>
         <span class="n">plot_pins_colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_colors</span>
-        <span class="c1">#average_function = self.average_function or &quot;leftpoint&quot;</span>
 
         <span class="c1"># Here we do checks and stop drawing pins if something is unset</span>
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>                                      <span class="k">return</span>
         <span class="k">if</span> <span class="n">plot_pins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>                               <span class="k">return</span>
-        <span class="c1"># if plot_pins_values is None:                        return</span>
-        <span class="c1"># if plot_pins_method is None:                        return</span>
-        <span class="c1"># if plot_pins_correction_forward is None:            return</span>
-        <span class="c1"># if plot_pins_interval_shrink is None:               return</span>
-        <span class="c1"># if plot_pins_colors is None:                        return</span>
-        <span class="c1"># if average_function is None:                        return</span>
             
         <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span>
 
         <span class="n">no_of_pins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_pins</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">plot_pins_method</span> <span class="o">==</span> <span class="s2">&quot;highlight&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_method</span> <span class="o">==</span> <span class="s2">&quot;highlight&quot;</span><span class="p">:</span>
 
             <span class="k">for</span> <span class="n">pin_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no_of_pins</span><span class="p">):</span> <span class="c1"># For every pin number (0,1,2,3)</span>
 
                 <span class="k">if</span> <span class="n">plot_pins</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span> <span class="c1"># If we want them plotted</span>
                         
                     <span class="n">hold_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hold_times_obj</span><span class="o">.</span><span class="n">identify_hold_times</span><span class="p">(</span><span class="n">pin_idx</span><span class="p">,</span> <span class="n">plot_pins_values</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">gpio</span><span class="p">)</span>
-
-                    <span class="c1"># print(&quot;Hold times:&quot; + str(hold_times))</span>
-                    <span class="c1"># print(&quot;Power: &quot; + str(data.power.timestamps))</span>
 
                     <span class="k">if</span> <span class="n">hold_times</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">for</span> <span class="n">ht</span> <span class="ow">in</span> <span class="n">hold_times</span><span class="p">:</span>
@@ -655,9 +729,12 @@
                             <span class="n">annon</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x_halfway</span><span class="p">,</span> <span class="n">y_halfway</span><span class="p">))</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">annon</span><span class="p">)</span>
                             
-                            <span class="c1">#average = calculate_average_leftpoint_single_interval(data.power, ht[0], ht[1], start_index)</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">preprocessed_averages_data</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">],</span> <span class="n">ht</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+            
+            <span class="c1"># This should be in update_plot()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Logging. Collected {len(data.power)} power samples and {len(data.gpio)} gpio samples.&quot;</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_method</span> <span class="o">==</span> <span class="s2">&quot;line&quot;</span><span class="p">:</span>
             <span class="n">extend_gpio</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">gpio</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">data</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>

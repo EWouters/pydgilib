@@ -1058,10 +1058,83 @@ on the interface ids and instantiated interfaces in dgilib extra.</p>
 <dt id="pydgilib_extra.dgilib_plot.DGILibPlot">
 <em class="property">class </em><code class="descclassname">pydgilib_extra.dgilib_plot.</code><code class="descname">DGILibPlot</code><span class="sig-paren">(</span><em>dgilib_extra=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_plot.html#DGILibPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_plot.DGILibPlot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The <cite>DGILibPlot</cite> class is responsible with plotting the electrical current
+(Amperes) data and gpio states data (values of <cite>1</cite>/<cite>0</cite>) obtained from an
+Atmel board.</p>
+<p>There are two methods that the gpio states can be shown. One is the <cite>line</cite>
+method and one is the <cite>highlight</cite> method. The <cite>line</cite> method shows a square
+waveform typical to the logic states that gpio pins usually give. The
+<cite>highlight</cite> method highlights only particular parts of the plot with
+semi-transparent vertical rectangles, where the pins have a value of
+interest (set using the <code class="docutils literal notranslate"><span class="pre">plot_pins_values</span></code> argument of the class).</p>
+<p>Here are some examples of <cite>DGILibPlot</cite> and the two methods of gpio
+states drawing it has (<cite>line</cite>/<cite>highlight</cite>):</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dgilib_extra</strong> (<a class="reference internal" href="#pydgilib_extra.dgilib_extra.DGILibExtra" title="pydgilib_extra.dgilib_extra.DGILibExtra"><em>DGILibExtra</em></a>) – A <cite>DGILibExtra</cite> object can be specified, from where the plot can obtain
+the electrical current and gpio states data. If a <cite>DGILibExtra</cite> object
+is not desired to be specified however, then it should be set to
+<cite>None</cite>.</p></li>
+<li><p><strong>fig</strong> (<em>matplotlib.pyplot.figure</em><em>, </em><em>optional</em>) – If it is wanted so that the data is to be plotted on an already
+existing <cite>matplotlib</cite> figure, then the object representing the already
+instantiated figure can be specified for this parameter. For example,
+the electrical current data and gpio states data can be plotted
+in a subplot of a figure window that holds other plots as well.
+(the default is <cite>None</cite>, meaning that a new figure object will be
+created internally)</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib.pyplot.axes</em><em>, </em><em>optional</em>) – If it is wanted so that the data is to be plotted on an already
+existing <cite>matplotlib</cite> axes, then the object representing the already
+instantiated axes can be specified for this parameter.
+(the default is <cite>None</cite>, meaning that a new axes object will be
+created internally)</p></li>
+<li><p><strong>ln</strong> (<em>matplotlib.pyplot.lines2d</em><em>, </em><em>optional</em>) – If it is wanted so that the data is to be plotted on an already
+existing <cite>matplotlib</cite> <cite>Lines2D</cite> object, then the object representing
+the already instantiated <cite>Lines2D</cite> object can be specified for this
+parameter.
+(the default is <cite>None</cite>, meaning that a new <cite>Lines2D</cite> object will be
+created internally)</p></li>
+<li><p><strong>window_title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – If another window title than the default is desired to be used, it can
+be specified here.
+(the default is <code class="docutils literal notranslate"><span class="pre">Plot</span> <span class="pre">of</span> <span class="pre">current</span> <span class="pre">(in</span> <span class="pre">amperes)</span> <span class="pre">and</span> <span class="pre">gpio</span> <span class="pre">pins</span></code>)</p></li>
+<li><p><strong>plot_xmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – This <cite>**initializes**</cite> the figure view to a maximum of <cite>plot_xmax</cite> on
+the X axis, where the data to be plotted. Later, the user can change
+the figure view using the bottom sliders of the plot figure.
+(the default is an arbitrary <cite>10</cite>)</p></li>
+<li><p><strong>plot_ymax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – This <cite>**initializes**</cite> the figure view to a maximum of <cite>plot_xmax</cite> on
+the Y axis, where the data to be plotted. Later, the user can change
+the figure view using the bottom sliders of the plot figure.
+(the default is <cite>0.005</cite>, meaning 5 mA, so that something as
+energy consuming as a blinking LED can be shown by a <cite>DGILibPlot</cite>
+with default settings)</p></li>
+<li><p><strong>plot_pins</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>)</em><em>, </em><em>optional</em>) – Set the pins to be drawn in the plot, out of the 4 GPIO available pins
+that the Atmel board gives data about to be sent through the computer
+through the Atmel Embedded Debugger (EDBG) Data Gateway Interface
+(DGI).
+(the default is <cite>[True, True, True, True]</cite>, meaning all pins are
+drawn)</p></li>
+<li><p><strong>plot_pins_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="pydgilib_extra.dgilib_plot.DGILibPlot.clear_pins">
 <code class="descname">clear_pins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_plot.html#DGILibPlot.clear_pins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_plot.DGILibPlot.clear_pins" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Clears the highlighted areas on the plot that represent the state of the gpio pins
+(as seen in figure TODO: ??). Using this method only makes sense if the <cite>highlight</cite>
+method of drawing pins was used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><strong>ValueError</strong></a> – [description]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[description]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.7)">type</a>]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="pydgilib_extra.dgilib_plot.DGILibPlot.draw_pins">
