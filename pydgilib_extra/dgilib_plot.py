@@ -129,25 +129,25 @@ class DGILibPlot(object):
     The X axis represents time in seconds, while the Y axis represents
     the electrical current in Amperes.
 
-    There are two methods that the gpio state can be shown along with the
+    There are two ways that the gpio pins state can be shown along with the
     electrical current. One is the `line` method and one is the `highlight`
-    method. The `line` method shows a square waveform typical to the logic
-    states that gpio pins usually give. The `highlight` method highlights only
-    particular parts of the plot with semi-transparent highlighted areas,
-    where the pins have a value of interest (set using the ``plot_pins_values``
-    argument of the class).
+    method. The `line` method shows a square waveform, a typical byproduct of
+    the digital signal that gpio pins usually have. The `highlight` method
+    highlights only particular parts of the plot with semi-transparent
+    coloured areas, where the pins have a value of interest (set using the
+    ``plot_pins_values`` argument of the class).
 
-    Here are some examples of `DGILibPlot` and the two methods of gpio
-    states drawing it has (`line`/`highlight`).
+    Below are shown some examples of `DGILibPlot` and the two methods of
+    drawing the gpio pins  (`line`/`highlight`).
 
-    **Example plots using line method:**
+    **Example plots using "line" method:**
 
     .. figure:: images/plot_line_1.png
        :scale: 60%
 
-       Figure 1: Example of plot with line method of drawing pins chosen.
-       All of the pins are being plotted, so you can always see their True/
-       False values.
+       Figure 1: Example of plot with the 'line' method chosen for the drawing of
+       pins. All of the pins are being plotted, so you can always see their
+       `True`/`False` values.
 
     .. figure:: images/plot_line_2.png
        :scale: 60%
@@ -163,16 +163,16 @@ class DGILibPlot(object):
        board. We can however clearly see the toggling of pin 1,
        represented in orange.
 
-    **Example plots using highlight method:**
+    **Example plots using "highlight" method:**
 
     .. figure:: images/plot_highlight_1.png
        :scale: 60%
 
-       Figure 4: Example of plot with highlight method of drawing pins chosen.
-       The time the pins are holding the value of interest (in this case,
-       `True` value) is small every time. This is why we can see the
-       semi-transparent highlighted areas looking more like lines when zoomed
-       out like this. The only pin being toggled by the program on the board is
+       Figure 4: Example of plot with the 'highlight' method chosen for the
+       drawing of pins. The time the pins are holding the value of interest (in
+       this case, `True` value) is small every time. This is why we can see the
+       highlighted areas looking more like vertical lines when zoomed
+       out. The only pin being toggled by the program on the board is
        pin 1, hence it's why we only see one color of highlighted areas.
 
     .. figure:: images/plot_highlight_2.png
@@ -183,9 +183,19 @@ class DGILibPlot(object):
     .. figure:: images/plot_highlight_3.png
        :scale: 60%
 
-       Figure 6: The same plot with the same data as figure 1 and 2, only even 
-       more zoomed in. Now we can see one of the the semi-transparent highlight
+       Figure 6: The same plot with the same data as figure 1 and 2, only even
+       more zoomed in. Now we can see one of the the  highlight
        area in its proper form.
+
+    **Parameters**
+
+    The parameters listed in the section below can be passed as arguments when
+    initializing the `DGILibPlot` object, or as arguments to a `DGILibExtra`
+    object. They can be included in a configuration dictionary
+    (:py:class:`dict` object) and then unwrapped in the initialization function
+    call of either the `DGILibPlot` object or the `DGILibExtra` object (by
+    doing: ``dgilib_plot = DGILibPlot(**config_dict)`` or ``with
+    DGILibExtra(**config_dict) as dgilib: ...``).
 
     Parameters
     ----------
@@ -195,12 +205,17 @@ class DGILibPlot(object):
         is not desired to be specified however, then it should be set to
         `None`.
 
+        (the default is `None`, meaning that measurements data (in the form
+        of a :class:`DGILibData` should be manually called as 
+        function updates))
+
     fig : matplotlib.pyplot.figure, optional
         If it is wanted so that the data is to be plotted on an already
         existing `matplotlib` figure, then the object representing the already
         instantiated figure can be specified for this parameter. For example,
         the electrical current data and gpio state data can be plotted
         in a subplot of a figure window that holds other plots as well.
+
         (the default is `None`, meaning that a new figure object will be
         created internally)
 
@@ -208,6 +223,7 @@ class DGILibPlot(object):
         If it is wanted so that the data is to be plotted on an already
         existing `matplotlib` axes, then the object representing the already
         instantiated axes can be specified for this parameter.
+
         (the default is `None`, meaning that a new axes object will be
         created internally)
 
@@ -216,24 +232,28 @@ class DGILibPlot(object):
         existing `matplotlib` `Lines2D` object, then the object representing
         the already instantiated `Lines2D` object can be specified for this
         parameter.
+
         (the default is `None`, meaning that a new `Lines2D` object will be
         created internally)
 
     window_title : str, optional
         If another window title than the default is desired to be used, it can
         be specified here.
+
         (the default is ``Plot of current (in amperes) and gpio pins``)
 
     plot_xmax : int, optional
         This *initializes* the figure view to a maximum of `plot_xmax` on
         the X axis, where the data to be plotted. Later, the user can change
         the figure view using the bottom sliders of the plot figure.
+
         (the default is an arbitrary `10`)
 
     plot_ymax : int, optional
         This *initializes* the figure view to a maximum of `plot_xmax` on
         the Y axis, where the data to be plotted. Later, the user can change
         the figure view using the bottom sliders of the plot figure.
+
         (the default is `0.005`, meaning 5 mA, so that something as
         energy consuming as a blinking LED can be shown by a `DGILibPlot`
         with default settings)
@@ -243,6 +263,7 @@ class DGILibPlot(object):
         that the Atmel board gives data about to be sent through the computer
         through the Atmel Embedded Debugger (EDBG) Data Gateway Interface
         (DGI).
+
         (the default is `[True, True, True, True]`, meaning all pins are
         drawn)
 
@@ -250,12 +271,15 @@ class DGILibPlot(object):
         Set the *method* of drawing the pin. The values can be either
         ``"line"`` or ``"highlight"``. Refer to the above figures to see
         the differences.
+
         (the default is `"highlight"`)
 
     plot_pins_colors : list(str, str, str, str), optional
         Set the colors of the semi-transparent highlight areas drawn when using
         the `highlight` method, or the lines when using the `lines` method of
-        drawing pins. (the default is `["red", "orange", "blue", "green"]`,
+        drawing pins. 
+        
+        (the default is `["red", "orange", "blue", "green"]`,
         meaning that pin 0 will have a `red` semi-transparent highlight area or
         line, pin 1 will have `orange` ones, and so on)
 
@@ -278,7 +302,103 @@ class DGILibPlot(object):
         seconds value is an arbitrary hard-coded value, chosen after some
         experiments.
 
+        (the default is 'latest_data', meaning the plot's figure view will
+        follow the latest data in smaller increments, keeping the latest data
+        always on the right side of the plot)
 
+    verbose : int
+        Specifies verbosity:
+
+        - 0: Silent
+
+        - 1: Currently prints if data is missing, either as an object or as \
+        values, when :func:`update_plot` is being called.
+
+        (the default is `0`)
+
+    Attributes
+    ----------
+    axvspans : list(4 x list(matplotlib.pyplot.axvspan))
+        The way the semi-transparent coloured areas for the gpio pins are drawn
+        on the plot is by using ``matplotlib.pyplot.axvspan`` objects. The
+        `axvspan` objects are collected in a list for potential use for later.
+        (e.g.: such as to delete them, using the :func:`clear_pins` method).
+
+        (the default is 4 empty lists, meaning no highlighting of areas of
+        interest has occured yet)
+
+    annotations : list(4 x list(str))
+        As we have seen in figures 4, 5, 6, for the `highlight` method of
+        drawing pins, the counting or iteration of the highlighted areas are
+        also showed on the plot. There are 4 pins, so therefore 4 lists of the
+        counting/iteration stored as strings are saved by the `DGILibPlot` for
+        later use by developers (e.g.: to replace from numbers to actual
+        descriptions and then call the redrawing of pins).
+
+        (the default is 4 empty lists, meaning no annotations for the
+        highlighted areas of interest were placed yet)
+
+    preprocessed_averages_data : list(4 x list(tuple(int, \
+    tuple(float, float), int, float)))
+        As the `highlight` method draws the pins on the plot with the help of
+        the :class:`HoldTimes` class, that means the plot knows afterwards the
+        time intervals in which the pins have values of interest. This can be
+        valuable for a subsequent averaging function that wants to calculate
+        faster the average current or energy consumption of the the board
+        activity only where it was highlighted on the plot. As such,
+        `DGILibPlot` prepares a list of 4 lists of tuples, each for every pin,
+        the tuple containing the iteration index of the highlighted area of
+        interest the pins kept the same value consecutively (called a `hold`
+        time), another tuple containing the timestamps with respect to the
+        electrical current data, which says the beginning and end times of that
+        `hold` interval,  an index in the list of the electrical current data
+        points where the respective hold time starts and, lastly, a `None`
+        value, which then should be replaced with a :py:class:`float` value for
+        the the average current or charge during that hold time.
+
+        (the default is 4 empty lists, meaning no gathered preprocessed
+        averages data yet)
+
+    iterations : list(4 x int)
+        As the plot is being updated live, the `iterations` list holds the
+        number of highlighed areas that have been drawn already for for each
+        pin. As the whole measurement data gets plotted, the iterations list
+        practically holds the number of iterations the of all the areas
+        of interest for each pin (which can be, for example, the number
+        of `for` loops that took place in the program itself running on the
+        board).
+
+        (the default are 4 ``0`` values, meaning no areas of interest
+        on the gpio data has been identified)
+
+    last_xpos : float
+        As the plot is being updated live, the figure view moves along with the
+        latest data to be shown on the plot. If the user desires to stop this
+        automatic movement and focus on some specific area of the plot, while
+        the data is still being updated in real-time, the figure needs to
+        detect that it should stop following the data to not disturb the user.
+        It does so by comparing the current x-axis position value of the x axis
+        shown, with the last x-axis position value saved, before doing any
+        automatic movement of the figure view. If they are different, no
+        automatic movement is being done from now on.
+        
+    xylim_mutex : Lock
+        As there are many ways to move, zoom and otherwise manipulate the
+        figure view to different sections of the plot, using the `matplotlib`'s
+        implicit movement and zoom controls, or the freshly built `DGILibPlot`
+        sliders appearing at the bottom (See figures), or the automatic
+        following of the latest data feature, there is a multi-threading aspect
+        involved and therefore a mutex should be involved, in the form
+        of a `Lock` object, to prevent anomalies.
+
+    hold_times_obj: HoldTimes
+        Only instantiated when `highlight` method is being used for drawing
+        pins information, the :class:`HoldTimes` class holds the algorithm that
+        works on the live data to obtain the timestamps of areas of interest of
+        the gpio data, in order to be highlighted on the plot. As the algorithm
+        works on live updating data, the areas of interst can be cut off
+        between updates of data. As such, the :class:`HoldTimes` keeps
+        information for the algorithm to work with, in order to advert this.    
     """
 
     def __init__(self, dgilib_extra=None, *args, **kwargs):
@@ -333,12 +453,12 @@ class DGILibPlot(object):
         self.axvspans = [[], [], [], []]
         self.annotations = [[], [], [], []]
         self.preprocessed_averages_data = [[], [], [], []]
-        self.total_average = [0,0,0,0]
+        #self.total_average = [0,0,0,0]
         self.iterations = [0,0,0,0]
-        self.last_xpos = 0
+        self.last_xpos = 0.0
         self.xylim_mutex = Lock()
 
-        self.refresh_plot_pause_secs = kwargs.get("refresh_plot_pause_secs", 0.00000001)
+        #self.refresh_plot_pause_secs = kwargs.get("refresh_plot_pause_secs", 0.00000001)
 
         if self.plot_pins_method == "highlight":
             self.hold_times_obj = HoldTimes()
@@ -392,13 +512,6 @@ class DGILibPlot(object):
         self.verbose = kwargs.get("verbose", 0)
 
         self.initialize_sliders()
-
-    # def set_axis(self, xleft, xright, yleft, yright, indicator="not specified"):
-    #     if abs(xleft - xright) < (float_epsilon*2):
-    #         self.ax.axis([xleft, xright + (float_epsilon * 2), yleft, yright])
-    #         #print("Warning! xleft close to xright in value in: " + indicator)
-    #     else:
-    #         self.ax.axis([xleft, xright, yleft, yright])
 
     def initialize_sliders(self):
         self.axpos = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=self.axcolor)
@@ -666,6 +779,11 @@ class DGILibPlot(object):
                             self.annotations[pin_idx].append(annon)
                             
                             self.iterations[pin_idx] += 1
+
+                            # TODO:  The start and stop indexes of the data points that are area of interest
+                            # might be more useful for an averaging function, but currently the plot uses
+                            # the coordinates of the X axis(the start/stop timestamps) in order to highlight
+                            # the areas of interest.
                             self.preprocessed_averages_data[pin_idx].append((self.iterations[pin_idx], ht, 0, None))
             
             # This should be in update_plot()
