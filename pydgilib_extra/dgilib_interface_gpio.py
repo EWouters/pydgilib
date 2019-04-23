@@ -9,12 +9,28 @@ from pydgilib_extra.dgilib_data import InterfaceData
 
 # TODO: make these functions faster/better?
 def int2bool(i):
-    """Convert int to tuple of bool."""
+    """int2bool
+
+    Convert int to tuple of bool.
+
+    Parameters
+    ----------
+    i : int
+        The `int` value to be converted.
+    """
     return tuple(bit is '1' for bit in reversed(bin(i)[2:].zfill(NUM_PINS)))
 
 
 def bool2int(b):
-    """Convert iterable of bool to int."""
+    """bool2int
+
+    Convert iterable of bool to int.
+
+    Parameters
+    ----------
+    b : bool
+        The `bool` value to be converted.
+    """
     return int(''.join('1' if d else '0' for d in reversed(b)), 2)
 
 
@@ -71,7 +87,9 @@ class DGILibInterfaceGPIO(DGILibInterface):
                 print("gpio_switch_time: ", self.gpio_switch_time)
 
     def get_config(self):
-        """Get the pin-mode for the GPIO pins.
+        """get_config
+
+        Get the pin-mode for the GPIO pins.
 
         The GPIO configuration controls the direction of the pins.
 
@@ -79,12 +97,16 @@ class DGILibInterfaceGPIO(DGILibInterface):
         Output pins: Setting a bit to 1 means the pin is set to output and can
         be controlled by the send command.
 
-        :return: Tuple of:
-            - List of read modes, Setting a pin to True means the pin is
-                monitored.
-            - List of write modes, Setting a pin to True means the pin is set
-                to output and can be controlled by the send command.
-        :rtype: (list(bool), list(bool))
+        Returns
+        -------
+        tuple(list(bool, bool, bool, bool), list(bool, bool, bool, bool))
+            Tuple of:
+
+            * List of read modes, Setting a pin to True means the pin is \
+            monitored.
+
+            * List of write modes, Setting a pin to True means the pin is set \
+            to output and can be controlled by the send command.
         """
         # Get the configuration
         _, config_value = self.dgilib_extra.interface_get_configuration(
@@ -97,7 +119,9 @@ class DGILibInterfaceGPIO(DGILibInterface):
         return read_mode, write_mode
 
     def set_config(self, *args, **kwargs):
-        """Set the pin-mode for the GPIO pins.
+        """set_config
+
+        Set the pin-mode for the GPIO pins.
 
         The GPIO configuration controls the direction of the pins, and enables
         the interface if needed.
@@ -110,12 +134,15 @@ class DGILibInterfaceGPIO(DGILibInterface):
         interface will be enabled. If none of the pins are set to read mode or
         write mode the GPIO interface will be disabled.
 
-        :param read_mode: List of modes, Setting a pin to True means the pin
+        Parameters
+        ----------
+        read_mode : list(bool, bool, bool, bool)
+            List of modes. Setting a pin to `True` means the pin
             is monitored.
-        :type read_mode: list(bool)
-        :param write_mode: List of modes, Setting a pin to True means the pin
+
+        write_mode : list(bool, bool, bool, bool)
+            List of modes. Setting a pin to `True` means the pin
             is set to output and can be controlled by the send command.
-        :type write_mode: list(bool)
         """
         # Set the configuration
         if "read_mode" in kwargs:
@@ -128,13 +155,17 @@ class DGILibInterfaceGPIO(DGILibInterface):
                 INTERFACE_GPIO, [1], [bool2int(self.write_mode)])
 
     def read(self):
-        """Get the state of the GPIO pins.
+        """read
+
+        Get the state of the GPIO pins.
 
         Clears the buffer and returns the values.
 
-        :return: Tuple of list of timestamps in seconds and list of list of
-            pin states (bool)
-        :rtype: (list(float), list(list(bool)))
+        Returns
+        -------
+        tuple(list(float), list(list(bool, bool, bool, bool)))
+            Tuple of list of timestamps in seconds and list of list of
+            pin states (bool).
         """
         # Read the data from the buffer
         ticks, pin_values = self.dgilib_extra.interface_read_data(
@@ -156,7 +187,9 @@ class DGILibInterfaceGPIO(DGILibInterface):
             return InterfaceData(timestamps, pin_values)
 
     def write(self, pin_values):
-        """Set the state of the GPIO pins.
+        """write
+
+        Set the state of the GPIO pins.
 
         Make sure to set the pin to write mode first. Possibly also needs to
         be configured properly on the board
@@ -164,10 +197,13 @@ class DGILibInterfaceGPIO(DGILibInterface):
         A maximum of 255 elements can be written each time. An error return
         code will be given if data hasn’t been written yet.
 
-        :param pin_values: List of pin values. Has to include all four pins ?
-            TODO: TEST
-        :type pin_values: list(bool)
+        Parameters
+        ----------
+        pin_values : list(bool, bool, bool, bool)
+            List of pin values. Has to include all four pins.
         """
+        # TODO: Test if it has to include all four pins
+
         # Convert list of bool to int
         pin_values = bool2int(pin_values)
 
@@ -177,7 +213,9 @@ class DGILibInterfaceGPIO(DGILibInterface):
             print(f"Sent gpio packet")
 
     def csv_write_rows(self, interface_data):
-        """csv_write_rows."""
+        """csv_write_rows
+
+        """
         self.csv_writer.writerows(
             zip(interface_data.timestamps,
                 *map(iter, zip(*interface_data.values))))
