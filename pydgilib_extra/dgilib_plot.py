@@ -726,25 +726,30 @@ class DGILibPlot(object):
     def clear_pins(self):
         """
         Clears the highlighted areas on the plot that represent the state of the gpio pins
-        (as seen in figure TODO: ??). Using this method only makes sense if the `highlight`
+        (as seen in figures 4, 5, 6). Using this method only makes sense if the `highlight`
         method of drawing pins was used.
-        
-        Raises
-        ------
-        ValueError
-            [description]
-        
-        Returns
-        -------
-        [type]
-            [description]
         """
-        if self.axvspans is None: return
+        if self.axvspans is None:
+            return
         
         for axvsp in self.axvspans:
             axvsp.remove()
 
     def draw_pins(self, data):
+        """draw_pins [summary]
+        
+        Raises
+        ------
+        ValueError
+            Raised when `plot_pins_method` member of class has another 
+            string value than the ones available (`highlight`, `line`)
+
+        Parameters
+        ----------
+        data : DGILibData
+            :class:`DGILibData` object that contains the GPIO data to be drawn
+            on the plot.
+        """
         # Here we set defaults (with 'or' keyword ...)
         ax = self.ax
         plot_pins = self.plot_pins
@@ -804,20 +809,54 @@ class DGILibPlot(object):
             raise ValueError(f"Unrecognized plot_pins_method: {self.plot_pins_method}")
 
     def plot_still_exists(self):
+        """plot_still_exists 
+        
+        Can be used in a boolean (e.g.: `if`, `while`) clause to check if the
+        plot is still shown inside a window (e.g.: to unpause program
+        functionality if the plot is closed).
+
+        Also used in the :func:`keep_plot_alive` member function of the
+        class.
+
+        Returns
+        -------
+        bool
+            Returns `True` if the plot still exists and `False` otherwise.
+        """
         return plt.fignum_exists(self.fig.number)
 
     def refresh_plot(self):
+        """refresh_plot
+
+        Makes a few `matplotlib` specific calls to refresh and redraw the plot
+        (especially when new data is to be drawn). 
+        
+        Is used in :func:`update_plot` member function of the class.
+        """
         self.ax.relim()                  # recompute the data limits
         self.ax.autoscale_view()         # automatic axis scaling
         self.fig.canvas.flush_events() 
-        #sleep(time or self.refresh_plot_pause_secs)
-        #plt.pause(self.plot_pause_secs)
 
     def keep_plot_alive(self):
         while self.plot_still_exists():
             self.refresh_plot()
+        """keep_plot_alive
+        
+        Pauses program functionality until the plot is closed. Does so
+        by refreshing the plot using :func:`refresh_plot`.
+        """
 
-    def pause(self, time = 0.000001):
+    def pause(self, time=0.000001):
+        """pause
+
+        Calls `matplotlib's` `pause` function for an amount of seconds.
+
+        Parameters
+        ----------
+        time : float
+            The number of seconds the plot should have time to refresh itself
+            and pause program functionality.
+        """
         plt.pause(time)
 
 # Obsolete
