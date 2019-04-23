@@ -33,24 +33,32 @@ class DGILibInterfacePower(DGILibInterface):
             print("power_buffers: ", self.power_buffers)
 
     def get_config(self):
-        """Get the power config options.
+        """get_config
 
-        :return: Power buffers configuration list of dictionaries like
-            `[{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]`
-        :rtype: list(dict())
+        Get the power config options.
+
+        Returns
+        -------
+        list(dict)
+            Power buffers configuration list of dictionaries like
+            ``[{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]``.
         """
         # Return the configuration
         return self.power_buffers
 
     def set_config(self, *args, **kwargs):
-        """Set the power config options.
+        """set_config
+
+        Set the power config options.
 
         Register buffers inside the library for the buffers specified in
         power_buffers and removes ones that are not present.
 
-        :param power_buffers: Power buffers configuration list of dictionaries
-            like `[{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]`
-        :type power_buffers: list(dict())
+        Parameters
+        ----------
+        power_buffers: list(dict)
+            Power buffers configuration list of dictionaries
+            like ``[{"channel": CHANNEL_A, "power_type": POWER_CURRENT}]``.
         """
         # Parse arguments
         power_buffers = kwargs.get(
@@ -86,7 +94,10 @@ class DGILibInterfacePower(DGILibInterface):
             self.dgilib_extra.auxiliary_power_uninitialize()
 
     def enable(self):
-        """Enable the interface."""
+        """enable
+
+        Enable the interface.
+        """
         if self.interface_id not in self.dgilib_extra.available_interfaces:
             raise InterfaceNotAvailableError(
                 f"Interface {self.interface_id} not available. Available " +
@@ -97,37 +108,46 @@ class DGILibInterfacePower(DGILibInterface):
             self.dgilib_extra.enabled_interfaces.append(self.interface_id)
 
     def disable(self):
-        """Disable the interface.
+        """disable
 
-        NOTE: This currently also removes the configuration!!!
-        TODO
-        BUG
+        Disable the interface.
         """
+        # NOTE: This currently also removes the configuration!!!
+        # TODO
+        # BUG
         if self.interface_id in self.dgilib_extra.enabled_interfaces:
             self.set_config()  # BUG
             self.dgilib_extra.enabled_interfaces.remove(self.interface_id)
 
     def read(self, buffer_num=0):
-        """Read data from the interface.
+        """read
 
-        : return: Interface data
-        : rtype: InterfaceData()
+        Read data from the interface.
+
+        Returns
+        -------
+        InterfaceData
+            Interface data
         """
         # Return the data
         return self.read_buffer(self.power_buffers[buffer_num])
 
     def read_buffer(self, power_buffer):
-        """Read power data of the specified buffer.
+        """read_buffer
 
-        TODO: Copies parsed power data into the specified buffer. Remember to
-        lock the buffers first. If the count parameter is the same as
-        max_count there is probably more data to be read. Do another read to
-        get the remaining data.
+        Read power data of the specified buffer.
 
-        : return: TODOTODO Tuple of list of power samples in Ampere and list of
-            timestamps in seconds
-        : rtype: (list(float), list(float))
+        Returns
+        -------
+        tuple(list(float), list(float))
+            Tuple of list of power samples in Ampere and list of
+            timestamps in seconds.
         """
+        # TODO: Copies parsed power data into the specified buffer. Remember to
+        # lock the buffers first. If the count parameter is the same as
+        # max_count there is probably more data to be read. Do another read to
+        # get the remaining data.
+
         # Check if power_buffer is in self.power_buffers
         if power_buffer not in self.power_buffers:
             raise PowerReadError(
@@ -179,30 +199,41 @@ class DGILibInterfacePower(DGILibInterface):
         return interface_data
 
     def calibrate(self, force=False):
-        """
+        """calibrate
+
         Calibrate the Auxiliary Power interface of the device.
 
         Check if calibration is valid and trigger calibration if it is not.
 
-        Keyword Arguments:
-            force {bool} - - Force calibration, even if it is valid(default:
-                {False})
+        Parameters
+        ----------
+        force : bool
+            Force calibration, even if it is valid (default: `False`)
 
-        Raises:
-            PowerReadError - - [description]
-            PowerStatusError - - [description]
-            PowerStatusError - - [description]
+        Raises
+        ------
+            PowerReadError
+                `No description given.`
 
+            PowerStatusError
+                `No description given.`
         """
+        # TODO: Give descriptions to the exceptions under 'Raises' above.
+
         self.circuit_type = self.dgilib_extra.auxiliary_power_get_circuit_type()
         if force or not self.dgilib_extra.auxiliary_power_calibration_is_valid():
             self.auxiliary_power_calibration()
 
     def auxiliary_power_calibration(self, circuit_type=XAM):
-        """Calibrate the Auxiliary Power interface of the device.
+        """auxiliary_power_calibration
 
-        : param circuit_type: Type of calibration to trigger(defaults to XAM)
-        : type circuit_type: int
+        Calibrate the Auxiliary Power interface of the device.
+
+        Parameters
+        ----------
+        circuit_type : int
+            Type of calibration to trigger(defaults to XAM)
+
         """
         self.dgilib_extra.auxiliary_power_trigger_calibration(circuit_type)
         while self.dgilib_extra.auxiliary_power_get_status() == CALIBRATING:
