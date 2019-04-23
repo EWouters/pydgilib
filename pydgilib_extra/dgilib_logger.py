@@ -116,17 +116,22 @@ class DGILibLogger(object):
     def log(self, duration=10, stop_function=None, min_duration=0.2):
         """Run the logger for the specified amount of time.
 
-        Keyword Arguments:
-            duration {int} -- Amount of time to log data (default: {10}).
-            stop_function {callable} -- Function that will be evaluated on the
-                collected data. If it returns True the logging will be
-                stopped even if the duration has not been reached (default:
-                {None}).
+        Parameters
+        ----------
+        duration : int
+            Amount of time to log data (default: `10`).
 
-        Returns:
-            LoggerData -- Returns the logged data as a LoggerData object if
-                LOGGER_OBJECT was passed to the logger.
+        stop_function : callable 
+            Function that will be evaluated on the
+            collected data. If it returns `True` the logging will be
+            stopped even if the duration has not been reached (default:
+            `None`).
 
+        Returns
+        -------
+        LoggerData
+            Returns the logged data as a :class:`LoggerData` object if
+            `LOGGER_OBJECT` was passed to the logger.
         """
         self.start()
 
@@ -162,19 +167,21 @@ class DGILibLogger(object):
             return self.dgilib_extra.data
 
     def which_polling(self, interface_ids=None):
-        """which_polling.
+        """which_polling
 
         Determines on which polling types need to be started or stopped based
         on the interface ids and instantiated interfaces in dgilib extra.
 
-        Arguments:
-            interface_ids {list} -- List of interface ids (default: all
-                enabled interfaces)
+        Parameters
+        ----------
+        interface_ids : list
+            List of interface ids (default: all enabled interfaces)
 
-        Returns:
-            tuple -- Tuple of bool that are true when that interface type
-                should be started or stopped
-
+        Returns
+        -------
+        tuple(bool, bool, ...)
+            Tuple of bool that are `True` when that interface type
+            should be started or stopped
         """
         if interface_ids is None:
             interface_ids = self.dgilib_extra.enabled_interfaces
@@ -187,14 +194,15 @@ class DGILibLogger(object):
         return polling, power
 
     def start_polling(self, interface_ids=None):
-        """start_polling.
+        """start_polling
 
         Starts polling on the specified interfaces. By default polling will be
         started for all enabled interfaces.
 
-        Keyword Arguments:
-            interface_ids {list} -- List of interface ids (default: all
-                enabled interfaces)
+        Parameters
+        ----------
+        interface_ids : list(int)
+            List of interface ids (default: all enabled interfaces)
         """
         polling, power = self.which_polling(interface_ids)
         if polling:
@@ -203,14 +211,15 @@ class DGILibLogger(object):
             self.dgilib_extra.auxiliary_power_start()
 
     def stop_polling(self, interface_ids=None):
-        """stop_polling.
+        """stop_polling
 
         Stops polling on the specified interfaces. By default polling will be
         stopped for all enabled interfaces.
 
-        Keyword Arguments:
-            interface_ids {list} -- List of interface ids (default: all
-                enabled interfaces)
+        Parameters
+        ----------
+        interface_ids : list(int)
+            List of interface ids (default: all enabled interfaces)
         """
         polling, power = self.which_polling(interface_ids)
         if polling:
