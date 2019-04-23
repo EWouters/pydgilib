@@ -22,7 +22,7 @@ class DGILibInterface(object):
     def _csv_reader_map(row): return (float(row[0]), float(row[1]))
 
     def __init__(self, *args, **kwargs):
-        """Instantiate DGILibInterfaceGPIO object."""
+        """Instantiate DGILibInterface object."""
         self.file_handle = None
         self.csv_writer = None
         # Argument parsing
@@ -36,10 +36,14 @@ class DGILibInterface(object):
             self.set_config(*args, **kwargs)
 
     def get_config(self):
-        """Get configuration options.
+        """get_config
 
-        :return: Configuration dictionary
-        :rtype: dict()
+        Get configuration options.
+
+        Returns
+        -------
+        dict
+            Configuration dictionary
         """
         # Return the configuration
         return None
@@ -49,7 +53,10 @@ class DGILibInterface(object):
         pass
 
     def enable(self):
-        """Enable the interface."""
+        """enable
+
+        Enable the interface.
+        """
         if self.interface_id not in self.dgilib_extra.available_interfaces:
             raise InterfaceNotAvailableError(
                 f"Interface {self.interface_id} not available. Available " +
@@ -59,26 +66,39 @@ class DGILibInterface(object):
             self.dgilib_extra.enabled_interfaces.append(self.interface_id)
 
     def disable(self):
-        """Disable the interface."""
+        """disable
+
+        Disable the interface.
+        """
         if self.interface_id in self.dgilib_extra.enabled_interfaces:
             self.dgilib_extra.interface_disable(self.interface_id)
             self.dgilib_extra.enabled_interfaces.remove(self.interface_id)
 
     def read(self, *args, **kwargs):
-        """Read data from the interface.
+        """read
 
-        :return: Interface data
-        :rtype: InterfaceData
+        Read data from the interface.
+
+        Returns
+        -------
+        InterfaceData
+
         """
         # Return the data
         return None
 
     def write(self, *args, **kwargs):
-        """Read data from the interface."""
+        """write
+
+        Write data to the interface (currently unimplemented).
+
+        """
         pass
 
     def init_csv_writer(self, log_folder=getcwd(), newline='', mode='w'):
-        """init_csv_writer."""
+        """
+        init_csv_writer
+        """
         # Open file handle
         self.file_handle = open(path.join(
             log_folder, (self.file_name_base + '_' + self.name + ".csv")),
@@ -89,16 +109,22 @@ class DGILibInterface(object):
         self.csv_writer.writerow(self.csv_header)
 
     def close_csv_writer(self):
-        """close_csv_writer."""
+        """
+        close_csv_writer
+        """
         # Close file handle
         self.file_handle.close()
 
     def csv_write_rows(self, interface_data):
-        """csv_write_rows."""
+        """
+        csv_write_rows
+        """
         self.csv_writer.writerows(interface_data)
 
     def csv_read_file(self, file_path=None, newline='', mode='r'):
-        """csv_read_file."""
+        """
+        csv_read_file
+        """
         if file_path is None:
             file_path = path.join(
                 getcwd(), (self.file_name_base + '_' + self.name + ".csv"))
