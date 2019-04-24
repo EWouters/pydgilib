@@ -215,6 +215,12 @@ class LoggerData(dict):
         data += logger_data
         return data
 
+    def __getstate__(self):
+        return self
+
+    def __setstate__(self, state):
+        return LoggerData(state)
+
     # def __copy__(self):
     #     return self
 
