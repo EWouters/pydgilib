@@ -48,6 +48,7 @@ Development Installation
 1. Clone the repo::
 
     $ git clone https://github.com/EWouters/pydgilib.git
+    $ cd pydgilib
 
 2. Install symlinked to repo::
 

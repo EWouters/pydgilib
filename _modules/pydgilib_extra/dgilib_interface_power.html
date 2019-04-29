@@ -180,24 +180,32 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;power_buffers: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">power_buffers</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DGILibInterfacePower.get_config"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_power.DGILibInterfacePower.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the power config options.</span>
+        <span class="sd">&quot;&quot;&quot;get_config</span>
 
-<span class="sd">        :return: Power buffers configuration list of dictionaries like</span>
-<span class="sd">            `[{&quot;channel&quot;: CHANNEL_A, &quot;power_type&quot;: POWER_CURRENT}]`</span>
-<span class="sd">        :rtype: list(dict())</span>
+<span class="sd">        Get the power config options.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list(dict)</span>
+<span class="sd">            Power buffers configuration list of dictionaries like</span>
+<span class="sd">            ``[{&quot;channel&quot;: CHANNEL_A, &quot;power_type&quot;: POWER_CURRENT}]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Return the configuration</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">power_buffers</span></div>
 
 <div class="viewcode-block" id="DGILibInterfacePower.set_config"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_power.DGILibInterfacePower.set_config">[docs]</a>    <span class="k">def</span> <span class="nf">set_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the power config options.</span>
+        <span class="sd">&quot;&quot;&quot;set_config</span>
+
+<span class="sd">        Set the power config options.</span>
 
 <span class="sd">        Register buffers inside the library for the buffers specified in</span>
 <span class="sd">        power_buffers and removes ones that are not present.</span>
 
-<span class="sd">        :param power_buffers: Power buffers configuration list of dictionaries</span>
-<span class="sd">            like `[{&quot;channel&quot;: CHANNEL_A, &quot;power_type&quot;: POWER_CURRENT}]`</span>
-<span class="sd">        :type power_buffers: list(dict())</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        power_buffers: list(dict)</span>
+<span class="sd">            Power buffers configuration list of dictionaries</span>
+<span class="sd">            like ``[{&quot;channel&quot;: CHANNEL_A, &quot;power_type&quot;: POWER_CURRENT}]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Parse arguments</span>
         <span class="n">power_buffers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -233,7 +241,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">auxiliary_power_uninitialize</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="DGILibInterfacePower.enable"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_power.DGILibInterfacePower.enable">[docs]</a>    <span class="k">def</span> <span class="nf">enable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Enable the interface.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;enable</span>
+
+<span class="sd">        Enable the interface.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interface_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">available_interfaces</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InterfaceNotAvailableError</span><span class="p">(</span>
                 <span class="n">f</span><span class="s2">&quot;Interface </span><span class="si">{self.interface_id}</span><span class="s2"> not available. Available &quot;</span> <span class="o">+</span>
@@ -244,37 +255,46 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">enabled_interfaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interface_id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DGILibInterfacePower.disable"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_power.DGILibInterfacePower.disable">[docs]</a>    <span class="k">def</span> <span class="nf">disable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Disable the interface.</span>
+        <span class="sd">&quot;&quot;&quot;disable</span>
 
-<span class="sd">        NOTE: This currently also removes the configuration!!!</span>
-<span class="sd">        TODO</span>
-<span class="sd">        BUG</span>
+<span class="sd">        Disable the interface.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># NOTE: This currently also removes the configuration!!!</span>
+        <span class="c1"># TODO</span>
+        <span class="c1"># BUG</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interface_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">enabled_interfaces</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_config</span><span class="p">()</span>  <span class="c1"># BUG</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">enabled_interfaces</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interface_id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DGILibInterfacePower.read"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_power.DGILibInterfacePower.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer_num</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read data from the interface.</span>
+        <span class="sd">&quot;&quot;&quot;read</span>
 
-<span class="sd">        : return: Interface data</span>
-<span class="sd">        : rtype: InterfaceData()</span>
+<span class="sd">        Read data from the interface.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        InterfaceData</span>
+<span class="sd">            Interface data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Return the data</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">power_buffers</span><span class="p">[</span><span class="n">buffer_num</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="DGILibInterfacePower.read_buffer"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_power.DGILibInterfacePower.read_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">read_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power_buffer</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read power data of the specified buffer.</span>
+        <span class="sd">&quot;&quot;&quot;read_buffer</span>
 
-<span class="sd">        TODO: Copies parsed power data into the specified buffer. Remember to</span>
-<span class="sd">        lock the buffers first. If the count parameter is the same as</span>
-<span class="sd">        max_count there is probably more data to be read. Do another read to</span>
-<span class="sd">        get the remaining data.</span>
+<span class="sd">        Read power data of the specified buffer.</span>
 
-<span class="sd">        : return: TODOTODO Tuple of list of power samples in Ampere and list of</span>
-<span class="sd">            timestamps in seconds</span>
-<span class="sd">        : rtype: (list(float), list(float))</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple(list(float), list(float))</span>
+<span class="sd">            Tuple of list of power samples in Ampere and list of</span>
+<span class="sd">            timestamps in seconds.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Copies parsed power data into the specified buffer. Remember to</span>
+        <span class="c1"># lock the buffers first. If the count parameter is the same as</span>
+        <span class="c1"># max_count there is probably more data to be read. Do another read to</span>
+        <span class="c1"># get the remaining data.</span>
+
         <span class="c1"># Check if power_buffer is in self.power_buffers</span>
         <span class="k">if</span> <span class="n">power_buffer</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">power_buffers</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PowerReadError</span><span class="p">(</span>
@@ -326,30 +346,41 @@
         <span class="k">return</span> <span class="n">interface_data</span></div>
 
 <div class="viewcode-block" id="DGILibInterfacePower.calibrate"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_power.DGILibInterfacePower.calibrate">[docs]</a>    <span class="k">def</span> <span class="nf">calibrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;calibrate</span>
+
 <span class="sd">        Calibrate the Auxiliary Power interface of the device.</span>
 
 <span class="sd">        Check if calibration is valid and trigger calibration if it is not.</span>
 
-<span class="sd">        Keyword Arguments:</span>
-<span class="sd">            force {bool} - - Force calibration, even if it is valid(default:</span>
-<span class="sd">                {False})</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        force : bool</span>
+<span class="sd">            Force calibration, even if it is valid (default: `False`)</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            PowerReadError - - [description]</span>
-<span class="sd">            PowerStatusError - - [description]</span>
-<span class="sd">            PowerStatusError - - [description]</span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">            PowerReadError</span>
+<span class="sd">                `No description given.`</span>
 
+<span class="sd">            PowerStatusError</span>
+<span class="sd">                `No description given.`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Give descriptions to the exceptions under &#39;Raises&#39; above.</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">circuit_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">auxiliary_power_get_circuit_type</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">force</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">auxiliary_power_calibration_is_valid</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">auxiliary_power_calibration</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="DGILibInterfacePower.auxiliary_power_calibration"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_interface_power.DGILibInterfacePower.auxiliary_power_calibration">[docs]</a>    <span class="k">def</span> <span class="nf">auxiliary_power_calibration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit_type</span><span class="o">=</span><span class="n">XAM</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calibrate the Auxiliary Power interface of the device.</span>
+        <span class="sd">&quot;&quot;&quot;auxiliary_power_calibration</span>
 
-<span class="sd">        : param circuit_type: Type of calibration to trigger(defaults to XAM)</span>
-<span class="sd">        : type circuit_type: int</span>
+<span class="sd">        Calibrate the Auxiliary Power interface of the device.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        circuit_type : int</span>
+<span class="sd">            Type of calibration to trigger(defaults to XAM)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">auxiliary_power_trigger_calibration</span><span class="p">(</span><span class="n">circuit_type</span><span class="p">)</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">dgilib_extra</span><span class="o">.</span><span class="n">auxiliary_power_get_status</span><span class="p">()</span> <span class="o">==</span> <span class="n">CALIBRATING</span><span class="p">:</span>

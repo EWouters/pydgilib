@@ -270,35 +270,99 @@
     <span class="sd">&quot;&quot;&quot;DGILibPlot</span>
 <span class="sd">   </span>
 <span class="sd">    The `DGILibPlot` class is responsible with plotting the electrical current</span>
-<span class="sd">    (Amperes) data and gpio states data (values of `1`/`0`) obtained from an</span>
+<span class="sd">    (Amperes) data and gpio state data (values of `1`/`0`) obtained from an</span>
 <span class="sd">    Atmel board.</span>
 
-<span class="sd">    There are two methods that the gpio states can be shown. One is the `line`</span>
-<span class="sd">    method and one is the `highlight` method. The `line` method shows a square</span>
-<span class="sd">    waveform typical to the logic states that gpio pins usually give. The</span>
-<span class="sd">    `highlight` method highlights only particular parts of the plot with</span>
-<span class="sd">    semi-transparent vertical rectangles, where the pins have a value of</span>
-<span class="sd">    interest (set using the ``plot_pins_values`` argument of the class).</span>
+<span class="sd">    The X axis represents time in seconds, while the Y axis represents</span>
+<span class="sd">    the electrical current in Amperes.</span>
 
-<span class="sd">    Here are some examples of `DGILibPlot` and the two methods of gpio</span>
-<span class="sd">    states drawing it has (`line`/`highlight`):</span>
+<span class="sd">    There are two ways that the gpio pins state can be shown along with the</span>
+<span class="sd">    electrical current. One is the `line` method and one is the `highlight`</span>
+<span class="sd">    method. The `line` method shows a square waveform, a typical byproduct of</span>
+<span class="sd">    the digital signal that gpio pins usually have. The `highlight` method</span>
+<span class="sd">    highlights only particular parts of the plot with semi-transparent</span>
+<span class="sd">    coloured areas, where the pins have a value of interest (set using the</span>
+<span class="sd">    ``plot_pins_values`` argument of the class).</span>
 
-<span class="sd">    .. image: ..\\media\\dgilib_plot_highlight_1.png</span>
+<span class="sd">    Below are shown some examples of `DGILibPlot` and the two methods of</span>
+<span class="sd">    drawing the gpio pins  (`line`/`highlight`).</span>
+
+<span class="sd">    **Example plots using &quot;line&quot; method:**</span>
+
+<span class="sd">    .. figure:: images/plot_line_1.png</span>
+<span class="sd">       :scale: 60%</span>
+
+<span class="sd">       Figure 1: Example of plot with the &#39;line&#39; method chosen for the drawing of</span>
+<span class="sd">       pins. All of the pins are being plotted, so you can always see their</span>
+<span class="sd">       `True`/`False` values.</span>
+
+<span class="sd">    .. figure:: images/plot_line_2.png</span>
+<span class="sd">       :scale: 60%</span>
+
+<span class="sd">       Figure 2: The same plot with the same data as figure 1, only zoomed in.</span>
+
+<span class="sd">    .. figure:: images/plot_line_3.png</span>
+<span class="sd">       :scale: 60%</span>
+
+<span class="sd">       Figure 3: The same plot with the same data as figure 1 and 2, only even</span>
+<span class="sd">       more zoomed in. Here we can clearly see that gpio pins 0, 2 and 3 have</span>
+<span class="sd">       defaulted on a single value all along the program&#39;s execution on the</span>
+<span class="sd">       board. We can however clearly see the toggling of pin 1,</span>
+<span class="sd">       represented in orange.</span>
+
+<span class="sd">    **Example plots using &quot;highlight&quot; method:**</span>
+
+<span class="sd">    .. figure:: images/plot_highlight_1.png</span>
+<span class="sd">       :scale: 60%</span>
+
+<span class="sd">       Figure 4: Example of plot with the &#39;highlight&#39; method chosen for the</span>
+<span class="sd">       drawing of pins. The time the pins are holding the value of interest (in</span>
+<span class="sd">       this case, `True` value) is small every time. This is why we can see the</span>
+<span class="sd">       highlighted areas looking more like vertical lines when zoomed</span>
+<span class="sd">       out. The only pin being toggled by the program on the board is</span>
+<span class="sd">       pin 1, hence it&#39;s why we only see one color of highlighted areas.</span>
+
+<span class="sd">    .. figure:: images/plot_highlight_2.png</span>
+<span class="sd">       :scale: 60%</span>
+
+<span class="sd">       Figure 5: The same plot with the same data as figure 1, only zoomed in.</span>
+
+<span class="sd">    .. figure:: images/plot_highlight_3.png</span>
+<span class="sd">       :scale: 60%</span>
+
+<span class="sd">       Figure 6: The same plot with the same data as figure 1 and 2, only even</span>
+<span class="sd">       more zoomed in. Now we can see one of the the  highlight</span>
+<span class="sd">       area in its proper form.</span>
+
+<span class="sd">    **Parameters**</span>
+
+<span class="sd">    The parameters listed in the section below can be passed as arguments when</span>
+<span class="sd">    initializing the `DGILibPlot` object, or as arguments to a `DGILibExtra`</span>
+<span class="sd">    object. They can be included in a configuration dictionary</span>
+<span class="sd">    (:py:class:`dict` object) and then unwrapped in the initialization function</span>
+<span class="sd">    call of either the `DGILibPlot` object or the `DGILibExtra` object (by</span>
+<span class="sd">    doing: ``dgilib_plot = DGILibPlot(**config_dict)`` or ``with</span>
+<span class="sd">    DGILibExtra(**config_dict) as dgilib: ...``).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dgilib_extra : DGILibExtra</span>
 <span class="sd">        A `DGILibExtra` object can be specified, from where the plot can obtain</span>
-<span class="sd">        the electrical current and gpio states data. If a `DGILibExtra` object</span>
+<span class="sd">        the electrical current and gpio state data. If a `DGILibExtra` object</span>
 <span class="sd">        is not desired to be specified however, then it should be set to</span>
 <span class="sd">        `None`.</span>
+
+<span class="sd">        (the default is `None`, meaning that measurements data (in the form</span>
+<span class="sd">        of a :class:`DGILibData` should be manually called as </span>
+<span class="sd">        function updates))</span>
 
 <span class="sd">    fig : matplotlib.pyplot.figure, optional</span>
 <span class="sd">        If it is wanted so that the data is to be plotted on an already</span>
 <span class="sd">        existing `matplotlib` figure, then the object representing the already</span>
 <span class="sd">        instantiated figure can be specified for this parameter. For example,</span>
-<span class="sd">        the electrical current data and gpio states data can be plotted</span>
+<span class="sd">        the electrical current data and gpio state data can be plotted</span>
 <span class="sd">        in a subplot of a figure window that holds other plots as well.</span>
+
 <span class="sd">        (the default is `None`, meaning that a new figure object will be</span>
 <span class="sd">        created internally)</span>
 
@@ -306,6 +370,7 @@
 <span class="sd">        If it is wanted so that the data is to be plotted on an already</span>
 <span class="sd">        existing `matplotlib` axes, then the object representing the already</span>
 <span class="sd">        instantiated axes can be specified for this parameter.</span>
+
 <span class="sd">        (the default is `None`, meaning that a new axes object will be</span>
 <span class="sd">        created internally)</span>
 
@@ -314,37 +379,173 @@
 <span class="sd">        existing `matplotlib` `Lines2D` object, then the object representing</span>
 <span class="sd">        the already instantiated `Lines2D` object can be specified for this</span>
 <span class="sd">        parameter.</span>
-<span class="sd">        (the default is `None`, meaning that a new `Lines2D` object will be </span>
+
+<span class="sd">        (the default is `None`, meaning that a new `Lines2D` object will be</span>
 <span class="sd">        created internally)</span>
 
 <span class="sd">    window_title : str, optional</span>
 <span class="sd">        If another window title than the default is desired to be used, it can</span>
 <span class="sd">        be specified here.</span>
+
 <span class="sd">        (the default is ``Plot of current (in amperes) and gpio pins``)</span>
 
 <span class="sd">    plot_xmax : int, optional</span>
-<span class="sd">        This `**initializes**` the figure view to a maximum of `plot_xmax` on </span>
+<span class="sd">        This *initializes* the figure view to a maximum of `plot_xmax` on</span>
 <span class="sd">        the X axis, where the data to be plotted. Later, the user can change</span>
 <span class="sd">        the figure view using the bottom sliders of the plot figure.</span>
+
 <span class="sd">        (the default is an arbitrary `10`)</span>
 
 <span class="sd">    plot_ymax : int, optional</span>
-<span class="sd">        This `**initializes**` the figure view to a maximum of `plot_xmax` on</span>
+<span class="sd">        This *initializes* the figure view to a maximum of `plot_xmax` on</span>
 <span class="sd">        the Y axis, where the data to be plotted. Later, the user can change</span>
 <span class="sd">        the figure view using the bottom sliders of the plot figure.</span>
-<span class="sd">        (the default is `0.005`, meaning 5 mA, so that something as </span>
+
+<span class="sd">        (the default is `0.005`, meaning 5 mA, so that something as</span>
 <span class="sd">        energy consuming as a blinking LED can be shown by a `DGILibPlot`</span>
 <span class="sd">        with default settings)</span>
-<span class="sd"> </span>
+
 <span class="sd">    plot_pins : list(bool, bool, bool, bool), optional</span>
 <span class="sd">        Set the pins to be drawn in the plot, out of the 4 GPIO available pins</span>
 <span class="sd">        that the Atmel board gives data about to be sent through the computer</span>
-<span class="sd">        through the Atmel Embedded Debugger (EDBG) Data Gateway Interface </span>
+<span class="sd">        through the Atmel Embedded Debugger (EDBG) Data Gateway Interface</span>
 <span class="sd">        (DGI).</span>
+
 <span class="sd">        (the default is `[True, True, True, True]`, meaning all pins are</span>
 <span class="sd">        drawn)</span>
 
-<span class="sd">    plot_pins_method : list</span>
+<span class="sd">    plot_pins_method : str, optional</span>
+<span class="sd">        Set the *method* of drawing the pin. The values can be either</span>
+<span class="sd">        ``&quot;line&quot;`` or ``&quot;highlight&quot;``. Refer to the above figures to see</span>
+<span class="sd">        the differences.</span>
+
+<span class="sd">        (the default is `&quot;highlight&quot;`)</span>
+
+<span class="sd">    plot_pins_colors : list(str, str, str, str), optional</span>
+<span class="sd">        Set the colors of the semi-transparent highlight areas drawn when using</span>
+<span class="sd">        the `highlight` method, or the lines when using the `lines` method of</span>
+<span class="sd">        drawing pins. </span>
+<span class="sd">        </span>
+<span class="sd">        (the default is `[&quot;red&quot;, &quot;orange&quot;, &quot;blue&quot;, &quot;green&quot;]`,</span>
+<span class="sd">        meaning that pin 0 will have a `red` semi-transparent highlight area or</span>
+<span class="sd">        line, pin 1 will have `orange` ones, and so on)</span>
+
+<span class="sd">    automove_method : str, optional</span>
+<span class="sd">        When the plot is receiving data live from the measurements taken in</span>
+<span class="sd">        real-time from the board (as opposed to receiving all the data to be</span>
+<span class="sd">        plotted at once, say, when reading the data from saved csv files), and</span>
+<span class="sd">        `plot_xmax` is smaller than the expected size of the data in the end,</span>
+<span class="sd">        then at some point the data will update past the figure view.</span>
+<span class="sd">        `DGILibPlot` automatically moves the figure view to the last timestamp</span>
+<span class="sd">        of the latest data received, and it can do so in two ways, depending on</span>
+<span class="sd">        the value of ``automove_method``.</span>
+
+<span class="sd">        The `page` method changes the figure view in increments of</span>
+<span class="sd">        ``plot_ymax``, when the data updates past the figure view, as if the</span>
+<span class="sd">        plot is turning one &quot;page&quot; at a time. The `latest_data` method makes</span>
+<span class="sd">        the figure view always have the latest data in view, meaning that it</span>
+<span class="sd">        moves in small increments so that it always keeps the latest data point</span>
+<span class="sd">        `0.15` seconds away from the right edge of the figure view. The `0.15`</span>
+<span class="sd">        seconds value is an arbitrary hard-coded value, chosen after some</span>
+<span class="sd">        experiments.</span>
+
+<span class="sd">        (the default is &#39;latest_data&#39;, meaning the plot&#39;s figure view will</span>
+<span class="sd">        follow the latest data in smaller increments, keeping the latest data</span>
+<span class="sd">        always on the right side of the plot)</span>
+
+<span class="sd">    verbose : int</span>
+<span class="sd">        Specifies verbosity:</span>
+
+<span class="sd">        - 0: Silent</span>
+
+<span class="sd">        - 1: Currently prints if data is missing, either as an object or as \</span>
+<span class="sd">        values, when :func:`update_plot` is being called.</span>
+
+<span class="sd">        (the default is `0`)</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    axvspans : list(4 x list(matplotlib.pyplot.axvspan))</span>
+<span class="sd">        The way the semi-transparent coloured areas for the gpio pins are drawn</span>
+<span class="sd">        on the plot is by using ``matplotlib.pyplot.axvspan`` objects. The</span>
+<span class="sd">        `axvspan` objects are collected in a list for potential use for later.</span>
+<span class="sd">        (e.g.: such as to delete them, using the :func:`clear_pins` method).</span>
+
+<span class="sd">        (the default is 4 empty lists, meaning no highlighting of areas of</span>
+<span class="sd">        interest has occured yet)</span>
+
+<span class="sd">    annotations : list(4 x list(str))</span>
+<span class="sd">        As we have seen in figures 4, 5, 6, for the `highlight` method of</span>
+<span class="sd">        drawing pins, the counting or iteration of the highlighted areas are</span>
+<span class="sd">        also showed on the plot. There are 4 pins, so therefore 4 lists of the</span>
+<span class="sd">        counting/iteration stored as strings are saved by the `DGILibPlot` for</span>
+<span class="sd">        later use by developers (e.g.: to replace from numbers to actual</span>
+<span class="sd">        descriptions and then call the redrawing of pins).</span>
+
+<span class="sd">        (the default is 4 empty lists, meaning no annotations for the</span>
+<span class="sd">        highlighted areas of interest were placed yet)</span>
+
+<span class="sd">    preprocessed_averages_data : list(4 x list(tuple(int, \</span>
+<span class="sd">    tuple(float, float), int, float)))</span>
+<span class="sd">        As the `highlight` method draws the pins on the plot with the help of</span>
+<span class="sd">        the :class:`HoldTimes` class, that means the plot knows afterwards the</span>
+<span class="sd">        time intervals in which the pins have values of interest. This can be</span>
+<span class="sd">        valuable for a subsequent averaging function that wants to calculate</span>
+<span class="sd">        faster the average current or energy consumption of the the board</span>
+<span class="sd">        activity only where it was highlighted on the plot. As such,</span>
+<span class="sd">        `DGILibPlot` prepares a list of 4 lists of tuples, each for every pin,</span>
+<span class="sd">        the tuple containing the iteration index of the highlighted area of</span>
+<span class="sd">        interest the pins kept the same value consecutively (called a `hold`</span>
+<span class="sd">        time), another tuple containing the timestamps with respect to the</span>
+<span class="sd">        electrical current data, which says the beginning and end times of that</span>
+<span class="sd">        `hold` interval,  an index in the list of the electrical current data</span>
+<span class="sd">        points where the respective hold time starts and, lastly, a `None`</span>
+<span class="sd">        value, which then should be replaced with a :py:class:`float` value for</span>
+<span class="sd">        the the average current or charge during that hold time.</span>
+
+<span class="sd">        (the default is 4 empty lists, meaning no gathered preprocessed</span>
+<span class="sd">        averages data yet)</span>
+
+<span class="sd">    iterations : list(4 x int)</span>
+<span class="sd">        As the plot is being updated live, the `iterations` list holds the</span>
+<span class="sd">        number of highlighed areas that have been drawn already for for each</span>
+<span class="sd">        pin. As the whole measurement data gets plotted, the iterations list</span>
+<span class="sd">        practically holds the number of iterations the of all the areas</span>
+<span class="sd">        of interest for each pin (which can be, for example, the number</span>
+<span class="sd">        of `for` loops that took place in the program itself running on the</span>
+<span class="sd">        board).</span>
+
+<span class="sd">        (the default are 4 ``0`` values, meaning no areas of interest</span>
+<span class="sd">        on the gpio data has been identified)</span>
+
+<span class="sd">    last_xpos : float</span>
+<span class="sd">        As the plot is being updated live, the figure view moves along with the</span>
+<span class="sd">        latest data to be shown on the plot. If the user desires to stop this</span>
+<span class="sd">        automatic movement and focus on some specific area of the plot, while</span>
+<span class="sd">        the data is still being updated in real-time, the figure needs to</span>
+<span class="sd">        detect that it should stop following the data to not disturb the user.</span>
+<span class="sd">        It does so by comparing the current x-axis position value of the x axis</span>
+<span class="sd">        shown, with the last x-axis position value saved, before doing any</span>
+<span class="sd">        automatic movement of the figure view. If they are different, no</span>
+<span class="sd">        automatic movement is being done from now on.</span>
+<span class="sd">        </span>
+<span class="sd">    xylim_mutex : Lock</span>
+<span class="sd">        As there are many ways to move, zoom and otherwise manipulate the</span>
+<span class="sd">        figure view to different sections of the plot, using the `matplotlib`&#39;s</span>
+<span class="sd">        implicit movement and zoom controls, or the freshly built `DGILibPlot`</span>
+<span class="sd">        sliders appearing at the bottom (See figures), or the automatic</span>
+<span class="sd">        following of the latest data feature, there is a multi-threading aspect</span>
+<span class="sd">        involved and therefore a mutex should be involved, in the form</span>
+<span class="sd">        of a `Lock` object, to prevent anomalies.</span>
+
+<span class="sd">    hold_times_obj: HoldTimes</span>
+<span class="sd">        Only instantiated when `highlight` method is being used for drawing</span>
+<span class="sd">        pins information, the :class:`HoldTimes` class holds the algorithm that</span>
+<span class="sd">        works on the live data to obtain the timestamps of areas of interest of</span>
+<span class="sd">        the gpio data, in order to be highlighted on the plot. As the algorithm</span>
+<span class="sd">        works on live updating data, the areas of interst can be cut off</span>
+<span class="sd">        between updates of data. As such, the :class:`HoldTimes` keeps</span>
+<span class="sd">        information for the algorithm to work with, in order to advert this.    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dgilib_extra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -399,15 +600,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">axvspans</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">preprocessed_averages_data</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">total_average</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1">#self.total_average = [0,0,0,0]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_xpos</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_xpos</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xylim_mutex</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
 
-        <span class="c1"># We need this since pin toggling is not aligned with power values changing when blinking a LED on the board, for example</span>
-        <span class="c1">#self.plot_pins_correction_forward = kwargs.get(&quot;plot_pins_correction_forward&quot;, 0.00075)</span>
-        <span class="c1">#self.plot_pins_interval_shrink = kwargs.get(&quot;plot_pins_interval_shrink&quot;, 0.0010)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot_pause_secs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;refresh_plot_pause_secs&quot;</span><span class="p">,</span> <span class="mf">0.00000001</span><span class="p">)</span>
+        <span class="c1">#self.refresh_plot_pause_secs = kwargs.get(&quot;refresh_plot_pause_secs&quot;, 0.00000001)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins_method</span> <span class="o">==</span> <span class="s2">&quot;highlight&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hold_times_obj</span> <span class="o">=</span> <span class="n">HoldTimes</span><span class="p">()</span>
@@ -429,7 +627,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmin</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_ymin</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># We absolutely need these values from the user (or from the superior class), hence no default values</span>
+        <span class="c1"># We need these values from the user (or from the superior class), </span>
+        <span class="c1">#   hence no default values</span>
         <span class="c1"># TODO: Are they really needed though?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_xdiv</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_xdiv&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xmax</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_xstep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_xstep&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
@@ -460,13 +659,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">initialize_sliders</span><span class="p">()</span>
-
-    <span class="c1"># def set_axis(self, xleft, xright, yleft, yright, indicator=&quot;not specified&quot;):</span>
-    <span class="c1">#     if abs(xleft - xright) &lt; (float_epsilon*2):</span>
-    <span class="c1">#         self.ax.axis([xleft, xright + (float_epsilon * 2), yleft, yright])</span>
-    <span class="c1">#         #print(&quot;Warning! xleft close to xright in value in: &quot; + indicator)</span>
-    <span class="c1">#     else:</span>
-    <span class="c1">#         self.ax.axis([xleft, xright, yleft, yright])</span>
 
 <div class="viewcode-block" id="DGILibPlot.initialize_sliders"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.initialize_sliders">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_sliders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axpos</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axcolor</span><span class="p">)</span>
@@ -681,25 +873,30 @@
 <div class="viewcode-block" id="DGILibPlot.clear_pins"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.clear_pins">[docs]</a>    <span class="k">def</span> <span class="nf">clear_pins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clears the highlighted areas on the plot that represent the state of the gpio pins</span>
-<span class="sd">        (as seen in figure TODO: ??). Using this method only makes sense if the `highlight`</span>
+<span class="sd">        (as seen in figures 4, 5, 6). Using this method only makes sense if the `highlight`</span>
 <span class="sd">        method of drawing pins was used.</span>
-<span class="sd">        </span>
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        ValueError</span>
-<span class="sd">            [description]</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        [type]</span>
-<span class="sd">            [description]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axvspans</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axvspans</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
         
         <span class="k">for</span> <span class="n">axvsp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axvspans</span><span class="p">:</span>
             <span class="n">axvsp</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="DGILibPlot.draw_pins"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.draw_pins">[docs]</a>    <span class="k">def</span> <span class="nf">draw_pins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;draw_pins [summary]</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            Raised when `plot_pins_method` member of class has another </span>
+<span class="sd">            string value than the ones available (`highlight`, `line`)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : DGILibData</span>
+<span class="sd">            :class:`DGILibData` object that contains the GPIO data to be drawn</span>
+<span class="sd">            on the plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Here we set defaults (with &#39;or&#39; keyword ...)</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span>
         <span class="n">plot_pins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pins</span>
@@ -734,6 +931,11 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">annon</span><span class="p">)</span>
                             
                             <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                            <span class="c1"># TODO:  The start and stop indexes of the data points that are area of interest</span>
+                            <span class="c1"># might be more useful for an averaging function, but currently the plot uses</span>
+                            <span class="c1"># the coordinates of the X axis(the start/stop timestamps) in order to highlight</span>
+                            <span class="c1"># the areas of interest.</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">preprocessed_averages_data</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">pin_idx</span><span class="p">],</span> <span class="n">ht</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
             
             <span class="c1"># This should be in update_plot()</span>
@@ -754,20 +956,54 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unrecognized plot_pins_method: </span><span class="si">{self.plot_pins_method}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DGILibPlot.plot_still_exists"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.plot_still_exists">[docs]</a>    <span class="k">def</span> <span class="nf">plot_still_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;plot_still_exists </span>
+<span class="sd">        </span>
+<span class="sd">        Can be used in a boolean (e.g.: `if`, `while`) clause to check if the</span>
+<span class="sd">        plot is still shown inside a window (e.g.: to unpause program</span>
+<span class="sd">        functionality if the plot is closed).</span>
+
+<span class="sd">        Also used in the :func:`keep_plot_alive` member function of the</span>
+<span class="sd">        class.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            Returns `True` if the plot still exists and `False` otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">fignum_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">number</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DGILibPlot.refresh_plot"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.refresh_plot">[docs]</a>    <span class="k">def</span> <span class="nf">refresh_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;refresh_plot</span>
+
+<span class="sd">        Makes a few `matplotlib` specific calls to refresh and redraw the plot</span>
+<span class="sd">        (especially when new data is to be drawn). </span>
+<span class="sd">        </span>
+<span class="sd">        Is used in :func:`update_plot` member function of the class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">relim</span><span class="p">()</span>                  <span class="c1"># recompute the data limits</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">()</span>         <span class="c1"># automatic axis scaling</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">flush_events</span><span class="p">()</span> </div>
-        <span class="c1">#sleep(time or self.refresh_plot_pause_secs)</span>
-        <span class="c1">#plt.pause(self.plot_pause_secs)</span>
 
 <div class="viewcode-block" id="DGILibPlot.keep_plot_alive"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.keep_plot_alive">[docs]</a>    <span class="k">def</span> <span class="nf">keep_plot_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_still_exists</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;keep_plot_alive</span>
+<span class="sd">        </span>
+<span class="sd">        Pauses program functionality until the plot is closed. Does so</span>
+<span class="sd">        by refreshing the plot using :func:`refresh_plot`.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="DGILibPlot.pause"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.pause">[docs]</a>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mf">0.000001</span><span class="p">):</span>
+<div class="viewcode-block" id="DGILibPlot.pause"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_plot.DGILibPlot.pause">[docs]</a>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;pause</span>
+
+<span class="sd">        Calls `matplotlib&#39;s` `pause` function for an amount of seconds.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        time : float</span>
+<span class="sd">            The number of seconds the plot should have time to refresh itself</span>
+<span class="sd">            and pause program functionality.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">time</span><span class="p">)</span></div></div>
 
 <span class="c1"># Obsolete</span>
