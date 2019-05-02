@@ -220,3 +220,9 @@ napoleon_use_rtype = True
 #     # Set the name of the project to appear in the sidebar
 #     "project_nav_name": "Pydgilib",
 # }
+
+# -- Options for Autodoc ------------------------------------------------------
+#  By default, __init__ docstrings are ignored and not exported at all.
+#  'autoclass_content = both' allows  __init__ docstrings to be part of 
+# class description (e.g.: they don't have their own section)
+autoclass_content = 'both'
