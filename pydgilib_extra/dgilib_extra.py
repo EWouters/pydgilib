@@ -46,7 +46,7 @@ class DGILibExtra(DGILib):
             print("kwargs: ", kwargs)
 
     def __enter__(self):
-        """For usage in `with DGILibExtra() as dgilib:` syntax."""
+        """For usage in ``with DGILibExtra() as dgilib:`` syntax."""
         DGILib.__enter__(self)
         self.available_interfaces = self.interface_list()
         if INTERFACE_POWER_DATA in self.available_interfaces:
@@ -65,7 +65,7 @@ class DGILibExtra(DGILib):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        """For usage in `with DGILibExtra() as dgilib:` syntax."""
+        """For usage in ``with DGILibExtra() as dgilib:`` syntax."""
         for interface in self.interfaces.values():
             interface.disable()
 
@@ -74,13 +74,20 @@ class DGILibExtra(DGILib):
     def info(self):
         """Get the build information of DGILib.
 
-        :return:  Version information of DGILib:
+        Returns
+        -------
+        tuple(str, str, str, str, str, str)
+            Version information of DGILib:
+
             - major_version: the major_version of DGILib
+
             - minor_version: the minor_version of DGILib
+            
             - build_number: the build number of DGILib. 0 if not supported
+            
             - major_fw: the major firmware version of the connected DGI device
+
             - minor_fw: the minor firmware version of the connected DGI device
-        :rtype: tuple
         """
         major_version = self.get_major_version()
         minor_version = self.get_minor_version()
@@ -90,16 +97,22 @@ class DGILibExtra(DGILib):
         return major_version, minor_version, build_number, major_fw, minor_fw
 
     def device_reset(self, duration=1):
-        """Set the device reset line for duration seconds."""
+        """device_reset
+        
+        Set the device reset line for duration seconds."""
         self.target_reset(True)
         sleep(duration)
         self.target_reset(False)
 
     def get_time_factor(self):
-        """Get the factor to multiply timestamps by to get seconds.
+        """get_time_factor
+        
+        Get the factor to multiply timestamps by to get seconds.
 
-        :return: timer_factor
-        :rtype: double
+        Returns
+        -------
+        float
+            Timer factor
         """
         _, config_value = self.interface_get_configuration(INTERFACE_TIMESTAMP)
         timer_prescaler = config_value[0]
@@ -114,13 +127,15 @@ class DGILibExtra(DGILib):
         return timer_prescaler / timer_frequency
 
     def empty_data(self, interfaces=None):
-        """empty_data.
+        """empty_data
 
-        Populate self.data with an empty data structure (of type LoggerData).
+        Populate self.data with an empty data structure (of type 
+        :class:`LoggerData`).
 
-        Keyword Arguments:
-            interfaces {list(int)} -- List of interface ids. (default:
-            {self.enabled_interfaces})
+        Parameters
+        ----------
+        interfaces : list(int, int, ...)
+            List of interface ids. (default: `self.enabled_interfaces`)
         """
         if interfaces is None:
             interfaces = self.enabled_interfaces
