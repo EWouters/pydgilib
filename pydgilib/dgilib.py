@@ -84,22 +84,32 @@ class DGILib(object):
     auxiliary_power_free_data = DGILibAuxiliary.auxiliary_power_free_data
 
     def __init__(self, *args, **kwargs):
-        """Instantiate DGILib object.
+        """__init__.
 
-        :param dgilib_path: Path to dgilib.dll (More info at:
+        Parameters
+        ----------
+        dgilib_path : str
+            Path to dgilib.dll (More info at:
             https://www.microchip.com/developmenttools/ProductDetailsATPOWERDEBUGGER)
-        :type dgilib_path: str
-        :param device_index: index of the device to use, only usefull if
-            multiple devices are connected (default is None, will resolve to 0)
-        :type device_index: int or None
-        :param device_sn: the serial number of the device to use. Has higher
-            priority than device_index (default is None, will resolve to
-            serial number of device 0)
-        :type device_sn: str or None
-        :param verbose: set to a positive number to print more status messages
-            (default is 0)
-        :type verbose: int
-        :raises: :exc:`DLLError`
+
+        device_index : int or None
+            Index of the device to use, only useful if multiple devices are
+            connected (default is `None`, will resolve to `0`)
+
+        device_sn : str or None
+            The serial number of the device to use. Has higher
+            priority than device_index (default is `None`, will resolve to
+            serial number of device `0`)
+
+        verbose : int
+            Set to a positive number to print more status messages
+            (default is `0`)
+
+        Raises
+        -------
+            DLLError
+                TODO: `Not documented yet.`
+
         """
         # Load the dgilib.dll
         dgilib_path = kwargs.get(
@@ -140,7 +150,11 @@ class DGILib(object):
         # self.auxiliary(self)
 
     def __enter__(self):
-        """For usage in `with DGILib() as dgilib:` syntax."""
+        """__enter__
+
+        For usage in ``with DGILib() as dgilib:`` syntax.
+
+        """
         # Discovery
         self.discover()
         device_count = self.get_device_count()
@@ -174,7 +188,11 @@ class DGILib(object):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        """For usage in `with DGILib() as dgilib:` syntax."""
+        """__exit__
+
+        For usage in ``with DGILib() as dgilib:`` syntax.
+
+        """
         # Discovery
 
         # Housekeeping
