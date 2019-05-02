@@ -1,7 +1,4 @@
-"""The ``atprogram.atprogram`` submodule is currently the only submodule
-in the ``atprogram`` main module.
-
-Here you can find the Python bindings for `make` and `atprogram`.
+"""Python bindings for `make` and `atprogram`.
 """
 
 from os import path, getenv, getcwd
