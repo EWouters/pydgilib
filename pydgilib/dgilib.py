@@ -131,7 +131,7 @@ class DGILib(object):
                 f") it should get loaded automatically. Alternatively you " +
                 f"can download it from https://www.microchip.com/mplab/avr-" +
                 f"support/data-visualizer (download DGIlib dll, unzip the " +
-                f"files and put the dll in {getcwd()}) or specify the path" +
+                f"files and put the dll in {getcwd()}) or specify the path " +
                 f"as the first argument or as a keyword argument " +
                 f"(dgilib_path). Got dgilib_path={dgilib_path}.")
 
