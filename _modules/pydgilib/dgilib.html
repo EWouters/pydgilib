@@ -231,22 +231,32 @@
     <span class="n">auxiliary_power_free_data</span> <span class="o">=</span> <span class="n">DGILibAuxiliary</span><span class="o">.</span><span class="n">auxiliary_power_free_data</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Instantiate DGILib object.</span>
+        <span class="sd">&quot;&quot;&quot;__init__.</span>
 
-<span class="sd">        :param dgilib_path: Path to dgilib.dll (More info at:</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dgilib_path : str</span>
+<span class="sd">            Path to dgilib.dll (More info at:</span>
 <span class="sd">            https://www.microchip.com/developmenttools/ProductDetailsATPOWERDEBUGGER)</span>
-<span class="sd">        :type dgilib_path: str</span>
-<span class="sd">        :param device_index: index of the device to use, only usefull if</span>
-<span class="sd">            multiple devices are connected (default is None, will resolve to 0)</span>
-<span class="sd">        :type device_index: int or None</span>
-<span class="sd">        :param device_sn: the serial number of the device to use. Has higher</span>
-<span class="sd">            priority than device_index (default is None, will resolve to</span>
-<span class="sd">            serial number of device 0)</span>
-<span class="sd">        :type device_sn: str or None</span>
-<span class="sd">        :param verbose: set to a positive number to print more status messages</span>
-<span class="sd">            (default is 0)</span>
-<span class="sd">        :type verbose: int</span>
-<span class="sd">        :raises: :exc:`DLLError`</span>
+
+<span class="sd">        device_index : int or None</span>
+<span class="sd">            Index of the device to use, only useful if multiple devices are</span>
+<span class="sd">            connected (default is `None`, will resolve to `0`)</span>
+
+<span class="sd">        device_sn : str or None</span>
+<span class="sd">            The serial number of the device to use. Has higher</span>
+<span class="sd">            priority than device_index (default is `None`, will resolve to</span>
+<span class="sd">            serial number of device `0`)</span>
+
+<span class="sd">        verbose : int</span>
+<span class="sd">            Set to a positive number to print more status messages</span>
+<span class="sd">            (default is `0`)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">            DLLError</span>
+<span class="sd">                TODO: `Not documented yet.`</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Load the dgilib.dll</span>
         <span class="n">dgilib_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -268,7 +278,7 @@
                 <span class="n">f</span><span class="s2">&quot;) it should get loaded automatically. Alternatively you &quot;</span> <span class="o">+</span>
                 <span class="n">f</span><span class="s2">&quot;can download it from https://www.microchip.com/mplab/avr-&quot;</span> <span class="o">+</span>
                 <span class="n">f</span><span class="s2">&quot;support/data-visualizer (download DGIlib dll, unzip the &quot;</span> <span class="o">+</span>
-                <span class="n">f</span><span class="s2">&quot;files and put the dll in {getcwd()}) or specify the path&quot;</span> <span class="o">+</span>
+                <span class="n">f</span><span class="s2">&quot;files and put the dll in {getcwd()}) or specify the path &quot;</span> <span class="o">+</span>
                 <span class="n">f</span><span class="s2">&quot;as the first argument or as a keyword argument &quot;</span> <span class="o">+</span>
                 <span class="n">f</span><span class="s2">&quot;(dgilib_path). Got dgilib_path=</span><span class="si">{dgilib_path}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
@@ -287,7 +297,11 @@
         <span class="c1"># self.auxiliary(self)</span>
 
 <div class="viewcode-block" id="DGILib.__enter__"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILib.__enter__">[docs]</a>    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;For usage in `with DGILib() as dgilib:` syntax.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;__enter__</span>
+
+<span class="sd">        For usage in ``with DGILib() as dgilib:`` syntax.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Discovery</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">discover</span><span class="p">()</span>
         <span class="n">device_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_device_count</span><span class="p">()</span>
@@ -321,7 +335,11 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="DGILib.__exit__"><a class="viewcode-back" href="../../source/pydgilib.html#pydgilib.dgilib.DGILib.__exit__">[docs]</a>    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;For usage in `with DGILib() as dgilib:` syntax.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;__exit__</span>
+
+<span class="sd">        For usage in ``with DGILib() as dgilib:`` syntax.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Discovery</span>
 
         <span class="c1"># Housekeeping</span>

@@ -191,16 +191,35 @@ API.</p>
 <span class="go">5</span>
 </pre></div>
 </div>
+<p>__init__.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dgilib_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path to dgilib.dll (More info at:
+<a class="reference external" href="https://www.microchip.com/developmenttools/ProductDetailsATPOWERDEBUGGER">https://www.microchip.com/developmenttools/ProductDetailsATPOWERDEBUGGER</a>)</p></li>
+<li><p><strong>device_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Index of the device to use, only useful if multiple devices are
+connected (default is <cite>None</cite>, will resolve to <cite>0</cite>)</p></li>
+<li><p><strong>device_sn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – The serial number of the device to use. Has higher
+priority than device_index (default is <cite>None</cite>, will resolve to
+serial number of device <cite>0</cite>)</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Set to a positive number to print more status messages
+(default is <cite>0</cite>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#pydgilib.dgilib_exceptions.DLLError" title="pydgilib.dgilib_exceptions.DLLError"><strong>DLLError</strong></a> – TODO: <cite>Not documented yet.</cite></p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="pydgilib.dgilib.DGILib.__enter__">
 <code class="descname">__enter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib.html#DGILib.__enter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib.DGILib.__enter__" title="Permalink to this definition">¶</a></dt>
-<dd><p>For usage in <cite>with DGILib() as dgilib:</cite> syntax.</p>
+<dd><p>For usage in <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">DGILib()</span> <span class="pre">as</span> <span class="pre">dgilib:</span></code> syntax.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pydgilib.dgilib.DGILib.__exit__">
 <code class="descname">__exit__</code><span class="sig-paren">(</span><em>exc_type</em>, <em>exc_value</em>, <em>traceback</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib.html#DGILib.__exit__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib.DGILib.__exit__" title="Permalink to this definition">¶</a></dt>
-<dd><p>For usage in <cite>with DGILib() as dgilib:</cite> syntax.</p>
+<dd><p>For usage in <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">DGILib()</span> <span class="pre">as</span> <span class="pre">dgilib:</span></code> syntax.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1668,6 +1687,7 @@ DGI mode)</p></li>
 <dd><p>Bases: <a class="reference internal" href="#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
 <p>Exception raised opening dgilib.dll.</p>
 <p>dgilib.dll could not be found in the specified path.</p>
+<p>__init__.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -1675,6 +1695,7 @@ DGI mode)</p></li>
 <em class="property">exception </em><code class="descclassname">pydgilib.dgilib_exceptions.</code><code class="descname">DeviceArgumentError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#DeviceArgumentError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.DeviceArgumentError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
 <p>Exception raised parsing arguments.</p>
+<p>__init__.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -1682,6 +1703,7 @@ DGI mode)</p></li>
 <em class="property">exception </em><code class="descclassname">pydgilib.dgilib_exceptions.</code><code class="descname">DeviceConnectionError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#DeviceConnectionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.DeviceConnectionError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
 <p>Exception raised: Could not connect to the device.</p>
+<p>__init__.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -1690,6 +1712,7 @@ DGI mode)</p></li>
 <dd><p>Bases: <a class="reference internal" href="#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
 <p>Exception raised selecting device.</p>
 <p>The device_index exceeds the device_count.</p>
+<p>__init__.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -1697,6 +1720,7 @@ DGI mode)</p></li>
 <em class="property">exception </em><code class="descclassname">pydgilib.dgilib_exceptions.</code><code class="descname">DeviceReturnError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#DeviceReturnError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.DeviceReturnError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
 <p>Exception raised: DGILib returned non-zero value.</p>
+<p>__init__.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -1712,6 +1736,7 @@ DGI mode)</p></li>
 <dd class="field-even"><p><strong>msg</strong> – Error message associated with the exception</p>
 </dd>
 </dl>
+<p>__init__.</p>
 <dl class="method">
 <dt id="pydgilib.dgilib_exceptions.Error.__str__">
 <code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib/dgilib_exceptions.html#Error.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib.dgilib_exceptions.Error.__str__" title="Permalink to this definition">¶</a></dt>

@@ -193,7 +193,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;kwargs: &quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DGILibExtra.__enter__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.__enter__">[docs]</a>    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;For usage in `with DGILibExtra() as dgilib:` syntax.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;For usage in ``with DGILibExtra() as dgilib:`` syntax.&quot;&quot;&quot;</span>
         <span class="n">DGILib</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">available_interfaces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interface_list</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">INTERFACE_POWER_DATA</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_interfaces</span><span class="p">:</span>
@@ -212,7 +212,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="DGILibExtra.__exit__"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.__exit__">[docs]</a>    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;For usage in `with DGILibExtra() as dgilib:` syntax.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;For usage in ``with DGILibExtra() as dgilib:`` syntax.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">interface</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
 
@@ -221,13 +221,20 @@
 <div class="viewcode-block" id="DGILibExtra.info"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the build information of DGILib.</span>
 
-<span class="sd">        :return:  Version information of DGILib:</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple(str, str, str, str, str, str)</span>
+<span class="sd">            Version information of DGILib:</span>
+
 <span class="sd">            - major_version: the major_version of DGILib</span>
+
 <span class="sd">            - minor_version: the minor_version of DGILib</span>
+<span class="sd">            </span>
 <span class="sd">            - build_number: the build number of DGILib. 0 if not supported</span>
+<span class="sd">            </span>
 <span class="sd">            - major_fw: the major firmware version of the connected DGI device</span>
+
 <span class="sd">            - minor_fw: the minor firmware version of the connected DGI device</span>
-<span class="sd">        :rtype: tuple</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">major_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_major_version</span><span class="p">()</span>
         <span class="n">minor_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_minor_version</span><span class="p">()</span>
@@ -237,16 +244,22 @@
         <span class="k">return</span> <span class="n">major_version</span><span class="p">,</span> <span class="n">minor_version</span><span class="p">,</span> <span class="n">build_number</span><span class="p">,</span> <span class="n">major_fw</span><span class="p">,</span> <span class="n">minor_fw</span></div>
 
 <div class="viewcode-block" id="DGILibExtra.device_reset"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.device_reset">[docs]</a>    <span class="k">def</span> <span class="nf">device_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the device reset line for duration seconds.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;device_reset</span>
+<span class="sd">        </span>
+<span class="sd">        Set the device reset line for duration seconds.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_reset</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">sleep</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_reset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DGILibExtra.get_time_factor"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.get_time_factor">[docs]</a>    <span class="k">def</span> <span class="nf">get_time_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the factor to multiply timestamps by to get seconds.</span>
+        <span class="sd">&quot;&quot;&quot;get_time_factor</span>
+<span class="sd">        </span>
+<span class="sd">        Get the factor to multiply timestamps by to get seconds.</span>
 
-<span class="sd">        :return: timer_factor</span>
-<span class="sd">        :rtype: double</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Timer factor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">config_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interface_get_configuration</span><span class="p">(</span><span class="n">INTERFACE_TIMESTAMP</span><span class="p">)</span>
         <span class="n">timer_prescaler</span> <span class="o">=</span> <span class="n">config_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -261,13 +274,15 @@
         <span class="k">return</span> <span class="n">timer_prescaler</span> <span class="o">/</span> <span class="n">timer_frequency</span></div>
 
 <div class="viewcode-block" id="DGILibExtra.empty_data"><a class="viewcode-back" href="../../source/pydgilib_extra.html#pydgilib_extra.dgilib_extra.DGILibExtra.empty_data">[docs]</a>    <span class="k">def</span> <span class="nf">empty_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;empty_data.</span>
+        <span class="sd">&quot;&quot;&quot;empty_data</span>
 
-<span class="sd">        Populate self.data with an empty data structure (of type LoggerData).</span>
+<span class="sd">        Populate self.data with an empty data structure (of type </span>
+<span class="sd">        :class:`LoggerData`).</span>
 
-<span class="sd">        Keyword Arguments:</span>
-<span class="sd">            interfaces {list(int)} -- List of interface ids. (default:</span>
-<span class="sd">            {self.enabled_interfaces})</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        interfaces : list(int, int, ...)</span>
+<span class="sd">            List of interface ids. (default: `self.enabled_interfaces`)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">interfaces</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">interfaces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled_interfaces</span>

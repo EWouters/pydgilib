@@ -301,6 +301,7 @@ pulse_direction {bool} – [description] (default: {True})</p>
 <em class="property">class </em><code class="descclassname">pydgilib_extra.dgilib_data.</code><code class="descname">InterfaceData</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_data.html#InterfaceData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_data.InterfaceData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Class to store DGILib Logger Interface Data.</p>
+<p>Take tuple of timestamps and values.</p>
 <dl class="method">
 <dt id="pydgilib_extra.dgilib_data.InterfaceData.__add__">
 <code class="descname">__add__</code><span class="sig-paren">(</span><em>interface_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_data.html#InterfaceData.__add__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_data.InterfaceData.__add__" title="Permalink to this definition">¶</a></dt>
@@ -401,6 +402,7 @@ end_time {[type]} – End time of selection (default: {None})</p>
 <em class="property">class </em><code class="descclassname">pydgilib_extra.dgilib_data.</code><code class="descname">LoggerData</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_data.html#LoggerData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_data.LoggerData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
 <p>Class to store DGILib Logger Data.</p>
+<p>Take list of interfaces for the data.</p>
 <dl class="method">
 <dt id="pydgilib_extra.dgilib_data.LoggerData.__add__">
 <code class="descname">__add__</code><span class="sig-paren">(</span><em>logger_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_data.html#LoggerData.__add__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_data.LoggerData.__add__" title="Permalink to this definition">¶</a></dt>
@@ -473,16 +475,17 @@ length of the <cite>attr</cite> specified.</p>
 <em class="property">class </em><code class="descclassname">pydgilib_extra.dgilib_extra.</code><code class="descname">DGILibExtra</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_extra.html#DGILibExtra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_extra.DGILibExtra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pydgilib.html#pydgilib.dgilib.DGILib" title="pydgilib.dgilib.DGILib"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib.DGILib</span></code></a></p>
 <p>A user friendly way to interact with the DGILib API.</p>
+<p>Instantiate DGILibExtra object.</p>
 <dl class="method">
 <dt id="pydgilib_extra.dgilib_extra.DGILibExtra.__enter__">
 <code class="descname">__enter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_extra.html#DGILibExtra.__enter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_extra.DGILibExtra.__enter__" title="Permalink to this definition">¶</a></dt>
-<dd><p>For usage in <cite>with DGILibExtra() as dgilib:</cite> syntax.</p>
+<dd><p>For usage in <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">DGILibExtra()</span> <span class="pre">as</span> <span class="pre">dgilib:</span></code> syntax.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pydgilib_extra.dgilib_extra.DGILibExtra.__exit__">
 <code class="descname">__exit__</code><span class="sig-paren">(</span><em>exc_type</em>, <em>exc_value</em>, <em>traceback</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_extra.html#DGILibExtra.__exit__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_extra.DGILibExtra.__exit__" title="Permalink to this definition">¶</a></dt>
-<dd><p>For usage in <cite>with DGILibExtra() as dgilib:</cite> syntax.</p>
+<dd><p>For usage in <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">DGILibExtra()</span> <span class="pre">as</span> <span class="pre">dgilib:</span></code> syntax.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -504,11 +507,11 @@ length of the <cite>attr</cite> specified.</p>
 <dl class="method">
 <dt id="pydgilib_extra.dgilib_extra.DGILibExtra.empty_data">
 <code class="descname">empty_data</code><span class="sig-paren">(</span><em>interfaces=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_extra.html#DGILibExtra.empty_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_extra.DGILibExtra.empty_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>empty_data.</p>
-<p>Populate self.data with an empty data structure (of type LoggerData).</p>
-<dl class="simple">
-<dt>Keyword Arguments:</dt><dd><p>interfaces {list(int)} – List of interface ids. (default:
-{self.enabled_interfaces})</p>
+<dd><p>Populate self.data with an empty data structure (of type
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LoggerData</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interfaces</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>..</em><em>)</em>) – List of interface ids. (default: <cite>self.enabled_interfaces</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -519,10 +522,10 @@ length of the <cite>attr</cite> specified.</p>
 <dd><p>Get the factor to multiply timestamps by to get seconds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>timer_factor</p>
+<dd class="field-odd"><p>Timer factor</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>double</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -533,15 +536,18 @@ length of the <cite>attr</cite> specified.</p>
 <dd><p>Get the build information of DGILib.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Version information of DGILib:
-- major_version: the major_version of DGILib
-- minor_version: the minor_version of DGILib
-- build_number: the build number of DGILib. 0 if not supported
-- major_fw: the major firmware version of the connected DGI device
-- minor_fw: the minor firmware version of the connected DGI device</p>
+<dd class="field-odd"><p><p>Version information of DGILib:</p>
+<ul class="simple">
+<li><p>major_version: the major_version of DGILib</p></li>
+<li><p>minor_version: the minor_version of DGILib</p></li>
+<li><p>build_number: the build number of DGILib. 0 if not supported</p></li>
+<li><p>major_fw: the major firmware version of the connected DGI device</p></li>
+<li><p>minor_fw: the minor firmware version of the connected DGI device</p></li>
+</ul>
+</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -561,6 +567,7 @@ length of the <cite>attr</cite> specified.</p>
 <em class="property">exception </em><code class="descclassname">pydgilib_extra.dgilib_extra_exceptions.</code><code class="descname">InterfaceNotAvailableError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_extra_exceptions.html#InterfaceNotAvailableError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_extra_exceptions.InterfaceNotAvailableError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pydgilib.html#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
 <p>Exception raised when enabling interface.</p>
+<p>__init__.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -568,6 +575,7 @@ length of the <cite>attr</cite> specified.</p>
 <em class="property">exception </em><code class="descclassname">pydgilib_extra.dgilib_extra_exceptions.</code><code class="descname">PowerReadError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_extra_exceptions.html#PowerReadError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_extra_exceptions.PowerReadError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pydgilib.html#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
 <p>Exception raised when reading power buffer.</p>
+<p>__init__.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -575,6 +583,7 @@ length of the <cite>attr</cite> specified.</p>
 <em class="property">exception </em><code class="descclassname">pydgilib_extra.dgilib_extra_exceptions.</code><code class="descname">PowerStatusError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_extra_exceptions.html#PowerStatusError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_extra_exceptions.PowerStatusError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pydgilib.html#pydgilib.dgilib_exceptions.Error" title="pydgilib.dgilib_exceptions.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib.dgilib_exceptions.Error</span></code></a></p>
 <p>Exception raised when checking <cite>auxiliary_power_get_status()</cite>.</p>
+<p>__init__.</p>
 </dd></dl>
 
 </div>
@@ -586,6 +595,7 @@ length of the <cite>attr</cite> specified.</p>
 <em class="property">class </em><code class="descclassname">pydgilib_extra.dgilib_interface.</code><code class="descname">DGILibInterface</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_interface.html#DGILibInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_interface.DGILibInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Provides a base interface class.</p>
+<p>Instantiate DGILibInterface object.</p>
 <dl class="method">
 <dt id="pydgilib_extra.dgilib_interface.DGILibInterface.close_csv_writer">
 <code class="descname">close_csv_writer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_interface.html#DGILibInterface.close_csv_writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_interface.DGILibInterface.close_csv_writer" title="Permalink to this definition">¶</a></dt>
@@ -694,6 +704,7 @@ length of the <cite>attr</cite> specified.</p>
 <em class="property">class </em><code class="descclassname">pydgilib_extra.dgilib_interface_gpio.</code><code class="descname">DGILibInterfaceGPIO</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_interface_gpio.html#DGILibInterfaceGPIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_interface_gpio.DGILibInterfaceGPIO" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pydgilib_extra.dgilib_interface.DGILibInterface" title="pydgilib_extra.dgilib_interface.DGILibInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib_extra.dgilib_interface.DGILibInterface</span></code></a></p>
 <p>Wraps the calls to the GPIO interface.</p>
+<p>Instantiate DGILibInterfaceGPIO object.</p>
 <dl class="attribute">
 <dt id="pydgilib_extra.dgilib_interface_gpio.DGILibInterfaceGPIO.csv_header">
 <code class="descname">csv_header</code><em class="property"> = ['timestamp', 'gpio0', 'gpio1', 'gpio2', 'gpio3']</em><a class="headerlink" href="#pydgilib_extra.dgilib_interface_gpio.DGILibInterfaceGPIO.csv_header" title="Permalink to this definition">¶</a></dt>
@@ -830,6 +841,7 @@ code will be given if data hasn’t been written yet.</p>
 <em class="property">class </em><code class="descclassname">pydgilib_extra.dgilib_interface_power.</code><code class="descname">DGILibInterfacePower</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_interface_power.html#DGILibInterfacePower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_interface_power.DGILibInterfacePower" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pydgilib_extra.dgilib_interface.DGILibInterface" title="pydgilib_extra.dgilib_interface.DGILibInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydgilib_extra.dgilib_interface.DGILibInterface</span></code></a></p>
 <p>Wraps the calls to the Power interface.</p>
+<p>Instantiate DGILibInterfacePower object.</p>
 <dl class="method">
 <dt id="pydgilib_extra.dgilib_interface_power.DGILibInterfacePower.auxiliary_power_calibration">
 <code class="descname">auxiliary_power_calibration</code><span class="sig-paren">(</span><em>circuit_type=16</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_interface_power.html#DGILibInterfacePower.auxiliary_power_calibration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_interface_power.DGILibInterfacePower.auxiliary_power_calibration" title="Permalink to this definition">¶</a></dt>
@@ -967,6 +979,7 @@ like <code class="docutils literal notranslate"><span class="pre">[{&quot;channe
 </ul>
 </dd>
 </dl>
+<p>Instantiate DGILibInterfacePower object.</p>
 <dl class="method">
 <dt id="pydgilib_extra.dgilib_logger.DGILibLogger.log">
 <code class="descname">log</code><span class="sig-paren">(</span><em>duration=10</em>, <em>stop_function=None</em>, <em>min_duration=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydgilib_extra/dgilib_logger.html#DGILibLogger.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydgilib_extra.dgilib_logger.DGILibLogger.log" title="Permalink to this definition">¶</a></dt>

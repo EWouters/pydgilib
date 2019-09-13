@@ -96,6 +96,11 @@
 <li><a class="reference internal" href="#getting-started">Getting Started</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 <li><a class="reference internal" href="#code-coverage-report">Code Coverage Report</a></li>
+<li><a class="reference internal" href="#continuous-integration">Continuous Integration</a><ul>
+<li><a class="reference internal" href="#update-documentation">Update Documentation</a></li>
+<li><a class="reference internal" href="#push-a-new-release">Push a new Release</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#disclaimer">Disclaimer</a></li>
 </ul>
 </div>
@@ -275,6 +280,65 @@ $ cd pydgilib
 <div class="section" id="code-coverage-report">
 <h1>Code Coverage Report<a class="headerlink" href="#code-coverage-report" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="htmlcov/index.html">Code Coverage Report</a></p>
+</div>
+<div class="section" id="continuous-integration">
+<h1>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this headline">¶</a></h1>
+<p>This project has been developed to include an extensive set of unit tests using
+<cite>pytest &lt;https://pytest.org&gt;</cite>), as well as auto generated documentation using
+<cite>Sphinx &lt;https://www.sphinx-doc.org&gt;</cite>. Maintainers can push new releases to
+<cite>pip</cite> using <cite>twine</cite>.</p>
+<div class="section" id="update-documentation">
+<h2>Update Documentation<a class="headerlink" href="#update-documentation" title="Permalink to this headline">¶</a></h2>
+<p>Make sure to set up a development installation of pydgilib as explained in the
+readme before you start. Open a terminal in the root of the repository.</p>
+<ol class="arabic">
+<li><p>Navigate to the output folder of the documentation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd docs/_build/html
+</pre></div>
+</div>
+</li>
+</ol>
+<p>2. If you have not cloned the <cite>gh-pages</cite> branch previously (otherwise switch to
+the gh-pages branch):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone --branch gh-pages https://github.com/EWouters/pydgilib.git
+</pre></div>
+</div>
+<ol class="arabic" start="3">
+<li><p>Generate the docs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd ..
+$ make.bat html
+</pre></div>
+</div>
+</li>
+</ol>
+<p>4. Add the new docs to a commit and push to the live
+<cite>webpage &lt;https://ewouters.github.io/pydgilib/&gt;</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd _build/html
+$ git add .
+$ git commit - m &#39;Update docs.&#39;
+$ git push origin gh-pages
+</pre></div>
+</div>
+</div>
+<div class="section" id="push-a-new-release">
+<h2>Push a new Release<a class="headerlink" href="#push-a-new-release" title="Permalink to this headline">¶</a></h2>
+<p>This will update the package on pip. You will need to login to a pip account
+with maintainers privileges to perform step 4.</p>
+<ol class="arabic">
+<li><p>Set version tag in setup.py and docs/conf.py</p></li>
+<li><p>Generate docs (as described above)</p></li>
+<li><p>Generate new package:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py sdist bdist_wheel
+</pre></div>
+</div>
+</li>
+<li><p>Push the package to pip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ twine upload dist/*
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
 </div>
 <div class="section" id="disclaimer">
 <h1>Disclaimer<a class="headerlink" href="#disclaimer" title="Permalink to this headline">¶</a></h1>
