@@ -73,11 +73,11 @@
   "terminal.integrated.env.windows": {
     "CONDA_FORCE_32BIT": "1"
   },
-  "python.testing.pyTestArgs": [
+  "python.testing.pytestArgs": [
     "tests"
   ],
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
-  "python.testing.pyTestEnabled": true,
+  "python.testing.pytestEnabled": true,
   "cSpell.language": "en"
 }

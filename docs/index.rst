@@ -24,6 +24,9 @@ Code Coverage Report
 
 `Code Coverage Report <htmlcov/index.html>`_
 
+
+.. include:: developer.rst
+
 Disclaimer
 ==========
 
